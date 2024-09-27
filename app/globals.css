@@ -1,3 +1,6 @@
+/* styles/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('@fortawesome/fontawesome-free/css/all.min.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,19 +8,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-montserrat: 'Montserrat', sans-serif; /* Add Montserrat as a CSS variable */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ededed;
-    --foreground: ##171717;
+    --background: #ededed; /* Fix the double hash (##) */
+    --foreground: #171717;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat); /* Use Montserrat for the body */
 }
 
 @layer utilities {
