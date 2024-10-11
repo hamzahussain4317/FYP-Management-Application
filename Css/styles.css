@@ -72,18 +72,31 @@
   -ms-border-radius: 2rem;
   -o-border-radius: 2rem;
 }
+.field-error {
+  margin-left: 2rem;
+  width: 90%;
+  padding: 1rem;
+  border: 2px solid red;
+  border-radius: 2rem;
+}
+.errors {
+  font-size: 12px;
+  color: red;
+}
 i {
   color: #f39c12;
 }
 
-.signUpBtn,.loginBtn {
+.signUpBtn,
+.loginBtn {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.signUpBtn button , .loginBtn button {
+.signUpBtn button,
+.loginBtn button {
   background-color: #f39c12;
   width: 25vw;
   padding-top: 1rem;
@@ -130,7 +143,7 @@ i {
   align-items: center;
   justify-content: center;
 }
-.loginBtn{
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+.loginBtn {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
