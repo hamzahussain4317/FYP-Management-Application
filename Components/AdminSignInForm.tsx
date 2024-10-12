@@ -3,6 +3,8 @@ import { AdminSignInSchema } from "../Schemas/AdminSignUpData";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminValidation } from "@/AdminValidation/adminvalidation";
+import { useState } from "react";
 interface SignUpFormProps {
   setForm: (formType: number) => void;
 }
@@ -13,6 +15,8 @@ interface AdminSignInData {
   password: string;
 }
 export default function SignUpForm({ setForm }: SignUpFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -25,9 +29,23 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
     resolver: zodResolver(AdminSignInSchema),
   });
   const onSubmit = async (data: AdminSignInData) => {
-    console.log(data);
-    reset();
-    setForm(0);
+    if (
+      data.name.toLowerCase() === adminValidation.name.toLowerCase() &&
+      data.email.toLowerCase() === adminValidation.email.toLowerCase() &&
+      data.password.toLowerCase() === adminValidation.password.toLowerCase()
+    ) {
+      setIsLoading(true);
+      console.log(data);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsLoading(false);
+      reset();
+      setForm(0);
+      setErrorMessage("");
+    }
+    else{
+      setErrorMessage("Invalid email, password, or username");
+      console.log("incorrect");
+    }
   };
   return (
     <div className="signUpForm">
@@ -43,7 +61,7 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
             placeholder="enter your name"
             className={errors.name ? "field-error" : "name"}
           />
-          {errors.name && <div className="errors">Invalid name</div>}
+          {errors.name && <div className="errors">{errors.name.message}</div>}
         </div>
         <div className="field">
           <div className="labelIcon">
@@ -56,7 +74,7 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
             placeholder="enter your mail"
             className={errors.name ? "field-error" : "email"}
           />
-          {errors.email && <div className="errors">Invalid email</div>}
+          {errors.email && <div className="errors">{errors.email.message}</div>}
         </div>
         <div className="field">
           <div className="labelIcon">
@@ -69,11 +87,12 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
             placeholder="enter your password"
             className={errors.name ? "field-error" : "password"}
           />
-          {errors.password && <div className="errors">Invalid password</div>}
+          {errors.password && <div className="errors">{errors.password.message}</div>}
         </div>
         <div className="signUpBtn">
-          <button onClick={handleSubmit(onSubmit)}>Sign In</button>
+          <button onClick={handleSubmit(onSubmit)}>{isLoading ? "Loading..." : "Sign In"}</button>
         </div>
+        {errorMessage && <div className="errors">{errorMessage}</div>}
         <p className="accExist">
           Already have an account?{" "}
           <span>

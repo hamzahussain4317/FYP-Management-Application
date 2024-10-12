@@ -82,6 +82,7 @@
 .errors {
   font-size: 12px;
   color: red;
+  text-align: center;
 }
 i {
   color: #f39c12;
