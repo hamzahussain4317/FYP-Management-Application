@@ -21,9 +21,8 @@ const registerationSchema = `CREATE TABLE IF NOT EXISTS Registeration(
 db.query(registerationSchema, (err, result) => {
   if (err) {
     console.log("Error creating Registeration table", err);
-  } else {
-    console.log("Registeration table created successfully");
   }
 });
 
+//As from here we are returning promise so while using this promise use try-catch block and also await for results
 module.exports = db.promise();

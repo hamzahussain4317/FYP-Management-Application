@@ -1,5 +1,5 @@
 //importing packages
-require('dotenv').config();
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 // const SECRET_KEY = process.env.SECRET_KEY;
@@ -31,32 +31,20 @@ const signUp = async (req, res) => {
     });
   } catch (err) {
     console.error("Error Signing Up", err);
-    return res.status(500).json({ error: "Failed to register user" });
+    return res.status(500).json({ message: "Failed to register user" });
   }
 };
 
-const signin = async (req, res) => {
-  const query = "SELECT * FROM registeration where username = 'Ghulam Hussain'";
-  try {
-    const [results] = await db.query(query);
-    console.log(results, typeof results);
-    res.status(200).json({ result: results });
-  } catch (error) {
-    console.error("Error executing query:", error);
-    return res.status(500).json({ message: "Database query execution failed" });
-  }
-};
 const signIn = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   // Query the database
-  const query = "SELECT * FROM registeration WHERE username = ?";
+  const query = "SELECT * FROM registeration WHERE email = ?";
 
   try {
-    const [results] = await db.query(query, [username]);
+    const [results] = await db.query(query, [email]);
 
     const user = results[0];
-    console.log(user);
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
