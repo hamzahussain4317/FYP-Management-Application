@@ -292,13 +292,14 @@ ul {
 .sideBar .sidebar-menu li i:hover {
   color: #0047ab;
 }
-.active {
+.active ,.active i{
   color:#0047ab;
 }
-.active:hover{
+.active span:hover{
   color:white;
 }
 .Home {
+  border:2px solid red;
   position: relative;
   top: 80px;
   left: 12vw;
