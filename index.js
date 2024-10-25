@@ -1,10 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const mysql = require("mysql2");
 const app = express();
 
 const auth = require("./routes/auth");
-
 const pool = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
@@ -26,7 +26,7 @@ pool.connect((err) => {
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 app.use("/auth", auth);
 

@@ -15,6 +15,7 @@ const registerationSchema = `CREATE TABLE IF NOT EXISTS Registeration(
     username VARCHAR(255) NOT NULL ,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE,
+    role VARCHAR(10) CHECK (role IN ('student','teacher')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
 

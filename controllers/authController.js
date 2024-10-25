@@ -8,10 +8,10 @@ const db = require("../models/registeration");
 
 //functionalities
 const signUp = async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, password, email, role } = req.body;
 
   // Input validation (basic)
-  if (!username || !password || !email) {
+  if (!username || !password || !email || !role) {
     return res.status(400).json({ error: "Please fill in all fields" });
   }
 
@@ -19,10 +19,15 @@ const signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // SQL query to insert a new user
-    const query = `INSERT INTO registeration (username,password,email) VALUES (?, ?, ?)`;
+    const query = `INSERT INTO registeration (username,password,email,role) VALUES (?, ?, ?,?)`;
 
     // Execute the query with user data
-    const [results] = await db.query(query, [username, hashedPassword, email]);
+    const [results] = await db.query(query, [
+      username,
+      hashedPassword,
+      email,
+      role,
+    ]);
 
     // Send success response
     res.status(201).json({
@@ -36,15 +41,21 @@ const signUp = async (req, res) => {
 };
 
 const signIn = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   // Query the database
-  const query = "SELECT * FROM registeration WHERE email = ?";
+  const query = "SELECT * FROM registeration WHERE email = ? and role = ?";
 
   try {
-    const [results] = await db.query(query, [email]);
+    const [results] = await db.query(query, [email, role]);
 
     const user = results[0];
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "User is not registered.Please check credentials" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
