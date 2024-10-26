@@ -5,6 +5,7 @@ const mysql = require("mysql2");
 const app = express();
 
 const auth = require("./routes/auth");
+
 const pool = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
@@ -31,4 +32,3 @@ app.use(morgan("dev"));
 app.use("/auth", auth);
 
 module.exports = pool;
-app.locals.pool = pool;
