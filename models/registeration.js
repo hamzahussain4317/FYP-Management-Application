@@ -10,7 +10,7 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
-const registerationSchema = `CREATE TABLE IF NOT EXISTS Registerations(
+const registerationSchema = `CREATE TABLE IF NOT EXISTS Registeration(
     id INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(255) NOT NULL ,
     password VARCHAR(255) NOT NULL,

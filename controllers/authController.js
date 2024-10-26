@@ -1,9 +1,6 @@
 //importing packages
-require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const SECRET_KEY = process.env.SECRET_KEY;
-const SECRET_KEY = "myKey";
 const db = require("../models/registeration");
 
 //functionalities
@@ -62,7 +59,8 @@ const signIn = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-    // Generate JWT
+    //JWT generation
+    const SECRET_KEY = process.env.SECRET_KEY;
     const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: "1h",
     });
