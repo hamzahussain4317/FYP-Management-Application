@@ -1,16 +1,15 @@
 /* styles/globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-@import url('@fortawesome/fontawesome-free/css/all.min.css');
-@import url('../Css/styles.css');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+@import url("@fortawesome/fontawesome-free/css/all.min.css");
+@import url("../Css/styles.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   --background: #ffffff;
-
   --foreground: #171717;
-  --font-montserrat: 'Montserrat', sans-serif; /* Add Montserrat as a CSS variable */
+  --font-montserrat: "Montserrat", sans-serif; /* Add Montserrat as a CSS variable */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +23,16 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-montserrat); /* Use Montserrat for the body */
+  overflow-x: hidden; /* Prevent horizontal scroll caused by scaling */
+}
+
+h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 @layer utilities {
@@ -31,4 +40,3 @@ body {
     text-wrap: balance;
   }
 }
-
