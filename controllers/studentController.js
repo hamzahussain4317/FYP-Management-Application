@@ -18,3 +18,6 @@ const getProfile = async (req, res) => {
       return res.status(200).json({ student: result[0] });
   });
 };
+module.exports={
+    getProfile
+}

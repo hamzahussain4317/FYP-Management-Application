@@ -1,3 +1,3 @@
-const fypStudentSchemaQuery=`CREATE TABLE IF NOT EXISTS fypStudents(
+// const fypStudentSchemaQuery=`CREATE TABLE IF NOT EXISTS fypStudents(
 
-)`
+// )`

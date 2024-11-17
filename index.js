@@ -5,6 +5,7 @@ const mysql = require("mysql2");
 const app = express();
 
 const auth = require("./routes/auth");
+const student=require("./routes/student")
 
 const pool = mysql.createConnection({
   host: "127.0.0.1",
@@ -30,5 +31,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 app.use("/auth", auth);
+app.use("/student",student);
 
 module.exports = pool;
