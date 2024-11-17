@@ -16,8 +16,12 @@ const createRegisterationSchema = () => {
 
 //functionalities
 const signUp = async (req, res) => {
-  createRegisterationSchema();
-
+  try{
+    createRegisterationSchema();
+  } catch(err){
+    console.log(err);
+  }
+  
   const { username, password, email, role } = req.body;
 
   // Input validation (basic)
@@ -25,8 +29,9 @@ const signUp = async (req, res) => {
     return res.status(400).json({ error: "Please fill in all fields" });
   }
 
+  let hashedPassword;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    hashedPassword = await bcrypt.hash(password, 10);
   } catch (err) {
     console.log(err);
   }
