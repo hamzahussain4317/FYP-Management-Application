@@ -1,6 +1,6 @@
 export default function StudentDashboard() {
   return (
-    <section className="Home">
+    <section className="wrapper flex-col items-center justify-center overflow-y-auto">
       <h1>Student | Home</h1>
       <div className="uni-info info">
         <div className="info-head">

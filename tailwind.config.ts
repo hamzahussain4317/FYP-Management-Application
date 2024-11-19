@@ -1,3 +1,4 @@
+// import { WrappedNextRouterError } from "next/dist/server/route-modules/app-route/module";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -16,4 +17,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;

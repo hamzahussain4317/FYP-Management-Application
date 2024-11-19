@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 
+import ProgressBar from "./ProgressBar";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -61,7 +63,22 @@ const ProjectStatisticsChart: React.FC<ProjectStatisticsChartProps> = ({
     },
   };
 
-  return <Bar data={chartData} options={options} />;
+
+  const totalAssigned:number = chartData.datasets[0].data.reduce(
+    (sum, value) => sum + value,
+    0
+  );
+  const totalCompleted:number = chartData.datasets[1].data.reduce(
+    (sum, value) => sum + value,
+    0
+  );
+
+  return (
+    <>
+      <Bar data={chartData} options={options} />;
+      <ProgressBar {completed : totalCompleted, total : totalAssigned}/>;
+    </>
+  );
 };
 
 export default ProjectStatisticsChart;

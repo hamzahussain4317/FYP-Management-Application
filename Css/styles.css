@@ -151,6 +151,12 @@ i {
 
 /* Syudent DashBoard */
 
+.wrapper {
+  min-height: screen;
+  background-color: #f3f4f6;
+  padding: 6px;
+}
+
 /* Layout */
 .student-layout {
   display: grid;
@@ -330,17 +336,12 @@ ul {
 
 /* student Home page */
 
-.Home {
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-}
-
-.Home h1 {
+.wrapper h1 {
   margin-top: 1rem;
   text-align: center;
   font-weight: 600;
 }
+
 .uni-info,
 .personal-info,
 .contact-info {
@@ -402,17 +403,7 @@ ul {
 
 /* student Proposal Page */
 .Proposal {
-  /* border: 2px solid red; */
-  /* position: relative;
-  top: 80px;
-  left: 12vw;
-  height: 100%;
-  width: 86vw; */
   overflow-y: auto;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center; */
 }
 .proposal-head {
   padding: 2rem;
@@ -688,6 +679,7 @@ ul {
 
 .left {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: #f8f9fa; /* Light background for visibility */
@@ -704,4 +696,34 @@ ul {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
+}
+
+/* progress-bar styles*/
+.progress-container {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  height: 1.5rem; /* Height of the progress bar */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #28a745; /* Green for progress */
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.875rem; /* Font size for progress percentage */
+  transition: width 0.3s ease; /* Smooth animation when progress updates */
+}
+
+.progress-label {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
 }
