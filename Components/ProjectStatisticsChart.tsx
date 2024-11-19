@@ -63,21 +63,20 @@ const ProjectStatisticsChart: React.FC<ProjectStatisticsChartProps> = ({
     },
   };
 
-
-  const totalAssigned:number = chartData.datasets[0].data.reduce(
+  const totalAssigned: number = chartData.datasets[0].data.reduce(
     (sum, value) => sum + value,
     0
   );
-  const totalCompleted:number = chartData.datasets[1].data.reduce(
+  const totalCompleted: number = chartData.datasets[1].data.reduce(
     (sum, value) => sum + value,
     0
   );
 
   return (
-    <>
+    <div className="wrapper">
       <Bar data={chartData} options={options} />;
-      <ProgressBar {completed : totalCompleted, total : totalAssigned}/>;
-    </>
+      <ProgressBar completed={totalCompleted} total={totalAssigned} />;
+    </div>
   );
 };
 
