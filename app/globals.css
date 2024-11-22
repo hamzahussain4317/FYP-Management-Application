@@ -35,6 +35,19 @@ p {
   line-height: 1.5;
 }
 
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px; /* Makes the scrollbar very thin */
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: #2d2d2d; /* Dark track color */
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background-color: #555; /* Dark gray thumb */
+  border-radius: 10px; /* Rounded corners */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

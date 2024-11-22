@@ -81,10 +81,6 @@ export default function Group() {
           </div>
         ))}
       </div>
-      <div className="mt-5 p-[2rem]">
-        <h1 className="items-left text-[32px]">Project Statistics</h1>
-        <ProjectStatisticsChart data={stats} />
-      </div>
     </section>
   );
 }

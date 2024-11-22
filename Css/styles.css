@@ -300,11 +300,13 @@ ul {
   justify-content: space-around;
   text-align: center;
 }
-.sideBar .sidebar-menu li {
+/* .sideBar .sidebar-menu li {
+  padding: 0px 10px;
+  width: 100%;
   color: #333;
   font-size: 20px;
   font-weight: 600;
-}
+} */
 .sideBar .sidebar-menu li i {
   display: flex;
   flex-direction: column;
