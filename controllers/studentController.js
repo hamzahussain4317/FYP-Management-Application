@@ -20,6 +20,7 @@ const getProfile = async (req, res) => {
   });
 };
 
+//create group//
 const assignGroup = async (req, res) => {
   const { emails, leaderRoll } = req.body;
   if (!emails || emails.length === 0 || !leaderRoll) {
@@ -59,4 +60,5 @@ const assignGroup = async (req, res) => {
 
 module.exports = {
   getProfile,
+  assignGroup,
 };
