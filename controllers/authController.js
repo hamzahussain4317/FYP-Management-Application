@@ -14,54 +14,10 @@ const createRegistrationSchema = () => {
   });
 };
 
-//functionalities
-// const signUp = async (req, res) => {
-//   try{
-//     createRegisterationSchema();
-//   } catch(err){
-//     console.log(err);
-//   }
 
-//   const { username, password, email, role } = req.body;
-
-//   // Input validation (basic)
-//   if (!username || !password || !email || !role) {
-//     return res.status(400).json({ error: "Please fill in all fields" });
-//   }
-
-//   let hashedPassword;
-//   try {
-//     hashedPassword = await bcrypt.hash(password, 10);
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   // SQL query to insert a new user
-//   const query = `INSERT INTO registeration (username,password,email,role) VALUES (?, ?, ?,?)`;
-
-//   // Execute the query with user data
-//   db.query(query, [username, hashedPassword, email, role], (err, results) => {
-//     if (err) {
-//       console.error("Error Signing Up", err);
-//       return res
-//         .status(500)
-//         .json({ message: "Failed to register user", error: err });
-//     }
-
-//     // Send success response
-//     res.status(201).json({
-//       message: "User registered successfully",
-//       userId: results.insertId,
-//     });
-//   });
-// };
 //signup//
 const signUp = async (req, res) => {
   try {
-    // try {
-    //   createRegistrationSchema();
-    // } catch (err) {
-    //   console.log(err);
-    // }
     //check user enters all fields//
     const { username, password, email, role } = req.body;
     if (!username || !email || !password || !role) {
