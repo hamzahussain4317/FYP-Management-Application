@@ -18,6 +18,11 @@ const getProfile = async (req, res) => {
       return res.status(200).json({ student: result[0] });
   });
 };
+
+
+const getSupervisors= async (req,res)=>{
+const query="Select * from supervisors"
+}
 module.exports={
     getProfile
 }
