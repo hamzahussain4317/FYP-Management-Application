@@ -12,6 +12,7 @@ const pool = mysql.createConnection({
   user: "root",
   password: "22k4317hamza",
   database: "fyp",
+  multipleStatements:true,
 });
 
 pool.connect((err) => {

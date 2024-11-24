@@ -4,6 +4,8 @@ const studentController = require("../controllers/studentController.js");
 
 router.get("/getProfile/:stdID", studentController.getProfile);
 
+router.post("/createGroup",studentController.assignGroup);
+
 // router.get("/getGroupDetails",studentController.getGroupDetails);
 
 // router.get("/getSupervisors", studentController.getSupervisorList);
