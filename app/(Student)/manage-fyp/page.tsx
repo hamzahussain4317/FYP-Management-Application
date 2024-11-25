@@ -40,7 +40,7 @@ const TasksPage = () => {
 
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 
-  const handleFilter = (filters: any) => {
+  const handleFilter = (filters: individualTaskFilters) => {
     const { priority, status, dueDate } = filters;
     let filtered = tasks;
 
@@ -82,53 +82,43 @@ const TasksPage = () => {
   ).length;
 
   return (
-    <section className="manage-fyp">
-      <div className="wrapper">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex align-center justify-between w-full mb-6">
-            {/* Page Header */}
-            <h1 className="text-2xl font-bold text-center mb-6">
-              Task Management
-            </h1>
+    <section className="wrapper">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex align-center justify-between w-full mb-6">
+          <h1 className="text-2xl font-bold text-center mb-6">
+            Task Management
+          </h1>
 
-            {/* Search Bar */}
-            <div className="flex items-center">
-              <SearchBar
-                onSearch={handleSearch}
-                hiddenToggler={hiddenToggler}
-              />
-            </div>
+          <div className="flex items-center">
+            <SearchBar onSearch={handleSearch} hiddenToggler={hiddenToggler} />
           </div>
+        </div>
+        <div className="mb-6">
+          <TaskFilters onFilter={handleFilter} />
+        </div>
+        <div className="mb-6">
+          <TaskStatistics
+            taskAssigned={tasks.length}
+            taskCompleted={completedTasks}
+            taskOverDue={completedTasks}
+            hiddenToggler={hiddenToggler}
+          />
+          {/* <TaskPieChart /> */}
+        </div>
 
-          {/* Filters */}
-          <div className="mb-6">
-            <TaskFilters onFilter={handleFilter} />
-          </div>
+        {/* Progress   Tracking */}
+        <div className="mb-6">
+          <ProgressBar completed={completedTasks} total={tasks.length} />
+        </div>
 
-          <div className="mb-6">
-            <TaskStatistics
-              taskAssigned={tasks.length}
-              taskCompleted={completedTasks}
-              taskOverDue={completedTasks}
-              hiddenToggler={hiddenToggler}
-            />
-            {/* <TaskPieChart /> */}
-          </div>
+        {/* Task List */}
+        <div className="mb-6">
+          <TaskDetails allTasks={filteredTasks} />
+        </div>
 
-          {/* Progress   Tracking */}
-          <div className="mb-6">
-            <ProgressBar completed={completedTasks} total={tasks.length} />
-          </div>
-
-          {/* Task List */}
-          <div className="mb-6">
-            <TaskDetails allTasks={tasks} />
-          </div>
-
-          {/* Task Creation Form */}
-          <div className="mb-6 hidden">
-            <TaskForm onSubmit={handleCreateTask} />
-          </div>
+        {/* Task Creation Form */}
+        <div className="mb-6 hidden">
+          <TaskForm onSubmit={handleCreateTask} />
         </div>
       </div>
     </section>

@@ -1,11 +1,4 @@
 import Image from "next/image";
-type Supervisor = {
-  id: number;
-  name: string;
-  image: string;
-  projectsSupervised: number;
-  rating: number;
-};
 const supervisors: Supervisor[] = [
   {
     id: 1,
@@ -95,7 +88,7 @@ const supervisors: Supervisor[] = [
 export default function Group() {
   const maxProjects = 7;
   return (
-    <section className="supervisor">
+    <section className="wrapper">
       <h1 className="supervisor-heading">Supervisors</h1>
       <ul className="supervisor-list">
         <li className="supervisor-header">

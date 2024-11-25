@@ -1,4 +1,3 @@
-import ProjectStatisticsChart from "@/Components/ProjectStatisticsChart";
 const groupMembers: Student[] = [
   {
     id: 1,
@@ -30,29 +29,9 @@ const groupMembers: Student[] = [
   // Add more students if needed
 ];
 
-interface chart {
-  month: string;
-  assigned: number;
-  completed: number;
-}
-const stats: chart[] = [
-  { month: "Jan", assigned: 10, completed: 8 },
-  { month: "Feb", assigned: 15, completed: 12 },
-  { month: "Mar", assigned: 20, completed: 15 },
-  { month: "Apr", assigned: 25, completed: 20 },
-  { month: "May", assigned: 30, completed: 25 },
-  { month: "Jun", assigned: 35, completed: 28 },
-  { month: "Jul", assigned: 40, completed: 35 },
-  { month: "Aug", assigned: 45, completed: 40 },
-  { month: "Sep", assigned: 50, completed: 45 },
-  { month: "Oct", assigned: 55, completed: 50 },
-  { month: "Nov", assigned: 60, completed: 55 },
-  { month: "Dec", assigned: 65, completed: 60 },
-];
-
 export default function Group() {
   return (
-    <section className="Group">
+    <section className="wrapper">
       <h1 className="group-heading">Group Details</h1>
       <div className="group-details">
         {groupMembers.map((student, index) => (

@@ -15,7 +15,7 @@ export default function Group() {
     setSupervisorEmail(e.target.value);
   };
   return (
-    <section className="Proposal">
+    <section className="wrapper">
       <h1 className="proposal-heading">Create Your Proposal</h1>
       {/* proposal form */}
       <div className="proposal-div">

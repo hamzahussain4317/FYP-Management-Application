@@ -9,13 +9,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-montserrat: "Montserrat", sans-serif; /* Add Montserrat as a CSS variable */
+  --font-montserrat: "Montserrat", sans-serif;
+  --wrapper-bg: white;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ededed; /* Fix the double hash (##) */
     --foreground: #171717;
+    --wrapper-bg: white;
+    --card-bg: #f9f9f9;
   }
 }
 

@@ -153,12 +153,16 @@ i {
 
 .wrapper {
   min-height: screen;
-  background-color: #f3f4f6;
-  padding: 6px;
+  background-color: var(--wrapper-bg);
+  /* background-color: yellow; */
+
+  padding: 10px;
+  border-radius: 2%;
+  overflow-y: auto;
 }
 
 /* Layout */
-.student-layout {
+.layout {
   display: grid;
   grid-template-rows: 5rem auto;
   grid-template-columns: 12.5rem auto;
@@ -300,13 +304,6 @@ ul {
   justify-content: space-around;
   text-align: center;
 }
-/* .sideBar .sidebar-menu li {
-  padding: 0px 10px;
-  width: 100%;
-  color: #333;
-  font-size: 20px;
-  font-weight: 600;
-} */
 .sideBar .sidebar-menu li i {
   display: flex;
   flex-direction: column;
@@ -337,26 +334,17 @@ ul {
 }
 
 /* student Home page */
-
-.wrapper h1 {
-  margin-top: 1rem;
-  text-align: center;
-  font-weight: 600;
-}
-
 .uni-info,
 .personal-info,
 .contact-info {
-  margin-top: 5rem;
-  margin-bottom: 2rem;
+  align-self: center;
   border: 1px solid #0047ab;
-  width: 80vw;
   height: 30vh;
 }
 .info {
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   text-align: center;
 }
@@ -385,16 +373,16 @@ ul {
 }
 .info-body {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three columns */
-  grid-template-rows: repeat(2, auto); /* Two rows */
-  row-gap: 5px; /* Smaller gap between rows */
-  column-gap: 20px; /* Optional: Adjust column gap as needed */
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  row-gap: 5px;
+  column-gap: 20px;
   width: 100%;
   padding: 1rem;
-  justify-items: start; /* Aligns items to the start (left) */
-  align-items: start; /* Aligns items to the top */
+  justify-items: start;
+  align-items: start;
   justify-content: center;
-  text-align: left; /* Centers the grid within the parent div */
+  text-align: left;
 }
 .info-body h3 {
   font-size: 20px;
@@ -404,9 +392,6 @@ ul {
 }
 
 /* student Proposal Page */
-.Proposal {
-  overflow-y: auto;
-}
 .proposal-head {
   padding: 2rem;
   padding-bottom: 1rem;
@@ -429,6 +414,7 @@ ul {
   padding: 1rem;
   margin: 1rem;
 }
+
 /* student proposal form */
 .form-container {
   height: 100%;
