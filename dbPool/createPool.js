@@ -8,6 +8,7 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  multipleStatements:true,
 });
 
 //As from here we are returning promise so while using this promise use try-catch block and also await for results

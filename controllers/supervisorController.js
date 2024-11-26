@@ -19,10 +19,10 @@ const getProfile = async(req,res)=>{
 }
 
 
-const getSupervisingGroups = async(req,res){
-    const {supervisorID} = req.params;
-    const getGroupDetails = `SELECT * FROM groupID`
-}
+// const getSupervisingGroups = async(req,res){
+//     const {supervisorID} = req.params;
+//     const getGroupDetails = `SELECT * FROM groupID`
+// }
 module.exports = {
     getProfile,
     getSupervisingGroups,
