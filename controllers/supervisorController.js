@@ -4,8 +4,6 @@ const db = require("../dbPool/createPool");
 //controller for supervisorProfile
 const getProfile = async (req, res) => {
   const { supervisorID } = req.params;
-const getProfile = async (req, res) => {
-  const { supervisorID } = req.params;
 
   const getSupervisorDetails = `SELECT * FROM supervisor s JOIN teacher t ON t.teacherID = s.supervisorID where supervisorID = ?`;
   db.query(getSupervisorDetails, [supervisorID], async (err, result) => {
@@ -85,10 +83,6 @@ const getSupervisingGroups = async (req, res) => {
 };
 
 module.exports = {
-  getProfile,
-  getSupervisingGroups,
-};
-
   getProfile,
   getSupervisingGroups,
 };
