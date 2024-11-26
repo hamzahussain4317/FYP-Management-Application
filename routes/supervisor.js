@@ -4,5 +4,9 @@ const supervisorController = require("../controllers/supervisorController.js");
 
 router.get("/getProfile/:supervisorID", supervisorController.getProfile);
 
+router.get(
+  "/getSupervisingGroups/:supervisorID",
+  supervisorController.getSupervisingGroups
+);
 
 module.exports = router;

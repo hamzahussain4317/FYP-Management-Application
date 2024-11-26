@@ -4,11 +4,11 @@ const studentController = require("../controllers/studentController.js");
 
 router.get("/getProfile/:stdID", studentController.getProfile);
 
-router.post("/createGroup",studentController.assignGroup);
+router.post("/createGroup", studentController.assignGroup);
 
-router.get("/GroupDetails/:stdID",studentController.getGroupDetails);
+router.get("/GroupDetails/:stdID", studentController.getGroupDetails);
 
-// router.get("/getSupervisors", studentController.getSupervisorList);
+router.get("/getSupervisors", studentController.getSupervisorList);
 
 // router.get('/getProposal',studentController.getProposal);
 
