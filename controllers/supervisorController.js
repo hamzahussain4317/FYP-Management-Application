@@ -1,29 +1,87 @@
-const db = require("../dbPool/createPool")
+const db = require("../dbPool/createPool");
 
 //controller for supervisorProfile
-const getProfile = async(req,res)=>{
-    const {supervisorID} = req.params;
+const getProfile = async (req, res) => {
+  const { supervisorID } = req.params;
 
-    const getSupervisorDetails =   `SELECT * FROM supervisor s JOIN teacher t ON t.teacherID = s.supervisorID where supervisorID = ?`;
-    db.query(getSupervisorDetails, [supervisorID], async (err, result) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ message: "Error! DataBase query execution failed" });
-        }
-        if (result.length === 0) {
-          return res.status(404).json({ message: "Supervisor is not registered yet!" });
-        }
-        return res.status(200).json({ supervisor: result[0] });
-      });
-}
+  const getSupervisorDetails = `SELECT * FROM supervisor s JOIN teacher t ON t.teacherID = s.supervisorID where supervisorID = ?`;
+  db.query(getSupervisorDetails, [supervisorID], async (err, result) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error! DataBase query execution failed" });
+    }
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Supervisor is not registered yet!" });
+    }
+    return res.status(200).json({ supervisor: result[0] });
+  });
+};
 
+// controller for Supervisor group Details
+const getSupervisingGroups = async (req, res) => {
+  const { supervisorID } = req.params;
 
-// const getSupervisingGroups = async(req,res){
-//     const {supervisorID} = req.params;
-//     const getGroupDetails = `SELECT * FROM groupID`
-// }
+  const getGroupDetails = `
+    SELECT 
+      g.groupID,
+      g.groupName,
+      p.projectName,
+      p.status as projectStatus,
+      p.startDate as projectStartDate,
+      s.studentRoll 
+    FROM 
+      projectGroup g
+    JOIN 
+      fypStudent f ON f.groupID = g.groupID
+    JOIN 
+      Students s ON s.studentID = f.fypStudentID
+    JOIN 
+      project p ON p.projectID = g.projectID
+    WHERE 
+      g.supervisorID = ?`;
+
+  db.query(getGroupDetails, [supervisorID], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database query failed." });
+    }
+
+    const groupMap = {};
+
+    results.forEach((record) => {
+      const {
+        groupID,
+        groupName,
+        projectName,
+        projectStatus,
+        projectStartDate,
+        studentRoll,
+      } = record;
+
+      if (!groupMap[groupID]) {
+        groupMap[groupID] = {
+          groupID,
+          groupName,
+          projectName,
+          projectStatus,
+          projectStartDate,
+          students: [],
+        };
+      }
+
+      groupMap[groupID].students.push(studentRoll);
+    });
+
+    const groupDetails = Object.values(groupMap);
+
+    res.status(200).json({ groupDetails });
+  });
+};
+
 module.exports = {
-    getProfile,
-    getSupervisingGroups,
-}
+  getProfile,
+  getSupervisingGroups,
+};
