@@ -1,6 +1,9 @@
 const db = require("../dbPool/createPool");
+const db = require("../dbPool/createPool");
 
 //controller for supervisorProfile
+const getProfile = async (req, res) => {
+  const { supervisorID } = req.params;
 const getProfile = async (req, res) => {
   const { supervisorID } = req.params;
 
@@ -82,6 +85,10 @@ const getSupervisingGroups = async (req, res) => {
 };
 
 module.exports = {
+  getProfile,
+  getSupervisingGroups,
+};
+
   getProfile,
   getSupervisingGroups,
 };
