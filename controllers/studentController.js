@@ -100,54 +100,6 @@ const getGroupDetails = async (req, res) => {
   });
 };
 
-const getSupervisorList = async (req, res) => {
-  const { studentID } = req.params;
-
-  const createViewQuery = `CREATE OR REPLACE VIEW SupervisorList AS
-        SELECT 
-          s.supervisorID,
-          t.firstName OR ' ' OR t.lastName as supervisorName,
-          t.departmentId as departmentName,
-          s.specializedDomain,
-          pg.groupsCount as groupsCount,
-          s.cgpaCriteria
-        FROM 
-          supervisor s
-        JOIN 
-          teachers t 
-        ON t.teacherID = s.supervisorID
-        JOIN 
-          (SELECT COUNT(groupID) as groupsCount,supervisorID from projectGroup GROUP BY supervisorID) pg
-        ON pg.supervisorID = s.supervisorID
-        JOIN 
-          (SELECT supervisorID,AVG(ratings) as ratings FROM supervisorRatings
-          GROUP BY supervisorID) r
-        ON r.supervisorID = s.supervisorID;`;
-
-  db.query(createViewQuery, (err, results) => {
-    if (err) {
-      res
-        .status(500)
-        .json({ error: err, message: "Error while creating view" });
-    }
-
-    const retrievalQuery = "SELECT * from supervisorList";
-    db.query(retrievalQuery, (err, results) => {
-      if (err) {
-        res.status(500).json({
-          error: err,
-          message: "Error while retreiving data from view",
-        });
-      }
-
-      if (results.length() === 0) {
-        res.status(404).json({ message: "No supervisor Registered Yet!" });
-      }
-
-      res.status(200).json({ supervisorList: results });
-    });
-  });
-};
 const createProposal = async (req, res) => {
   upload.single("projectFile")(req, res, async (err) => {
     if (err) {
@@ -239,7 +191,7 @@ const createProposal = async (req, res) => {
       console.error("Database error: ", error);
       return res
         .status(500)
-        .json({ message: "Database query failed", error: error.message });
+        .json({ message: "Database query failed OR no group exists", error: error.message });
     }
   });
 };
@@ -249,5 +201,4 @@ module.exports = {
   assignGroup,
   getGroupDetails,
   createProposal,
-  getSupervisorList,
 };
