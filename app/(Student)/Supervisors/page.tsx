@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import { useState } from "react";
 const supervisors: Supervisor[] = [
   {
     id: 1,
@@ -86,7 +88,17 @@ const supervisors: Supervisor[] = [
   },
 ];
 export default function Group() {
+  const [checkedSupervisors, setCheckedSupervisors] = useState([0]);
   const maxProjects = 7;
+
+  const handleCheckboxChange = (supervisorID: number) => {
+    setCheckedSupervisors(
+      (prev) =>
+        prev.includes(supervisorID)
+          ? prev.filter((id) => id !== supervisorID) // Remove ID if already checked
+          : [...prev, supervisorID] // Add ID if not checked
+    );
+  };
   return (
     <section className="wrapper">
       <h1 className="supervisor-heading">Supervisors</h1>
@@ -97,6 +109,9 @@ export default function Group() {
             Projects Supervised
           </div>
           <div className="supervisor-column supervisor-rating">Ratings</div>
+          <div className="supervisor-column supervisor-request">
+            Proposal Request
+          </div>
         </li>
         {supervisors.map((supervisor, index) => (
           <li
@@ -112,7 +127,7 @@ export default function Group() {
                 className="supervisor-image"
                 width={45}
                 height={45}
-              ></Image>
+              />
               <span className="supervisor-name">{supervisor.name}</span>
             </div>
             <div className="supervisor-column supervisor-projects">
@@ -128,8 +143,27 @@ export default function Group() {
                 </span>
               ))}
             </div>
+            <div className="supervisor-column request-proposal">
+              <label className="share-label">
+                <input
+                  type="checkbox"
+                  className="share-check"
+                  onChange={() => handleCheckboxChange(supervisor.id)}
+                  checked={checkedSupervisors.includes(supervisor.id)}
+                />
+                <i className="fa-regular fa-share-from-square share-icon"></i>
+              </label>
+            </div>
           </li>
         ))}
+        <div className="button-container">
+          <button
+            className="proposal-button"
+            // onClick={requestForProposal(checkedSupervisors)}//this will enable when we integrate API
+          >
+            Request For Proposal
+          </button>
+        </div>
       </ul>
     </section>
   );
