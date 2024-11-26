@@ -10,6 +10,6 @@ router.get("/GroupDetails/:stdID",studentController.getGroupDetails);
 
 // router.get("/getSupervisors", studentController.getSupervisorList);
 
-// router.get('/getProposal',studentController.getProposal);
+ router.post('/createProposal',studentController.createProposal);
 
 module.exports = router;
