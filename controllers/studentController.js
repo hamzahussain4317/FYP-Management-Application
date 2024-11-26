@@ -148,6 +148,7 @@ const getSupervisorList = async (req, res) => {
     });
   });
 };
+
 const createProposal = async (req, res) => {
   upload.single("projectFile")(req, res, async (err) => {
     if (err) {
@@ -234,7 +235,10 @@ const createProposal = async (req, res) => {
       console.error("Database error: ", error);
       return res
         .status(500)
-        .json({ message: "Database query failed", error: error.message });
+        .json({
+          message: "Database query failed OR no group exists",
+          error: error.message,
+        });
     }
   });
 };
