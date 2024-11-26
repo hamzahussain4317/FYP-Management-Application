@@ -176,12 +176,9 @@ const createProposal = async (req, res) => {
     }
 
     if (!Array.isArray(supervisorEmails) || supervisorEmails.length === 0) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Supervisor emails must be an array with at least one email.",
-        });
+      return res.status(400).json({
+        message: "Supervisor emails must be an array with at least one email.",
+      });
     }
 
     if (!req.file) {
@@ -202,11 +199,9 @@ const createProposal = async (req, res) => {
         .query(emailQuery, [supervisorEmails]);
 
       if (teachers.length === 0) {
-        return res
-          .status(404)
-          .json({
-            message: "No matching supervisors found for the provided emails.",
-          });
+        return res.status(404).json({
+          message: "No matching supervisors found for the provided emails.",
+        });
       }
 
       // Create proposals for each supervisor
@@ -248,6 +243,6 @@ module.exports = {
   getProfile,
   assignGroup,
   getGroupDetails,
-  createProposal,
   getSupervisorList,
+  createProposal,
 };
