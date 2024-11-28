@@ -1,7 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 
 interface navBarProps {
   profileDetails: navItems;
+}
+
+const toggleNotificationSection = () =>{
+  // Get the section by its ID
+  const notificationList = document.getElementById('notificationList') as HTMLElement | null;
+
+  // If the section exists, toggle the 'hidden' class
+  if (notificationList) {
+    notificationList.classList.toggle('hidden');
+  }
 }
 
 export default function NavBar({ profileDetails }: navBarProps) {
@@ -33,9 +44,34 @@ export default function NavBar({ profileDetails }: navBarProps) {
         <li className="notification">
           <button type="button" className="icon-button">
             <span className="material-icons">
-              <i className="fa-solid fa-bell fa-2x"></i>
+              <i className="fa-solid fa-bell fa-2x" onClick={toggleNotificationSection}></i>
             </span>
             <span className="icon-button__badge">{notificationNumber}</span>
+            <div id="notificationList" className="hidden overflow-y-auto max-h-screen scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              <ul className="realtive flex-col justify-center align-center space-y-2 w-full">
+                <li>
+                  <p>First Notififcation</p>                  
+                </li>
+                <li>                  
+                  <p>Second Notification</p>
+                </li>
+                <li>
+                  <p>Third Notfication</p>                  
+                </li>
+                <li>
+                  <p>Third Notfication</p>                  
+                </li>
+                <li>
+                  <p>Third Notfication</p>                  
+                </li>
+                <li>
+                  <p>Third Notfication</p>                  
+                </li>
+                <li>
+                  <p>Third Notfication</p>                  
+                </li>
+              </ul>
+            </div>
           </button>
         </li>
         <li className="profile">
