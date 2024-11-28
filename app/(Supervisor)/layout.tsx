@@ -36,7 +36,7 @@ const itemDetails: sideBarItems[] = [
 ];
 
 const profileDetails: navItems = {
-  dashboardName: "Supervisor DashBorad",
+  dashboardName: "Supervisor DashBoard",
   profileName: "Zain Noreeen",
   profilePhoto: "/Noreen.jpg",
   notificationNumber: 4,

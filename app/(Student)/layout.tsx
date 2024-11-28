@@ -32,7 +32,7 @@ const itemDetails: sideBarItems[] = [
 ];
 
 const profileDetails: navItems = {
-  dashboardName: "Student DashBorad",
+  dashboardName: "Student DashBoard",
   profileName: "Hamza Hussain",
   profilePhoto: "/Hamza.jpg",
   notificationNumber: 2,
