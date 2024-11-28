@@ -92,13 +92,24 @@ export default function Group() {
   const maxProjects = 7;
 
   const handleCheckboxChange = (supervisorID: number) => {
-    setCheckedSupervisors(
-      (prev) =>
-        prev.includes(supervisorID)
-          ? prev.filter((id) => id !== supervisorID) // Remove ID if already checked
-          : [...prev, supervisorID] // Add ID if not checked
+    setCheckedSupervisors((prev) =>
+      prev.includes(supervisorID)
+        ? prev.filter((id) => id !== supervisorID)
+        : [...prev, supervisorID]
     );
   };
+
+  const handleRequestButton = () => {
+    const supervisorEmails = checkedSupervisors
+      .map((supID) => {
+        const checkedSupervisor = supervisors.find((sup) => sup.id === supID);
+        return checkedSupervisor ? { id: checkedSupervisor.id } : null;
+      })
+      .filter((supEmail) => supEmail !== null);
+
+    //implementing query passed using Router If got time then we should implement contextAPI for this as data can be too long
+  };
+
   return (
     <section className="wrapper">
       <h1 className="supervisor-heading">Supervisors</h1>
@@ -159,10 +170,8 @@ export default function Group() {
         <div className="button-container">
           <button
             className="proposal-button"
-            // onClick={requestForProposal(checkedSupervisors)}//this will enable when we integrate API
-          >
-            Request For Proposal
-          </button>
+            onClick={handleRequestButton} //this will enable when we integrate API
+          ></button>
         </div>
       </ul>
     </section>

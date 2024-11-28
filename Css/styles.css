@@ -275,8 +275,7 @@ ul {
   color: #f0a500;
 }
 
-
-#notificationList{
+#notificationList {
   background-color: #f4f4f4;
   position: absolute;
   top: 65px;
@@ -287,10 +286,10 @@ ul {
   z-index: 999;
   overflow: auto;
   width: 33vw;
-  opacity: 01.0;
+  opacity: 01;
 }
 
-.notification-item{
+.notification-item {
   width: 100%;
 }
 
