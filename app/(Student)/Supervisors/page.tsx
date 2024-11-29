@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 const supervisors: Supervisor[] = [
   {
     id: 1,
@@ -8,6 +8,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 3,
     rating: 4,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 2,
@@ -15,6 +17,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "mark.lee@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 3,
@@ -22,6 +26,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "Salah.junejo@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 4,
@@ -29,6 +35,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "irfan.pathan@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 5,
@@ -36,6 +44,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "ghulam.hamza@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 6,
@@ -43,6 +53,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 7,
@@ -50,6 +62,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 8,
@@ -57,6 +71,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 9,
@@ -64,6 +80,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 10,
@@ -71,6 +89,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 11,
@@ -78,6 +98,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
   {
     id: 12,
@@ -85,6 +107,8 @@ const supervisors: Supervisor[] = [
     image: "/Hamza.jpg",
     projectsSupervised: 5,
     rating: 3,
+    email: "alice.johnson@nu.edu.pk",
+    cgpaCriteria: 3.4,
   },
 ];
 export default function Group() {
@@ -110,6 +134,20 @@ export default function Group() {
     //implementing query passed using Router If got time then we should implement contextAPI for this as data can be too long
   };
 
+  const handleHover = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    id: string
+  ) => {
+    const element = document.getElementById(id); // Get the DOM element by id
+    if (element && event.type === "mouseenter") {
+      element.checkVisibility() ? null : element.classList.toggle("hidden");
+    } else if (element && event.type === "mouseleave") {
+      element.checkVisibility() ? element.classList.toggle("hidden") : null;
+    } else {
+      console.warn(`Element with id "${id}" not found`);
+    }
+  };
+
   return (
     <section className="wrapper">
       <h1 className="supervisor-heading">Supervisors</h1>
@@ -130,16 +168,25 @@ export default function Group() {
             className={`supervisor-item ${
               index % 2 === 0 ? "even-row" : "odd-row"
             }`}
+            onMouseEnter={(event) => handleHover(event, `${index}`)}
+            onMouseLeave={(event) => handleHover(event, `${index}`)}
           >
-            <div className="supervisor-column supervisor-info">
+            <div className="supervisor-column supervisor-info relative">
               <Image
                 src={supervisor.image}
                 alt={supervisor.name}
                 className="supervisor-image"
                 width={45}
                 height={45}
-              />
+              />{" "}
               <span className="supervisor-name">{supervisor.name}</span>
+              <div
+                id={`${index}`}
+                className="supervisor-more-details absolute left-[-10] hidden"
+              >
+                <i className="fa-solid fa-email fa-2px">{`:${supervisor.email}`}</i>
+                <p>Above CGPA: {supervisor.cgpaCriteria}</p>
+              </div>
             </div>
             <div className="supervisor-column supervisor-projects">
               {supervisor.projectsSupervised}/{maxProjects} Projects

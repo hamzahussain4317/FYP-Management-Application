@@ -14,4 +14,6 @@ type Supervisor = {
   image: string;
   projectsSupervised: number;
   rating: number;
+  email: string;
+  cgpaCriteria: number;
 };
