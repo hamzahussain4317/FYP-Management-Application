@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
 const supervisors: Supervisor[] = [
   {
     id: 1,
@@ -135,7 +135,7 @@ export default function Group() {
   };
 
   const handleHover = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     id: string
   ) => {
     const element = document.getElementById(id); // Get the DOM element by id
@@ -182,7 +182,7 @@ export default function Group() {
               <span className="supervisor-name">{supervisor.name}</span>
               <div
                 id={`${index}`}
-                className="supervisor-more-details absolute left-[-10] hidden"
+                className="supervisor-more-details absolute left-[-10] top-10 hidden"
               >
                 <i className="fa-solid fa-email fa-2px">{`:${supervisor.email}`}</i>
                 <p>Above CGPA: {supervisor.cgpaCriteria}</p>
