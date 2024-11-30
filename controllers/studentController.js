@@ -288,15 +288,12 @@ const createProposal = async (req, res) => {
   });
 };
 
-
-
-
 const formatMySQLDateTime = (dateString) => {
-  const date = new Date(dateString); 
+  const date = new Date(dateString);
   if (isNaN(date)) {
     throw new Error("Invalid date format");
   }
-  return date.toISOString().slice(0, 19).replace('T', ' ');
+  return date.toISOString().slice(0, 19).replace("T", " ");
 };
 
 const assignTask = async (req, res) => {
@@ -312,16 +309,16 @@ const assignTask = async (req, res) => {
 
     const currentDate = new Date();
     if (new Date(formattedDeadline) <= currentDate) {
-      return res.status(400).json({ message: "taskDeadline must be in the future" });
+      return res
+        .status(400)
+        .json({ message: "taskDeadline must be in the future" });
     }
-
 
     const [groupOneResult] = await db
       .promise()
       .query("SELECT groupID FROM fypStudent WHERE fypStudentID = ?", [stdID]);
     const groupIdOne = groupOneResult[0]?.groupID;
 
-  
     const [groupTwoResult] = await db
       .promise()
       .query(
@@ -332,7 +329,9 @@ const assignTask = async (req, res) => {
 
     // Check if students are in the same group
     if (groupIdOne !== groupIdTwo) {
-      return res.status(400).json({ message: "Students do not belong to the same group" });
+      return res
+        .status(400)
+        .json({ message: "Students do not belong to the same group" });
     }
 
     // Fetch student ID from email
@@ -344,7 +343,10 @@ const assignTask = async (req, res) => {
     // Fetch project ID from the group
     const [projectResult] = await db
       .promise()
-      .query("SELECT p.projectID FROM fypStudent f JOIN projectGroup p ON f.groupID = p.groupID WHERE f.fypStudentID = ?", [stdID]);
+      .query(
+        "SELECT p.projectID FROM fypStudent f JOIN projectGroup p ON f.groupID = p.groupID WHERE f.fypStudentID = ?",
+        [stdID]
+      );
     const projectID = projectResult[0]?.projectID;
 
     // Insert task into the tasks table
@@ -352,31 +354,100 @@ const assignTask = async (req, res) => {
       INSERT INTO tasks (projectID, fypStudentID, taskName, taskDescription, taskDeadline)
       VALUES (?, ?, ?, ?, ?)
     `;
-    await db.promise().query(insertTaskQuery, [
-      projectID,
-      memberID,
-      taskName,
-      taskDescription,
-      formattedDeadline,
-    ]);
+    await db
+      .promise()
+      .query(insertTaskQuery, [
+        projectID,
+        memberID,
+        taskName,
+        taskDescription,
+        formattedDeadline,
+      ]);
 
     return res.status(201).json({ message: "Task assigned successfully" });
-
   } catch (error) {
     console.error("Database error:", error);
-    return res.status(500).json({ message: "Database query failed", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Database query failed", error: error.message });
+  }
+};
+
+const viewTask = async (req, res) => {
+  const { stdID } = req.params;
+
+  try {
+    const taskQuery = `
+      SELECT * FROM tasks
+      WHERE fypStudentID = ?
+    `;
+
+    const [tasks] = await db.promise().query(taskQuery, [stdID]);
+
+    if (tasks.length === 0) {
+      return res.status(200).json({
+        status: "success",
+        message: "No tasks assigned to the student",
+        tasks: [],
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Tasks retrieved successfully",
+      tasks,
+    });
+  } catch (error) {
+    console.error("Database error: ", error);
+    return res.status(500).json({
+      status: "error",
+      message: "Failed to retrieve tasks",
+      error: error.message,
+    });
   }
 };
 
 
-
-const viewTask = async (req, res) => {
-  console.log("View Task");
-};
-
 const updateTask = async (req, res) => {
-  console.log("update Task");
+  const {stdID}=req.params;
+  const {taskName}=req.body;
+  if (!taskName) {
+    return res.status(400).json({
+      status: "error",
+      message: "Student ID and task name are required.",
+    });
+  }
+
+
+  try{
+    const updateTask=`update tasks set taskStatus = 1 where fypStudentID=? and taskName=?`
+    const [update]=await db.promise().query(updateTask,[stdID,taskName]);
+
+    if (update.affectedRows === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No tasks found for the provided student ID",
+      });
+    }
+    
+    return res.status(200).json({
+      status: "success",
+      message: "Tasks updated successfully",
+      update,
+    });
+  }
+  catch(err){
+    console.error("Database error: ",err);
+    return res.status(500).json(
+      {
+        status:"error",
+        message:"failed to update tasks",
+        error:err.message,
+      }
+    )
+  }
 };
+
 
 module.exports = {
   getProfile,
