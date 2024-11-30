@@ -57,6 +57,11 @@ const getProfile = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
+    if(result[0][0].profilePic){
+      result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
+        result[0][0].profilePic
+      ).toString("base64")}`;
+    }
     return res.status(200).json({ student: result });
   });
 };
@@ -140,13 +145,12 @@ const getGroupDetails = async (req, res) => {
 };
 
 const getSupervisorList = async (req, res) => {
-  const { studentID } = req.params;
 
   const createViewQuery = `CREATE OR REPLACE VIEW SupervisorList AS
         SELECT 
           s.supervisorID,
           t.firstName OR ' ' OR t.lastName as supervisorName,
-          t.departmentId as departmentName,
+          t.departmentName as departmentName,
           s.specializedDomain,
           pg.groupsCount as groupsCount,
           s.cgpaCriteria
@@ -155,10 +159,10 @@ const getSupervisorList = async (req, res) => {
         JOIN 
           teachers t 
         ON t.teacherID = s.supervisorID
-        JOIN 
+        LEFT JOIN 
           (SELECT COUNT(groupID) as groupsCount,supervisorID from projectGroup GROUP BY supervisorID) pg
         ON pg.supervisorID = s.supervisorID
-        JOIN 
+        LEFT JOIN 
           (SELECT supervisorID,AVG(ratings) as ratings FROM supervisorRatings
           GROUP BY supervisorID) r
         ON r.supervisorID = s.supervisorID;`;
@@ -169,7 +173,7 @@ const getSupervisorList = async (req, res) => {
         .status(500)
         .json({ error: err, message: "Error while creating view" });
     }
-
+    console.log(results);
     const retrievalQuery = "SELECT * from supervisorList";
     db.query(retrievalQuery, (err, results) => {
       if (err) {
@@ -179,7 +183,7 @@ const getSupervisorList = async (req, res) => {
         });
       }
 
-      if (results.length() === 0) {
+      if (results.length === 0) {
         res.status(404).json({ message: "No supervisor Registered Yet!" });
       }
 
