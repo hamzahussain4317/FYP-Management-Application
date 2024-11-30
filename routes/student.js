@@ -12,6 +12,12 @@ router.get("/GroupDetails/:stdID", studentController.getGroupDetails);
 
 router.get("/getSupervisors", studentController.getSupervisorList);
 
- router.post('/createProposal',studentController.createProposal);
+router.post('/createProposal',studentController.createProposal);
+
+router.post('/assignTask/:stdID',studentController.assignTask);
+
+router.get('/viewTsak',studentController.viewTask);
+
+router.post('/updateTask',studentController.updateTask);
 
 module.exports = router;

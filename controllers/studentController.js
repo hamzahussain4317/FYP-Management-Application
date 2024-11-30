@@ -25,12 +25,10 @@ const addStudent = async (req, res) => {
         [studentRoll, studentName, departmentName, email, dob, imagePath],
         async (err, result) => {
           if (err) {
-            return res
-              .status(500)
-              .json({
-                message: "database query execution failed",
-                error: err.message,
-              });
+            return res.status(500).json({
+              message: "database query execution failed",
+              error: err.message,
+            });
           }
           return res
             .status(200)
@@ -239,7 +237,7 @@ const createProposal = async (req, res) => {
       const [teachers] = await db
         .promise()
         .query(emailQuery, [supervisorEmails]);
-        console.log("teachers:",teachers);
+      console.log("teachers:", teachers);
 
       if (teachers.length === 0) {
         return res.status(404).json({
@@ -290,6 +288,96 @@ const createProposal = async (req, res) => {
   });
 };
 
+
+
+
+const formatMySQLDateTime = (dateString) => {
+  const date = new Date(dateString); 
+  if (isNaN(date)) {
+    throw new Error("Invalid date format");
+  }
+  return date.toISOString().slice(0, 19).replace('T', ' ');
+};
+
+const assignTask = async (req, res) => {
+  const { stdID } = req.params;
+  const { stdMail, taskName, taskDescription, taskDeadline } = req.body;
+
+  if (!stdMail || !taskName || !taskDescription || !taskDeadline) {
+    return res.status(400).json({ message: "Incomplete Data" });
+  }
+
+  try {
+    const formattedDeadline = formatMySQLDateTime(taskDeadline);
+
+    const currentDate = new Date();
+    if (new Date(formattedDeadline) <= currentDate) {
+      return res.status(400).json({ message: "taskDeadline must be in the future" });
+    }
+
+
+    const [groupOneResult] = await db
+      .promise()
+      .query("SELECT groupID FROM fypStudent WHERE fypStudentID = ?", [stdID]);
+    const groupIdOne = groupOneResult[0]?.groupID;
+
+  
+    const [groupTwoResult] = await db
+      .promise()
+      .query(
+        "SELECT f.groupID FROM students s JOIN fypStudent f ON s.studentID = f.fypStudentID WHERE s.email = ?",
+        [stdMail]
+      );
+    const groupIdTwo = groupTwoResult[0]?.groupID;
+
+    // Check if students are in the same group
+    if (groupIdOne !== groupIdTwo) {
+      return res.status(400).json({ message: "Students do not belong to the same group" });
+    }
+
+    // Fetch student ID from email
+    const [memberResult] = await db
+      .promise()
+      .query("SELECT studentID FROM students WHERE email = ?", [stdMail]);
+    const memberID = memberResult[0]?.studentID;
+
+    // Fetch project ID from the group
+    const [projectResult] = await db
+      .promise()
+      .query("SELECT p.projectID FROM fypStudent f JOIN projectGroup p ON f.groupID = p.groupID WHERE f.fypStudentID = ?", [stdID]);
+    const projectID = projectResult[0]?.projectID;
+
+    // Insert task into the tasks table
+    const insertTaskQuery = `
+      INSERT INTO tasks (projectID, fypStudentID, taskName, taskDescription, taskDeadline)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    await db.promise().query(insertTaskQuery, [
+      projectID,
+      memberID,
+      taskName,
+      taskDescription,
+      formattedDeadline,
+    ]);
+
+    return res.status(201).json({ message: "Task assigned successfully" });
+
+  } catch (error) {
+    console.error("Database error:", error);
+    return res.status(500).json({ message: "Database query failed", error: error.message });
+  }
+};
+
+
+
+const viewTask = async (req, res) => {
+  console.log("View Task");
+};
+
+const updateTask = async (req, res) => {
+  console.log("update Task");
+};
+
 module.exports = {
   getProfile,
   assignGroup,
@@ -297,4 +385,7 @@ module.exports = {
   getSupervisorList,
   createProposal,
   addStudent,
+  assignTask,
+  viewTask,
+  updateTask,
 };
