@@ -14,7 +14,6 @@ const createRegistrationSchema = () => {
   });
 };
 
-
 //signup//
 const signUp = async (req, res) => {
   try {
@@ -29,72 +28,95 @@ const signUp = async (req, res) => {
     if (userRole !== "student" && userRole !== "teacher") {
       return res.status(400).json({ err: "Invalid role specified" });
     } else if (userRole === "student") {
-      userQuery = `Select studentID from students where email = ?`;
+      userQuery = `Select studentID , studentName from students where email = ?`;
     } else {
-      userQuery = `Select teacherID from teachers where email = ?`;
+      userQuery = `Select teacherID ,firstName , lastName from teachers where email = ?`;
     }
     //db query for checking user exists in student or supervisor table
-    db.query(userQuery , [email] , async (err,results)=>{
+    db.query(userQuery, [email], async (err, results) => {
       //handling validation error
-      if(err){
-        console.error("Error Validating user:",err);
-        return res.status(500).json({message:"server error during validation"});
+      if (err) {
+        console.error("Error Validating user:", err);
+        return res
+          .status(500)
+          .json({ message: "server error during validation" });
       }
       //error if no user exist with email provided
-      if(results.length===0){
-        return res.status(404).json({error:`${role} not found in the database`});
+      if (results.length === 0) {
+        return res
+          .status(404)
+          .json({ error: `${role} not found in the database` });
       }
-
+      if (role === "student") {
+        if (results[0].studentName !== username) {
+          return res
+            .status(400)
+            .json({ message: "enter the correct student name" });
+        }
+      } else if (role === "teacher") {
+        if (username !== `${results[0].firstName} ${results[0].lastName}`) {
+          return res
+            .status(400)
+            .json({ message: "enter the correct teacher name" });
+        }
+      }
       let userId;
       let insertQuery;
-      if(userRole === 'student')
-      {
+      if (userRole === "student") {
         userId = results[0].studentID;
-        insertQuery=`INSERT INTO registration (userName , hashedPassword , email , userRole , fypStudentID) VALUES (?, ?, ?, ? ,?)`;
-      }
-      else
-      {
+        insertQuery = `INSERT INTO registration (userName , hashedPassword , email , userRole , fypStudentID) VALUES (?, ?, ?, ? ,?)`;
+      } else {
         userId = results[0].teacherID;
-        insertQuery=`INSERT INTO registration (userName , hashedPassword , email , userRole , supervisorID) VALUES (?, ?, ? ,? ,?)`;
+        insertQuery = `INSERT INTO registration (userName , hashedPassword , email , userRole , supervisorID) VALUES (?, ?, ? ,? ,?)`;
       }
       //encrypting password
       let hashedPassword;
-      try{
-        hashedPassword=await bycrpt.hash(password,10);
-      }
-      catch(err){
+      try {
+        hashedPassword = await bycrpt.hash(password, 10);
+      } catch (err) {
         //error handling for encrypting the password
-        console.error("Error hashing Password: ",err);
-        return res.status(500).json({message:"error hashing password"});
+        console.error("Error hashing Password: ", err);
+        return res.status(500).json({ message: "error hashing password" });
       }
       //query for inserting user data into the registrtation table
-      
-      db.query(insertQuery,[username ,hashedPassword , email   , role , userId ] ,  (err,result)=>{
-        if(err){
-          //error while registrting user or inserting user into registration
-          console.error("error inserting into registration table: ",err);
-          return res.status(500).json({message:"Failed to register user",error:err});
-        }
-        //user successfully added into registrtaion table
-        res.status(201).json({
-          message:"User registered successfully",
-          userId:result.insertId,
-        });
-      });
-    });
 
+      db.query(
+        insertQuery,
+        [username, hashedPassword, email, role, userId],
+        (err, result) => {
+          if (err) {
+            //error while registrting user or inserting user into registration
+            console.error("error inserting into registration table: ", err);
+            return res
+              .status(500)
+              .json({ message: "Failed to register user", error: err });
+          }
+          //user successfully added into registrtaion table
+          res.status(201).json({
+            message: "User registered successfully",
+            userId: result.insertId,
+          });
+        }
+      );
+    });
   } catch (err) {
-    //error while running this function 
-    console.errror("unexpected error during sign-up: ",err);
-    res.status(500).json({message:"Unexpected server error",error:err});
+    //error while running this function
+    console.errror("unexpected error during sign-up: ", err);
+    res.status(500).json({ message: "Unexpected server error", error: err });
   }
 };
 
 const signIn = async (req, res) => {
   const { email, password, role } = req.body;
+  let query;
+  if (role === "student") {
+    query = ` SELECT registration.*, students.studentID  FROM registration LEFT JOIN students ON registration.email = students.email  WHERE registration.email = ? AND registration.userRole = ?;`;
+  } else if (role === "teacher") {
+    query = ` SELECT registration.*, teachers.teacherID  FROM registration   LEFT JOIN teachers ON registration.email = teachers.email  WHERE registration.email = ? AND registration.userRole = ?`;
+  }
 
   // Query the database
-  const query = "SELECT * FROM registration WHERE email = ? and userRole = ?";
+  // const query = "SELECT * FROM registration WHERE email = ? and userRole = ?";
 
   db.query(query, [email, role], async (err, results) => {
     if (err) {
@@ -105,15 +127,18 @@ const signIn = async (req, res) => {
     }
 
     const user = results[0];
-
+    
     if (!user) {
       return res
         .status(401)
         .json({ message: "User is not registered.Please check credentials" });
     }
-  
+
     let isMatch;
+    
     try {
+      
+      
       isMatch = await bycrpt.compare(password, user.hashedPassword);
     } catch (err) {
       console.log(err);
@@ -128,8 +153,14 @@ const signIn = async (req, res) => {
     const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
       expiresIn: "1h",
     });
+    let userID;
+    if (role === "student") {
+      userID = user.studentID;
+    } else if (role === "teacher") {
+      userID = user.teacherID;
+    }
 
-    res.status(200).json({ message: "Logged in successfully", token });
+    res.status(200).json({ message: "Logged in successfully", token, userID });
   });
 };
 

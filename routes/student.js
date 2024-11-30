@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const studentController = require("../controllers/studentController.js");
 
+router.post("/addStudent",studentController.addStudent);
+
 router.get("/getProfile/:stdID", studentController.getProfile);
 
 router.post("/createGroup", studentController.assignGroup);

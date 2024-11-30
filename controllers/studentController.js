@@ -1,6 +1,48 @@
 const db = require("../dbPool/createPool");
 const upload = require("../middlewares/multer");
 
+const addStudent = async (req, res) => {
+  upload.single("profilePic")(req, res, async (err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: "File upload failed", error: err.message });
+    }
+
+    const { studentRoll, studentName, departmentName, email, dob } = req.body;
+    if (!studentRoll || !studentName || !email || !dob || !departmentName) {
+      return res.status(400).json({ message: "Incomplete data" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required." });
+    }
+
+    const imagePath = req.file.path;
+    try {
+      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,profilePic) values (?,?,?,?,?,?)`;
+      db.query(
+        query,
+        [studentRoll, studentName, departmentName, email, dob, imagePath],
+        async (err, result) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({
+                message: "database query execution failed",
+                error: err.message,
+              });
+          }
+          return res
+            .status(200)
+            .json({ message: "student Successfully added" });
+        }
+      );
+    } catch (err) {
+      return res.status(500).json({ message: "error assigning student" });
+    }
+  });
+};
+
 //get student info// //for home//
 const getProfile = async (req, res) => {
   const { stdID } = req.params;
@@ -22,7 +64,7 @@ const getProfile = async (req, res) => {
 };
 
 const assignGroup = async (req, res) => {
-  const { emails } = req.body;
+  const { emails, groupName } = req.body;
 
   if (!emails || emails.length !== 3) {
     return res
@@ -48,8 +90,8 @@ const assignGroup = async (req, res) => {
       try {
         // Call the stored procedure
         const procedureCall = `SET @groupCreated = NULL;
-        CALL CheckAndCreateGroup(?, ?, ?, @groupCreated);`;
-        await connection.promise().query(procedureCall, [...emails]);
+        CALL CheckAndCreateGroup(?, ?, ? , ? , @groupCreated);`;
+        await connection.promise().query(procedureCall, [...emails, groupName]);
 
         // Retrieve the output parameter
         const [result] = await connection
@@ -57,7 +99,6 @@ const assignGroup = async (req, res) => {
           .query("SELECT @groupCreated AS groupCreated");
 
         const groupCreated = result[0]?.groupCreated;
-        console.log(groupCreated);
 
         if (groupCreated) {
           await connection.promise().commit();
@@ -161,7 +202,7 @@ const createProposal = async (req, res) => {
       projectName,
       projectDomain,
       projectDescription,
-      groupID,
+      groupName,
       supervisorEmails,
     } = req.body;
 
@@ -170,7 +211,7 @@ const createProposal = async (req, res) => {
       !projectName ||
       !projectDomain ||
       !projectDescription ||
-      !groupID ||
+      !groupName ||
       !supervisorEmails
     ) {
       return res.status(400).json({ message: "All fields are required." });
@@ -198,13 +239,21 @@ const createProposal = async (req, res) => {
       const [teachers] = await db
         .promise()
         .query(emailQuery, [supervisorEmails]);
+        console.log("teachers:",teachers);
 
       if (teachers.length === 0) {
         return res.status(404).json({
           message: "No matching supervisors found for the provided emails.",
         });
       }
+      const groupQuery = `SELECT groupID FROM projectGroup WHERE groupName = ?`;
+      const [groupResult] = await db.promise().query(groupQuery, [groupName]);
 
+      if (groupResult.length === 0) {
+        return res.status(404).json({ message: "Group not found." });
+      }
+
+      const groupID = groupResult[0].groupID;
       // Create proposals for each supervisor
       const proposalQuery = `
         INSERT INTO proposal 
@@ -233,12 +282,10 @@ const createProposal = async (req, res) => {
       });
     } catch (error) {
       console.error("Database error: ", error);
-      return res
-        .status(500)
-        .json({
-          message: "Database query failed OR no group exists",
-          error: error.message,
-        });
+      return res.status(500).json({
+        message: "Database query failed OR no group exists",
+        error: error.message,
+      });
     }
   });
 };
@@ -249,4 +296,5 @@ module.exports = {
   getGroupDetails,
   getSupervisorList,
   createProposal,
+  addStudent,
 };

@@ -1,5 +1,40 @@
 const db = require("../dbPool/createPool");
-const db = require("../dbPool/createPool");
+const upload = require("../middlewares/multer");
+
+
+const addSupervisor=async(req,res)=>{
+  upload.single("profilePic")(req, res, async (err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: "File upload failed", error: err.message });
+    }
+
+  const {firstName , lastName , departmentName , email , dob }=req.body
+  if(!firstName || !lastName || !email || !dob || !departmentName){
+    return res.status(400).json({message:"Incomplete data"});
+  }
+  if(!req.file){
+    return res.status(400).json({ message: "Image is required." });
+  }
+
+  const imagePath=req.file.path;
+  try{
+    query=`insert into teachers (firstName, lastName , departmentName, email , dateOfBirth , profilePic) values (?,?,?,?,?,?)`;
+    db.query(query,[firstName , lastName , departmentName , email , dob , imagePath] ,async(err,result)=>{
+      if(err){
+        return res
+        .status(500)
+        .json({ message: "database query execution failed" , error:err.message});
+        }
+        return res.status(200).json({message:"teacher Successfully added"});
+    })
+  }
+  catch(err){
+    return res.status(500).json({message:"error assigning student"});
+  }
+})
+}
 
 //controller for supervisorProfile
 const getProfile = async (req, res) => {
@@ -85,4 +120,5 @@ const getSupervisingGroups = async (req, res) => {
 module.exports = {
   getProfile,
   getSupervisingGroups,
+  addSupervisor,
 };
