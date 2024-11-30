@@ -1,16 +1,16 @@
-import { insertMessage } from "../models/messageModel";
+// const insertMessage = require("../models/messageModel");
 
-export const handleSocketEvents = (io: any, socket: any): void => {
+export const handleSocketEvents = (io, socket) => {
   console.log("A user connected:", socket.id);
 
   // Join a conversation room
-  socket.on("joinConversation", (conversationID: number) => {
+  socket.on("joinConversation", (conversationID) => {
     socket.join(conversationID);
     console.log(`User joined conversation: ${conversationID}`);
   });
 
   // Handle sending a message
-  socket.on("sendMessage", async (message: any) => {
+  socket.on("sendMessage", async (message) => {
     console.log("New message received:", message);
 
     const {
