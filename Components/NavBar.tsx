@@ -1,7 +1,9 @@
 import Image from "next/image";
+import NotificationList from "./NotificationList";
 
 interface navBarProps {
   profileDetails: navItems;
+  id: string;
 }
 
 const toggleNotificationSection = () => {
@@ -14,7 +16,7 @@ const toggleNotificationSection = () => {
   }
 };
 
-export default function NavBar({ profileDetails }: navBarProps) {
+export default function NavBar({ profileDetails, id }: navBarProps) {
   const {
     dashboardName,
     profileName,
@@ -53,29 +55,7 @@ export default function NavBar({ profileDetails }: navBarProps) {
               id="notificationList"
               className="hidden overflow-y-auto max-h-screen scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
             >
-              <ul className="realtive flex-col justify-center align-center space-y-3 w-full">
-                <li>
-                  <p>First Notififcation</p>
-                </li>
-                <li>
-                  <p>Second Notification</p>
-                </li>
-                <li>
-                  <p>Third Notfication</p>
-                </li>
-                <li>
-                  <p>Third Notfication</p>
-                </li>
-                <li>
-                  <p>Third Notfication</p>
-                </li>
-                <li>
-                  <p>Third Notfication</p>
-                </li>
-                <li>
-                  <p>Third Notfication</p>
-                </li>
-              </ul>
+              {/* <NotificationList receiverID={id} /> */}
             </div>
           </button>
         </li>

@@ -138,11 +138,24 @@ export default function Group() {
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     id: string
   ) => {
-    const element = document.getElementById(id); // Get the DOM element by id
+    const element = document.getElementById(id);
+    const parent = element?.parentNode;
+
     if (element && event.type === "mouseenter") {
       element.checkVisibility() ? null : element.classList.toggle("hidden");
+      Array.from(parent?.children || []).forEach((child) => {
+        if (child !== element && child instanceof HTMLElement) {
+          child.style.opacity = "0.5"; // Set opacity to 50%
+        }
+      });
     } else if (element && event.type === "mouseleave") {
       element.checkVisibility() ? element.classList.toggle("hidden") : null;
+
+      Array.from(parent?.children || []).forEach((child) => {
+        if (child !== element && child instanceof HTMLElement) {
+          child.style.opacity = "1.0";
+        }
+      });
     } else {
       console.warn(`Element with id "${id}" not found`);
     }
@@ -171,7 +184,7 @@ export default function Group() {
             onMouseEnter={(event) => handleHover(event, `${index}`)}
             onMouseLeave={(event) => handleHover(event, `${index}`)}
           >
-            <div className="supervisor-column supervisor-info relative">
+            <div className="supervisor-column supervisor-info relative ">
               <Image
                 src={supervisor.image}
                 alt={supervisor.name}
@@ -180,12 +193,14 @@ export default function Group() {
                 height={45}
               />{" "}
               <span className="supervisor-name">{supervisor.name}</span>
-              <div
-                id={`${index}`}
-                className="supervisor-more-details absolute left-[-10] top-10 hidden"
-              >
-                <i className="fa-solid fa-email fa-2px">{`:${supervisor.email}`}</i>
-                <p>Above CGPA: {supervisor.cgpaCriteria}</p>
+              <div id={`${index}`} className="supervisor-more-details hidden">
+                <i
+                  className="fa-solid fa-envelope fa-2px"
+                  style={{ color: "black" }}
+                >{` : ${supervisor.email}`}</i>
+                <p>
+                  <b>Above CGPA: {supervisor.cgpaCriteria}</b>
+                </p>
               </div>
             </div>
             <div className="supervisor-column supervisor-projects">

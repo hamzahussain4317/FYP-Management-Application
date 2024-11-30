@@ -27,3 +27,17 @@ type sideBarItems = {
   itemName: string;
   itemIcon: string;
 };
+
+type NotificationList = {
+  notificationID: number;
+  conversationID: number;
+  isRead: boolean;
+  createdAt: string;
+};
+
+type Message = {
+  sender_id: string;
+  sender_name: string;
+  message_text: string;
+  deliveredAt: string;
+};

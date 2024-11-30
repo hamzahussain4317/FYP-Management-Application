@@ -1,3 +1,5 @@
+import MessageHub from "@/Components/MessageHub";
+
 export default function StudentDashboard() {
   return (
     <section className="wrapper flex-col items-center justify-center overflow-y-auto space-y-8">
@@ -83,6 +85,7 @@ export default function StudentDashboard() {
           </h3>
         </div>
       </div>
+      {/* <MessageHub /> */}
       <div className="footer"></div>
     </section>
   );
