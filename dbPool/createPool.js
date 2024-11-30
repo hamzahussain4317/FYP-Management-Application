@@ -8,9 +8,17 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  multipleStatements:true,
+  multipleStatements: true,
 });
 
-//As from here we are returning promise so while using this promise use try-catch block and also await for results
-module.exports = db;
+(async () => {
+  try {
+    const connection = await db.getConnection();
+    console.log("Connected to MySQL database");
+    connection.release();
+  } catch (err) {
+    console.error("Error connecting to MySQL:", err);
+  }
+})();
 
+module.exports = db;
