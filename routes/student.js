@@ -16,8 +16,8 @@ router.post('/createProposal',studentController.createProposal);
 
 router.post('/assignTask/:stdID',studentController.assignTask);
 
-router.get('/viewTsak',studentController.viewTask);
+router.get('/viewTasks/:stdID',studentController.viewTask);
 
-router.post('/updateTask',studentController.updateTask);
+router.post('/updateTask/:stdID',studentController.updateTask);
 
 module.exports = router;
