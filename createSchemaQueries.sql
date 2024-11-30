@@ -1,12 +1,13 @@
 CREATE TABLE Students(
-StudentID INT NOT NULL,
-studentRoll VARCHAR(8),
-studentName VARCHAR(30) NOT NULL,
-departmentID INT NOT NULL,
-email VARCHAR(30) NOT NULL UNIQUE,
-dateOfBirth DATE ,
-CONSTRAINT emailValidation CHECK (email REGEXP '^k[0-9]{6}@nu\\.edu\\.pk$' OR email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$'),
-CONSTRAINT idValidation CHECK(studentRoll REGEXP '^[0-9]{2}[K | L | I | P ]\\-[0-9]{4}$')
+	StudentID INT NOT NULL,
+	studentRoll VARCHAR(8),
+	studentName VARCHAR(30) NOT NULL,
+	departmentID INT NOT NULL,
+	email VARCHAR(30) NOT NULL UNIQUE,
+	dateOfBirth DATE ,
+    profilePic MEDIUMBLOB DEFAULT NULL,
+	CONSTRAINT emailValidation CHECK (email REGEXP '^k[0-9]{6}@nu\\.edu\\.pk$' OR email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$'),
+	CONSTRAINT idValidation CHECK(studentRoll REGEXP '^[0-9]{2}[K | L | I | P ]\\-[0-9]{4}$')
 );
 ALTER TABLE Students ADD CONSTRAINT students_PK PRIMARY KEY(studentID);
 ALTER TABLE Students  MODIFY COLUMN studentID INT AUTO_INCREMENT;
@@ -15,11 +16,11 @@ CREATE TABLE FYPStudent(
 	fypStudentID INT NOT NULL,
     groupID INT DEFAULT NULL,
     midEvaluation DOUBLE DEFAULT 0.0,
-    finalEvaluation DOUBLE DEFAULT 0.0
+    finalEvaluation DOUBLE DEFAULT 0.0,
+    isLeader boolean DEFAULT NULL
 );
 ALTER TABLE FYPStudent ADD CONSTRAINT fypStudent_PK PRIMARY KEY(fypStudentID);
 ALTER TABLE FYPStudent MODIFY COLUMN fypStudentID INT AUTO_INCREMENT;
-
 
 -- Foreign Key Constraints
 ALTER TABLE FYPStudent ADD CONSTRAINT fypstd_student_FK FOREIGN KEY(fypStudentID) REFERENCES Students(studentID);
@@ -41,7 +42,8 @@ CREATE TABLE Supervisor(
 	supervisorID INT NOT NULL,
     cgpaCriteria DOUBLE,
     No_Of_Projects INT DEFAULT 0,
-    specializedDomain VARCHAR(50)
+    specializedDomain VARCHAR(50),
+    profilePic MEDIUMBLOB DEFAULT NULL
 );
 ALTER TABLE Supervisor ADD CONSTRAINT Supervisor_PK PRIMARY KEY(supervisorID);
 ALTER TABLE Supervisor MODIFY COLUMN supervisorID INT AUTO_INCREMENT;
@@ -81,12 +83,24 @@ ALTER TABLE Registration MODIFY COLUMN registrationID INT AUTO_INCREMENT;
 ALTER TABLE Registration ADD CONSTRAINT fyp_registeration_FK FOREIGN KEY(fypStudentID) REFERENCES FYPStudent(fypStudentID);
 ALTER TABLE Registration ADD CONSTRAINT supervisor_registeration_FK FOREIGN KEY(supervisorID) REFERENCES Supervisor(supervisorID);
 
-select * from Registration;
+
+CREATE TABLE proposal (
+  groupID INT not null,
+  supervisorID INT not null,
+  projectName VARCHAR (255) not null,
+  projectDomain VARCHAR(30),
+  projectDescription TEXT not null,
+  projectFile longblob
+);
+
+ALTER TABLE proposal ADD CONSTRAINT proposal_pk PRIMARY KEY(groupID,supervisorID);
+ALTER TABLE proposal ADD CONSTRAINT proposal_group_fk FOREIGN KEY(groupID) REFERENCES projectGroup(groupID);
+ALTER TABLE proposal ADD CONSTRAINT proposal_supervisor_fk FOREIGN KEY(supervisorID) REFERENCES supervisor(supervisorID);
 
 CREATE TABLE Project(
 	projectID INT NOT NULL,
 	description TEXT,
-	projectName VARCHAR(20) DEFAULT NULL,
+	projectName VARCHAR(255) DEFAULT NULL,
 	startDate Date,
 	endDate Date,
 	status ENUM('Not Started','In Progress','Completed') DEFAULT "Not Started",
@@ -102,6 +116,7 @@ CREATE TABLE ProjectGroup(
     leaderID INT NOT NULL,
     projectID INT DEFAULT NULL,
     supervisorID INT DEFAULT NULL,
+    groupName VARCHAR(255) DEFAULT "No Name",
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -109,54 +124,62 @@ ALTER TABLE ProjectGroup ADD CONSTRAINT group_PK PRIMARY KEY(groupID);
 ALTER TABLE ProjectGroup MODIFY COLUMN groupID INT auto_increment;
 ALTER TABLE ProjectGroup ADD CONSTRAINT unique_leaderID UNIQUE(leaderID);
 
+
 -- Foreign key constraints
 ALTER TABLE ProjectGroup ADD CONSTRAINT group_leader_FK FOREIGN KEY (leaderID) REFERENCES FYPStudent(fypSTudentID);
 ALTER TABLE ProjectGroup ADD CONSTRAINT group_supervisor_FK FOREIGN KEY (supervisorID) REFERENCES Supervisor(supervisorID);
 ALTER TABLE ProjectGroup ADD CONSTRAINT group_project_FK FOREIGN KEY (projectID) REFERENCES Project(projectID);
 
-CREATE TABLE MessageContent(
-	contentID INT NOT NULL,
-	title VARCHAR(30) DEFAULT "No Title",
-    description TEXT,
-    type VARCHAR(10)
-);
-ALTER TABLE MessageContent ADD CONSTRAINT Message_Content_PK PRIMARY KEY(contentID);
-ALTER TABLE MessageContent MODIFY COLUMN contentID INT auto_increment;
 
-CREATE TABLE Message(
-	messageID INT NOT NULL,
-    studentID INT NULL,
-    supervisorID INT NULL,-- receipentID can be null if message is sent to group
-    senderType ENUM('fypstudent','supervisor'),
-    receiverType ENUM('fypstudent','supervisor'),
-    groupID INT NULL,-- can be null if message is sent indivdually
-    messageContentID INT,
-    sentTime timestamp default current_timestamp
-);
-ALTER TABLE Message ADD CONSTRAINT Message_PK PRIMARY KEY(messageID);
-ALTER TABLE Message MODIFY COLUMN messageID INT auto_increment;
 
--- FOREIGN KEY CONSTRAINTS
-ALTER TABLE Message ADD CONSTRAINT message_bodyContent_FK FOREIGN KEY(messageContentID) REFERENCES MessageContent(contentID);
-ALTER TABLE Message ADD CONSTRAINT message_to_group_FK FOREIGN KEY(groupID) REFERENCES ProjectGroup(groupID);
-ALTER TABLE Message ADD CONSTRAINT message_fypstudent_FK FOREIGN KEY(studentID) REFERENCES fypStudent(fypStudentID);
-ALTER TABLE Message ADD CONSTRAINT message_supervisor_FK FOREIGN KEY(supervisorID) REFERENCES Supervisor(supervisorID);
+-- NOTIFICATION CENTER SCHEMA  
+CREATE TABLE Message (
+    messageID INT ,     
+    senderID INT NOT NULL,             
+    senderRole ENUM('student', 'supervisor','admin') NOT NULL,
+    groupID INT DEFAULT NULL,        
+    contentID INT NOT NULL,   
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE Message ADD CONSTRAINT message_PK PRIMARY KEY(messageID);
+ALTER TABLE Message MODIFY COLUMN messageID INT AUTO_INCREMENT;
+
+ALTER TABLE Message ADD CONSTRAINT message_group_FK FOREIGN KEY (groupID) REFERENCES ProjectGroup(groupID);
+ALTER TABLE Message ADD CONSTRAINT message_to_content_FK FOREIGN KEY (contentID) REFERENCES MessageContent(contentID);
+
+CREATE TABLE MessageContent (
+    contentID INT,
+    messageType ENUM('text', 'file', 'image') NOT NULL, 
+    textContent TEXT DEFAULT NULL,                    
+    filePath VARCHAR(255) DEFAULT NULL,           
+    imagePath VARCHAR(255) DEFAULT NULL            
+);
+
+ALTER TABLE messagecontent ADD CONSTRAINT message_content_PK PRIMARY KEY(contentID);
+ALTER TABLE messagecontent MODIFY COLUMN contentID INT auto_increment;
+
+
+CREATE TABLE Conversation (
+    conversationID INT ,
+    receiverID INT NOT NULL,       
+    receiverRole ENUM('student', 'supervisor','admin') NOT NULL
+);
+ALTER TABLE Conversation ADD CONSTRAINT conversation_PK PRIMARY KEY(conversationID,receiverID);
+ALTER TABLE Conversation ADD CONSTRAINT conversation_message_FK FOREIGN KEY(conversationID) REFERENCES Message(messageID);
 
 
 CREATE TABLE Notification (
     notificationID INT,
-    messageID INT NOT NULL,                
-    receiverID INT,               
-    receiverType ENUM('fypstudent', 'supervisor'), 
-    is_groupNotification BOOLEAN,  
-    isRead BOOLEAN DEFAULT FALSE
+    conversationID INT NOT NULL,
+    isRead BOOLEAN DEFAULT FALSE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE Notification ADD CONSTRAINT PRIMARY KEY(notificationID);
+ALTER TABLE Notification MODIFY COLUMN notificationID INT AUTO_INCREMENT;
+ALTER TABLE Notification ADD CONSTRAINT notification_converstaion_FK FOREIGN KEY(conversationID) REFERENCES Conversation(conversationID);
 
-ALTER TABLE Notification ADD CONSTRAINT Notification_PK PRIMARY KEY(notificationID);
-
--- FOREIGN KEY CONSTRAINTS
-ALTER TABLE Notification ADD CONSTRAINT notification_message_FK FOREIGN KEY(messageID) REFERENCES Message(messageID);
-
+-- NOTIFICATION CENTER SCHEMA ENDED 
 
 
 CREATE table tasks(
@@ -164,7 +187,7 @@ CREATE table tasks(
  projectID INT not null,
  fypStudentID INT not null,
  taskName varchar(30) default "no title",
- taskDescription varchar(100) default "no description",
+ taskDescription TEXT default "no description",
  taskDeadline TIMESTAMP default null ,
  taskStatus boolean default null,
  assignedDate TIMESTAMP default current_timestamp
