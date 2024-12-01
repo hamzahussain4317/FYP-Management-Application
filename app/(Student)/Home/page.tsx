@@ -1,5 +1,27 @@
 import MessageHub from "@/Components/MessageHub";
 
+const student = {
+  studentRoll: "22k-4318",
+  batch: "Fall 2022",
+  departmentName: "CS",
+  section: "BCS-5K",
+  campus: "Karachi",
+  email: "k224318@nu.edu.pk",
+};
+
+const projectDetails = {
+  projectName: "MY Portal",
+  projectDescription: "This is my Project regarding portal",
+  startDate: "2024-12-11",
+  status: "Pending",
+};
+
+const group = {
+  groupID: "12",
+  groupName: "My Team",
+  supervisorName: "Shaka Hussain",
+  supervisorEmail: "shaka.hussain@nu.edu.pk",
+};
 export default function StudentDashboard() {
   return (
     <section className="wrapper flex-col items-center justify-center overflow-y-auto space-y-8">
@@ -7,85 +29,82 @@ export default function StudentDashboard() {
       <div className="uni-info info">
         <div className="info-head">
           <i className="fa-solid fa-building-columns fa-2x"></i>
-          <h3>University Information</h3>
+          <h3>Student Information</h3>
         </div>
         <div className="info-body">
           <h3>
-            <span>Roll No:</span>22k-4317
+            <span>Roll No:</span>
+            {student.studentRoll}
           </h3>
           <h3>
-            <span>Degree:</span>BS(CS)
+            <span>Batch:</span>
+            {student.batch}
           </h3>
           <h3>
-            <span>Batch:</span>Fall 2022
+            <span>Department:</span>
+            {student.departmentName}
           </h3>
           <h3>
-            <span>Section:</span>BCS-5K
+            <span>Section:</span>
+            {student.section}
           </h3>
           <h3>
-            <span>Campus:</span>Karachi
+            <span>Campus:</span>
+            {student.campus}
           </h3>
           <h3>
-            <span>Status:</span>Current
+            <span>Email:</span>
+            {student.email}
           </h3>
         </div>
       </div>
       <div className="personal-info info">
         <div className="info-head">
           <i className="fa-solid fa-person"></i>
-          <h3>Personal Information</h3>
+          <h3>Project Details</h3>
         </div>
         <div className="info-body">
           <h3>
-            <span>Name:</span>Muhammad Hamza Hussain
+            <span>Project Name:</span>
+            {projectDetails.projectName}
           </h3>
           <h3>
-            <span>DOB:</span>30/12/05
+            <span>Start Date:</span>
+            {projectDetails.startDate}
           </h3>
           <h3>
-            <span>Blood Group:</span>O
+            <span>Status:</span>
+            {projectDetails.status}
           </h3>
           <h3>
-            <span>Gender:</span>male
-          </h3>
-          <h3>
-            <span>CNIC:</span>42101-7158256-7
-          </h3>
-          <h3>
-            <span>Nationality:</span>Pakistan
-          </h3>
-          <h3>
-            <span>Email:</span>hamzy6311@gmail.com
-          </h3>
-          <h3>
-            <span>Mobile No:</span>0336-2511729
+            <span>Project Description:</span>
+            {projectDetails.projectDescription}
           </h3>
         </div>
       </div>
       <div className="contact-info info">
         <div className="info-head">
           <i className="fa-solid fa-phone"></i>
-          <h3>Contact information</h3>
+          <h3>Group and Supervisor information</h3>
         </div>
         <div className="info-body">
           <h3>
-            <span>Address:</span>House#686 Bloack 10 liaquatabad karachi
+            <span>Group ID:</span> {group.groupID}
           </h3>
           <h3>
-            <span>Home-Phone:</span>021-12222
+            <span>Group Name:</span>
+            {group.groupName}
           </h3>
           <h3>
-            <span>Postal:</span>123
+            <span>Supervisor Name:</span>
+            {group.supervisorName}
           </h3>
           <h3>
-            <span>City:</span>Karachi
-          </h3>
-          <h3>
-            <span>Country:</span>Pakistan
+            <span>Supervisor Email:</span>
+            {group.supervisorEmail}
           </h3>
         </div>
       </div>
-      {/* <MessageHub /> */}
       <div className="footer"></div>
     </section>
   );

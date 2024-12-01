@@ -55,7 +55,7 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
               id="notificationList"
               className="hidden overflow-y-auto max-h-screen scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
             >
-              {/* <NotificationList receiverID={id} /> */}
+              <NotificationList receiverID={id} />
             </div>
           </button>
         </li>

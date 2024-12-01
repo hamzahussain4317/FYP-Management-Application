@@ -1,5 +1,6 @@
 "use client";
 
+import MessageHub from "@/Components/MessageHub";
 import "../globals.css";
 
 import NavBar from "@/Components/NavBar";
@@ -42,13 +43,15 @@ const profileDetails: navItems = {
   notificationNumber: 4,
   gender: "F",
 };
-
+// id will be fetched from contextAPI
+const id: string = "12";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="layout">
-      <NavBar profileDetails={profileDetails} />
+      <NavBar profileDetails={profileDetails} id={id} />
       <SideBar itemDetails={itemDetails} />
       <main className="content">{children}</main>
+      <MessageHub />
     </div>
   );
 };

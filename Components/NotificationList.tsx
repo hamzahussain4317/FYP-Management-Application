@@ -5,13 +5,14 @@ type NotificationListProps = {
 const NotificationList: React.FC<NotificationListProps> = ({ receiverID }) => {
   const [notifications, setNotifications] = useState<NotificationList[]>([]);
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/notifications/${receiverID}`)
-      .then((response) => response.json())
-      .then((data) => setNotifications(data))
-      .catch((error) => console.error("Error fetching notifications:", error));
-  }, [receiverID]);
+  // useEffect(() => {
+  //   fetch(`http://localhost:5000/notifications/${receiverID}`)
+  //     .then((response) => response.json())
+  //     .then((data) => setNotifications(data))
+  //     .catch((error) => console.error("Error fetching notifications:", error));
+  // }, [receiverID]);
 
+  console.log(notifications.length);
   return (
     <ul className="realtive flex-col justify-center align-center space-y-3 w-full">
       {notifications.length === 0 ? (

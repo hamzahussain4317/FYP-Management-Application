@@ -83,8 +83,6 @@ const MessageHub = () => {
     return acc;
   }, {} as Record<string, User>);
 
-  console.log(messagesBySender);
-
   const handleSwitchToUser = (selectedId: string) => {
     setSelectedUser(selectedId);
   };

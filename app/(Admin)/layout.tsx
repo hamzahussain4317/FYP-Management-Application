@@ -4,6 +4,7 @@ import "../globals.css";
 
 import NavBar from "@/Components/NavBar";
 import SideBar from "@/Components/SideBar";
+import MessageHub from "@/Components/MessageHub";
 
 const itemDetails: sideBarItems[] = [
   { itemRoute: "profile", itemName: "Profile", itemIcon: "fa-user-tie" },
@@ -16,7 +17,7 @@ const itemDetails: sideBarItems[] = [
     itemRoute: "supervisors",
     itemName: "Supervisors",
     itemIcon: "fa-chart-simple",
-  }
+  },
 ];
 
 const profileDetails: navItems = {
@@ -27,12 +28,14 @@ const profileDetails: navItems = {
   gender: "M",
 };
 
+const id: string = "123";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="layout">
-      <NavBar profileDetails={profileDetails} />
+      <NavBar profileDetails={profileDetails} id={id} />
       <SideBar itemDetails={itemDetails} />
       <main className="content">{children}</main>
+      <MessageHub />
     </div>
   );
 };
