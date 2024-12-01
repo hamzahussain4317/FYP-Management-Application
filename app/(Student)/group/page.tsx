@@ -1,3 +1,6 @@
+import GroupDetails from "../Components/GroupDetails";
+import CreateGroup from "../Components/CreateGroup";
+
 const groupMembers: Student[] = [
   {
     id: 1,
@@ -29,37 +32,21 @@ const groupMembers: Student[] = [
   // Add more students if needed
 ];
 
+const supervisor = {
+  supervisorID: 1,
+  supervisorName: "Saleh Vohra",
+  supervisorDomain: "Artificial Intellligence",
+  supervisorEmail: "saleh.vohra@nu.edu.pk",
+};
+
 export default function Group() {
   return (
     <section className="wrapper">
-      <h1 className="group-heading">Group Details</h1>
-      <div className="group-details">
-        {groupMembers.map((student, index) => (
-          <div key={student.id} className="student-card">
-            <h2 className="student-heading">Student {index + 1}</h2>
-            <div className="student-info-grid">
-              <p>
-                <strong>Name:</strong> {student.name}
-              </p>
-              <p>
-                <strong>ID:</strong> {student.studentId}
-              </p>
-              <p>
-                <strong>Domain:</strong> {student.domain}
-              </p>
-              <p>
-                <strong>Department:</strong> {student.department}
-              </p>
-              <p>
-                <strong>Section:</strong> {student.section}
-              </p>
-              <p>
-                <strong>Degree:</strong> {student.Degree}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {groupMembers.length === 0 ? (
+        <CreateGroup />
+      ) : (
+        <GroupDetails groupMembers={groupMembers} supervisor={supervisor} />
+      )}
     </section>
   );
 }

@@ -76,7 +76,7 @@ export default function ManageGroups() {
                             href={``}
                             className="w-auto flex items-center justify-betweem"
                           >
-                            <span className="ml-2">{roll}</span>
+                            <span className="ml-2">{roll}</span>{" "}
                             <i
                               className={`fa-solid fa-paper-plane fa-3/2x sm:fa-lg`}
                             ></i>

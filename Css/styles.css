@@ -680,6 +680,7 @@ ul {
   width: 100%;
   overflow-y: auto;
 }
+
 .group-details {
   display: flex;
   flex-direction: column;
@@ -688,7 +689,7 @@ ul {
   width: 100%;
 }
 
-.student-card {
+.card {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1.5rem;
@@ -699,20 +700,20 @@ ul {
   font-size: 20px;
 }
 
-.student-heading {
+.heading-blue {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 1rem;
   color: #0047ab;
 }
 
-.student-info-grid {
+.card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem 1rem;
 }
 
-.student-info-grid p {
+.card-grid p {
   margin: 0;
 }
 .group-heading {
