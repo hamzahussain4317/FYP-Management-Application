@@ -1,7 +1,7 @@
 //importing packages
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const db = require("../dbPool/createPool");
+const db = require("../dbPool/createPool.js");
 const registrationSchemaQuery = require("../models/registeration");
 
 const createRegistrationSchema = () => {

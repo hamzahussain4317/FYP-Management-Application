@@ -1,4 +1,4 @@
-const db = require("../dbPool/createPool");
+const db = require("../dbPool/createPool.js");
 const upload = require("../middlewares/multer");
 
 

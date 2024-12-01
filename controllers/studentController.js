@@ -1,4 +1,4 @@
-const db = require("../dbPool/createPool");
+const db = require("../dbPool/createPool.js");
 const upload = require("../middlewares/multer");
 
 const addStudent = async (req, res) => {
@@ -57,7 +57,8 @@ const getProfile = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
-    if(result[0][0].profilePic){
+    // console.log(result);
+    if (result[0][0]?.profilePic) {
       result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
         result[0][0].profilePic
       ).toString("base64")}`;
@@ -145,7 +146,6 @@ const getGroupDetails = async (req, res) => {
 };
 
 const getSupervisorList = async (req, res) => {
-
   const createViewQuery = `CREATE OR REPLACE VIEW SupervisorList AS
         SELECT 
           s.supervisorID,
@@ -411,10 +411,9 @@ const viewTask = async (req, res) => {
   }
 };
 
-
 const updateTask = async (req, res) => {
-  const {stdID}=req.params;
-  const {taskName}=req.body;
+  const { stdID } = req.params;
+  const { taskName } = req.body;
   if (!taskName) {
     return res.status(400).json({
       status: "error",
@@ -422,10 +421,9 @@ const updateTask = async (req, res) => {
     });
   }
 
-
-  try{
-    const updateTask=`update tasks set taskStatus = 1 where fypStudentID=? and taskName=?`
-    const [update]=await db.promise().query(updateTask,[stdID,taskName]);
+  try {
+    const updateTask = `update tasks set taskStatus = 1 where fypStudentID=? and taskName=?`;
+    const [update] = await db.promise().query(updateTask, [stdID, taskName]);
 
     if (update.affectedRows === 0) {
       return res.status(404).json({
@@ -433,25 +431,21 @@ const updateTask = async (req, res) => {
         message: "No tasks found for the provided student ID",
       });
     }
-    
+
     return res.status(200).json({
       status: "success",
       message: "Tasks updated successfully",
       update,
     });
-  }
-  catch(err){
-    console.error("Database error: ",err);
-    return res.status(500).json(
-      {
-        status:"error",
-        message:"failed to update tasks",
-        error:err.message,
-      }
-    )
+  } catch (err) {
+    console.error("Database error: ", err);
+    return res.status(500).json({
+      status: "error",
+      message: "failed to update tasks",
+      error: err.message,
+    });
   }
 };
-
 
 module.exports = {
   getProfile,
