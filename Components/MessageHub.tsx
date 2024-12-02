@@ -1,36 +1,49 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import axios from "axios";
 type User = {
   sender_id: string;
   sender_name: string;
 };
-const messages: Message[] = [
-  {
-    sender_id: "1",
-    sender_name: "Hamdan Vohra",
-    message_text: "Hello I am messsaging you.",
-    deliveredAt: "12-09-2024",
-  },
-  {
-    sender_id: "2",
-    sender_name: "Saleh Vohra",
-    message_text: "Hello I am messsaging you..",
-    deliveredAt: "12-09-2023",
-  },
-  {
-    sender_id: "1",
-    sender_name: "Hamdan Vohra",
-    message_text: "Hello I am not messaging you.",
-    deliveredAt: "09-09-2022",
-  },
-  {
-    sender_id: "2",
-    sender_name: "Saleh Vohra",
-    message_text: "Hello I am not messsaging you..",
-    deliveredAt: "02-09-2024",
-  },
-];
+
+interface Message {
+  senderID: number;
+  senderRole: "student" | "supervisor" | "admin";
+  messageType: "text" | "file" | "image";
+  textContent?: string;
+  filePath?: string;
+  imagePath?: string;
+  createdAt?: string;
+}
+
+// const messages: Message[] = [
+//   {
+//     sender_id: "1",
+//     sender_name: "Hamdan Vohra",
+//     message_text: "Hello I am messsaging you.",
+//     deliveredAt: "12-09-2024",
+//   },
+//   {
+//     sender_id: "2",
+//     sender_name: "Saleh Vohra",
+//     message_text: "Hello I am messsaging you..",
+//     deliveredAt: "12-09-2023",
+//   },
+//   {
+//     sender_id: "1",
+//     sender_name: "Hamdan Vohra",
+//     message_text: "Hello I am not messaging you.",
+//     deliveredAt: "09-09-2022",
+//   },
+//   {
+//     sender_id: "2",
+//     sender_name: "Saleh Vohra",
+//     message_text: "Hello I am not messsaging you..",
+//     deliveredAt: "02-09-2024",
+//   },
+// ];
 
 const MessageHub = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,25 +51,60 @@ const MessageHub = () => {
     setIsOpen(!isOpen);
   };
 
-  //   const [messages, setMessages] = useState<any[]>([]);
-  //   const [loading, setLoading] = useState<boolean>(true);
-  //   const [error, setError] = useState<string | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const conversationId = 123;
 
-  //   useEffect(() => {
-  //     const fetchMessages = async () => {
-  //       try {
-  //         const response = await fetch("https://messages");
-  //         if (!response.ok) {
-  //           throw new Error("Failed to fetch data");
-  //         }
-  //         const data = await response.json();
-  //         setMessages(data);
-  //       } catch (err: any) {
-  //         setError(err.message);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     };
+  useEffect(() => {
+    const socketInstance = io("http://localhost:3000");
+    setSocket(socketInstance);
+
+    // Fetch all messages for the conversation
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/messages/${conversationId}`
+        );
+        setMessages(response.data.messages);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    fetchMessages();
+
+    // Join the conversation room
+    socketInstance.emit("joinConversation", conversationId);
+
+    // Listen for new messages in real-time
+    socketInstance.on("receiveMessage", (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, [conversationId]);
+
+  const sendMessage = () => {
+    if (socket && newMessage.trim()) {
+      const messageData = {
+        senderID: 1, // Replace with actual sender ID
+        senderRole: "student", // Replace with actual sender role
+        messageType: "text",
+        textContent: newMessage,
+        conversationId,
+      };
+
+      // Emit the message to the server
+      socket.emit("sendMessage", { conversationId, messageData });
+
+      // Optimistically add the message to the UI
+      setMessages((prevMessages) => [...prevMessages, messageData]);
+      setNewMessage("");
+    }
+  };
 
   const [selectedUser, setSelectedUser] = useState<string>("1");
   const [showMessages, setShowMessages] = useState<Message[]>();
@@ -152,10 +200,15 @@ const MessageHub = () => {
           >
             <input
               type="text"
-              placeholder="Message"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
               className="h-20px flex-1 focus:outline-none"
             />
-            <button className="min-h-auto min-w-4 items-center">
+            <button
+              className="min-h-auto min-w-4 items-center"
+              onClick={sendMessage}
+            >
               <i
                 className="fa-solid fa-arrow-right fa-2x h-full w-full"
                 style={{ color: "green" }}
