@@ -8,42 +8,42 @@ type User = {
   sender_name: string;
 };
 
-interface Message {
-  senderID: number;
-  senderRole: "student" | "supervisor" | "admin";
-  messageType: "text" | "file" | "image";
-  textContent?: string;
-  filePath?: string;
-  imagePath?: string;
-  createdAt?: string;
-}
+// interface Message {
+//   senderID: number;
+//   senderRole: "student" | "supervisor" | "admin";
+//   messageType: "text" | "file" | "image";
+//   textContent?: string;
+//   filePath?: string;
+//   imagePath?: string;
+//   createdAt?: string;
+// }
 
-// const messages: Message[] = [
-//   {
-//     sender_id: "1",
-//     sender_name: "Hamdan Vohra",
-//     message_text: "Hello I am messsaging you.",
-//     deliveredAt: "12-09-2024",
-//   },
-//   {
-//     sender_id: "2",
-//     sender_name: "Saleh Vohra",
-//     message_text: "Hello I am messsaging you..",
-//     deliveredAt: "12-09-2023",
-//   },
-//   {
-//     sender_id: "1",
-//     sender_name: "Hamdan Vohra",
-//     message_text: "Hello I am not messaging you.",
-//     deliveredAt: "09-09-2022",
-//   },
-//   {
-//     sender_id: "2",
-//     sender_name: "Saleh Vohra",
-//     message_text: "Hello I am not messsaging you..",
-//     deliveredAt: "02-09-2024",
-//   },
-// ];
+const messages: Message[] = [
+  {
+    sender_id: "1",
+    sender_name: "Hamdan Vohra",
+    message_text: "Hello I am messsaging you.",
+    deliveredAt: "12-09-2024",
+  },
+  {
+    sender_id: "2",
+    sender_name: "Saleh Vohra",
+    message_text: "Hello I am messsaging you..",
+    deliveredAt: "12-09-2023",
+  },
+  {
+    sender_id: "1",
+    sender_name: "Hamdan Vohra",
+    message_text: "Hello I am not messaging you.",
+    deliveredAt: "09-09-2022",
+  },
+  {
+    sender_id: "2",
+    sender_name: "Saleh Vohra",
+    message_text: "Hello I am not messsaging you..",
+    deliveredAt: "02-09-2024",
+  },
+];
 
 const MessageHub = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,60 +51,60 @@ const MessageHub = () => {
     setIsOpen(!isOpen);
   };
 
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>("");
-  const conversationId = 123;
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  // const [messages, setMessages] = useState<Message[]>([]);
+  // const [newMessage, setNewMessage] = useState<string>("");
+  // const conversationId = 123;
 
-  useEffect(() => {
-    const socketInstance = io("http://localhost:3000");
-    setSocket(socketInstance);
+  // useEffect(() => {
+  //   const socketInstance = io("http://localhost:3000");
+  //   setSocket(socketInstance);
 
-    // Fetch all messages for the conversation
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/messages/${conversationId}`
-        );
-        setMessages(response.data.messages);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
+  //   // Fetch all messages for the conversation
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:3000/api/messages/${conversationId}`
+  //       );
+  //       setMessages(response.data.messages);
+  //     } catch (error) {
+  //       console.error("Error fetching messages:", error);
+  //     }
+  //   };
 
-    fetchMessages();
+  //   fetchMessages();
 
-    // Join the conversation room
-    socketInstance.emit("joinConversation", conversationId);
+  //   // Join the conversation room
+  //   socketInstance.emit("joinConversation", conversationId);
 
-    // Listen for new messages in real-time
-    socketInstance.on("receiveMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+  //   // Listen for new messages in real-time
+  //   socketInstance.on("receiveMessage", (message) => {
+  //     setMessages((prevMessages) => [...prevMessages, message]);
+  //   });
 
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, [conversationId]);
+  //   return () => {
+  //     socketInstance.disconnect();
+  //   };
+  // }, [conversationId]);
 
-  const sendMessage = () => {
-    if (socket && newMessage.trim()) {
-      const messageData = {
-        senderID: 1, // Replace with actual sender ID
-        senderRole: "student", // Replace with actual sender role
-        messageType: "text",
-        textContent: newMessage,
-        conversationId,
-      };
+  // const sendMessage = () => {
+  //   if (socket && newMessage.trim()) {
+  //     const messageData = {
+  //       senderID: 1, // Replace with actual sender ID
+  //       senderRole: "student", // Replace with actual sender role
+  //       messageType: "text",
+  //       textContent: newMessage,
+  //       conversationId,
+  //     };
 
-      // Emit the message to the server
-      socket.emit("sendMessage", { conversationId, messageData });
+  //     // Emit the message to the server
+  //     socket.emit("sendMessage", { conversationId, messageData });
 
-      // Optimistically add the message to the UI
-      setMessages((prevMessages) => [...prevMessages, messageData]);
-      setNewMessage("");
-    }
-  };
+  //     // Optimistically add the message to the UI
+  //     setMessages((prevMessages) => [...prevMessages, messageData]);
+  //     setNewMessage("");
+  //   }
+  // };
 
   const [selectedUser, setSelectedUser] = useState<string>("1");
   const [showMessages, setShowMessages] = useState<Message[]>();
@@ -200,14 +200,14 @@ const MessageHub = () => {
           >
             <input
               type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              // value={newMessage}
+              // onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
               className="h-20px flex-1 focus:outline-none"
             />
             <button
               className="min-h-auto min-w-4 items-center"
-              onClick={sendMessage}
+              // onClick={sendMessage}
             >
               <i
                 className="fa-solid fa-arrow-right fa-2x h-full w-full"

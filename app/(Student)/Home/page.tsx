@@ -1,4 +1,4 @@
-import MessageHub from "@/Components/MessageHub";
+import { useAppData } from "@/context/IntegrationAPI";
 
 const student = {
   studentRoll: "22k-4318",
@@ -23,6 +23,8 @@ const group = {
   supervisorEmail: "shaka.hussain@nu.edu.pk",
 };
 export default function StudentDashboard() {
+  const { allTasks } = useAppData();
+  console.log(allTasks);
   return (
     <section className="wrapper flex-col items-center justify-center overflow-y-auto space-y-8">
       <h1 className="mt-[1rem] text-center font-semibold">Student | Home</h1>

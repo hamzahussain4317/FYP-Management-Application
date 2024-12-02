@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Montserrat } from "next/font/google"; // Correct import for Montserrat
 import "./globals.css";
+import AppDataProvider from "@/context/IntegrationAPI";
 
 // Local fonts
 const geistSans = localFont({
@@ -47,7 +48,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased layout`}
       >
-        {children}
+        <AppDataProvider>{children}</AppDataProvider>
       </body>
     </html>
   );
