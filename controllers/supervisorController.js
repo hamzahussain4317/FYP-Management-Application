@@ -124,8 +124,43 @@ const getSupervisingGroups = async (req, res) => {
   });
 };
 
+const updateProposal=async(req,res)=>{
+  const { groupID , supervisorID } = req.body;
+
+  if (!groupID || !supervisorID) {
+    return res.status(400).json({ message: "proposalID is required" });
+  }
+
+  const updateProposalQuery = `UPDATE Proposal SET proposalStatus = 1 WHERE groupID = ? and supervisorID=?`;
+
+  try {
+    db.query(updateProposalQuery, [groupID , supervisorID], (err, result) => {
+      if (err) {
+        console.error("Database query failed:", err);
+        return res.status(500).json({
+          message: "Database query execution failed",
+          error: err.message,
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ message: "Proposal not found or already updated" });
+      }
+
+      res.status(200).json({ message: "Proposal updated successfully" });
+    });
+  } catch (error) {
+    console.error("Error updating proposal:", error);
+    res.status(500).json({ message: "An error occurred", error: error.message });
+  }
+
+}
+
 module.exports = {
   getProfile,
   getSupervisingGroups,
   addSupervisor,
+  updateProposal,
 };

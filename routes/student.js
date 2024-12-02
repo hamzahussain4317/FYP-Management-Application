@@ -20,4 +20,6 @@ router.get('/viewTasks/:stdID',studentController.viewTask);
 
 router.post('/updateTask/:stdID',studentController.updateTask);
 
+router.get('/projectOversight/:stdID',studentController.projectOversight);
+
 module.exports = router;

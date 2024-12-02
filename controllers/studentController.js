@@ -46,7 +46,7 @@ const getProfile = async (req, res) => {
   const { stdID } = req.params;
 
   const query = `SELECT * FROM fypstudent f JOIN students s ON f.fypStudentID = s.studentID WHERE f.fypStudentID = ?;
-  select f.groupID, p.* from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID where f.fypStudentID=?;`;
+  select f.groupID, p.* , pg.* from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID where f.fypStudentID=?;`;
   db.query(query, [stdID, stdID], async (err, result) => {
     if (err) {
       console.error("Error executing query: ", err);
@@ -447,6 +447,37 @@ const updateTask = async (req, res) => {
   }
 };
 
+const projectOversight=async(req,res)=>{
+  const {stdID}=req.params;
+  if(!stdID){
+    return res.status(400).json({ message: "studentID is required" });
+  }
+  try{
+    const [retrieveProjectID]=await db
+    .promise()
+    .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
+       const projectID=retrieveProjectID[0]?.projectID;
+       if (!projectID) {
+        return res.status(404).json({ message: "No project found for this student" });
+      }
+      const [tasks] = await db
+      .promise()
+      .query("SELECT * FROM tasks WHERE projectID = ?", [projectID]);
+
+    if (tasks.length === 0) {
+      return res.status(404).json({ message: "No tasks found for this project" });
+    }
+
+    return res.status(200).json({ message: "Tasks fetched successfully", tasks });
+  }
+  catch(error){
+    console.error("Database error:", error);
+    return res
+      .status(500)
+      .json({ message: "Database query failed", error: error.message });
+  }
+};
+
 module.exports = {
   getProfile,
   assignGroup,
@@ -457,4 +488,5 @@ module.exports = {
   assignTask,
   viewTask,
   updateTask,
+  projectOversight,
 };

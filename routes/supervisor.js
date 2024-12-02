@@ -5,5 +5,6 @@ const supervisorController = require("../controllers/supervisorController.js");
 router.get("/getProfile/:supervisorID", supervisorController.getProfile);
 router.post("/addSupervisor",supervisorController.addSupervisor);
 router.get("/getSupervisingGroups/:supervisorID",supervisorController.getSupervisingGroups);
+router.put("/updateProposal",supervisorController.updateProposal);
 
 module.exports = router;

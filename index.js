@@ -64,7 +64,7 @@ socketRouter(io);
     if (err) console.error("Error connecting to the database:", err);
 
     console.log("Connected to MySQL database");
-    const PORT = 3000 | process.env.PORT;
+    const PORT = 3001 | process.env.PORT;
     server.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
       connection.release();
