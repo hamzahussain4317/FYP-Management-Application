@@ -5,7 +5,7 @@ const socketRouter = (io) => {
     console.log("User connected:", socket.user);
 
     // Handle room joining
-    socket.on("joinConversation", (conversationId) => {
+    socket.on("register", (conversationId) => {
       socketController.joinRoom(socket, conversationId);
     });
 
@@ -14,6 +14,10 @@ const socketRouter = (io) => {
       socketController.sendMessage(socket, data);
     });
 
+
+    socket.on('sendNotification',({receipentID,notification}) => {
+      
+    })
     // Handle user disconnection
     socket.on("disconnect", () => {
       socketController.handleDisconnect(socket);

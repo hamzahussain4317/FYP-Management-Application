@@ -1,11 +1,11 @@
 const io = require("../index");
 
+const connectedUsers = {};
+
 const socketController = {
-  joinRoom: async (socket, conversationId) => {
-    socket.join(conversationId);
-    console.log(
-      `User with socket ID ${socket.id} joined room ${conversationId}`
-    );
+  register: async (socket, conversationId) => {
+    connectedUsers[userId] = socket.id;
+    console.log(`User registered: ${userId} -> Socket ID: ${socket.id}`);
   },
 
   // Send a message to a specific room
@@ -49,15 +49,20 @@ const socketController = {
 
       const insertIntoConversation =
         "INSERT INTO Conversation (conversationID, receiverID, receiverRole) VALUES (?, ?, ?)";
-      await db.execute(insertIntoConversation, [
+      const [conversationResults] = await db.execute(insertIntoConversation, [
         messageID,
         receiverID,
         receiverRole,
       ]);
 
+      //notification has four attributes in which notificationID is AutoIncrement while isRead is by default false and createdAt is by default current timestamp
       const insertIntoNotification =
-        "INSERT INTO Notification (conversationID) VALUES (?)";
-      await db.execute(insertIntoNotification, [messageID]);
+        "INSERT INTO Notification (conversationID) VALUES (?,?,?)";
+      const [notificationResults] = await db.execute(insertIntoNotification, [
+        messageID,
+      ]);
+
+      const notificationId = notificationResults.insertId;
 
       let selectQuery;
       if (tolower(senderRole) === "student")
@@ -70,6 +75,7 @@ const socketController = {
         senderName = results[0].studentName;
       else studentName = results[0].teacherName;
 
+      //these are the socket functionalititis fetched from client side
       const messageData = {
         senderID,
         senderRole,
@@ -80,10 +86,26 @@ const socketController = {
         imagePath,
         createdAt: new Date(),
       };
-      socket.to(messageID).emit("receiveMessage", messageData);
 
-      // const notificationData = {};
-      // socket.io(notificationId).emit("receiveNotification", notificationData);
+      const receipentSocketId = connectedUsers[receiverID];
+      if (receiverID) {
+        io.to(receipentSocketId).emit("receiveMessage", messageData);
+      }
+
+      const notificationContent = textContent
+        ? textContent.length > 25
+          ? textContent.substr(0, 25)
+          : textContent
+        : filePath
+        ? `File Provided From ${senderID}`
+        : `Image is provided from ${senderID}`;
+
+      const notificationData = {
+        messageID,
+        notificationContent,
+        createdAt: new Date(),
+      };
+      socket.io(receiverID).emit("sendNotification", notificationData);
 
       console.log("Message sent successfully:", messageData);
     } catch (error) {
@@ -91,9 +113,24 @@ const socketController = {
     }
   },
 
-  // Handle user disconnection
+  sendNotification: async ({ receipentId, notification }) => {
+    const recipientSocketId = connectedUsers[receipentId];
+
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit("receiveNotification", notification);
+    }
+  },
+
   handleDisconnect: async (socket) => {
     console.log(`User disconnected: ${socket.id}`);
+
+    // removing user from connected users that have joined room
+    for (const [userId, socketId] of Object.entries(connectedUsers)) {
+      if (socketId === socket.id) {
+        delete connectedUsers[userId];
+        break;
+      }
+    }
   },
 };
 
