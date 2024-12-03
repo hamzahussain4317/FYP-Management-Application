@@ -1,47 +1,53 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
-import axios from "axios";
+import socket from "../utils/socket";
+// import axios from "axios";
 type User = {
-  sender_id: string;
-  sender_name: string;
+  senderId: string;
+  senderName: string;
 };
-
-// interface Message {
-//   senderID: number;
-//   senderRole: "student" | "supervisor" | "admin";
-//   messageType: "text" | "file" | "image";
-//   textContent?: string;
-//   filePath?: string;
-//   imagePath?: string;
-//   createdAt?: string;
-// }
 
 const messages: Message[] = [
   {
-    sender_id: "1",
-    sender_name: "Hamdan Vohra",
-    message_text: "Hello I am messsaging you.",
-    deliveredAt: "12-09-2024",
+    senderId: "1",
+    senderName: "Hamdan Vohra",
+    textContent: "Hello I am messsaging you.",
+    createdAt: "12-09-2024",
+    senderRole: "student",
+    messageType: "text",
+    filePath: String(null),
+    imagePath: String(null),
   },
   {
-    sender_id: "2",
-    sender_name: "Saleh Vohra",
-    message_text: "Hello I am messsaging you..",
-    deliveredAt: "12-09-2023",
+    senderId: "2",
+    senderName: "Saleh Vohra",
+    textContent: "Hello I am messsaging you..",
+    createdAt: "12-09-2023",
+    senderRole: "supervisor",
+    messageType: "text",
+    filePath: String(null),
+    imagePath: String(null),
   },
   {
-    sender_id: "1",
-    sender_name: "Hamdan Vohra",
-    message_text: "Hello I am not messaging you.",
-    deliveredAt: "09-09-2022",
+    senderId: "1",
+    senderName: "Hamdan Vohra",
+    textContent: "Hello I am not messaging you.",
+    createdAt: "09-09-2022",
+    senderRole: "student",
+    messageType: "text",
+    filePath: String(null),
+    imagePath: String(null),
   },
   {
-    sender_id: "2",
-    sender_name: "Saleh Vohra",
-    message_text: "Hello I am not messsaging you..",
-    deliveredAt: "02-09-2024",
+    senderId: "2",
+    senderName: "Saleh Vohra",
+    textContent: "Hello I am not messsaging you..",
+    createdAt: "02-09-2024",
+    senderRole: "supervisor",
+    messageType: "text",
+    filePath: String(null),
+    imagePath: String(null),
   },
 ];
 
@@ -51,80 +57,51 @@ const MessageHub = () => {
     setIsOpen(!isOpen);
   };
 
-  // const [socket, setSocket] = useState<Socket | null>(null);
-  // const [messages, setMessages] = useState<Message[]>([]);
-  // const [newMessage, setNewMessage] = useState<string>("");
-  // const conversationId = 123;
-
-  // useEffect(() => {
-  //   const socketInstance = io("http://localhost:3000");
-  //   setSocket(socketInstance);
-
-  //   // Fetch all messages for the conversation
-  //   const fetchMessages = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:3000/api/messages/${conversationId}`
-  //       );
-  //       setMessages(response.data.messages);
-  //     } catch (error) {
-  //       console.error("Error fetching messages:", error);
-  //     }
-  //   };
-
-  //   fetchMessages();
-
-  //   // Join the conversation room
-  //   socketInstance.emit("joinConversation", conversationId);
-
-  //   // Listen for new messages in real-time
-  //   socketInstance.on("receiveMessage", (message) => {
-  //     setMessages((prevMessages) => [...prevMessages, message]);
-  //   });
-
-  //   return () => {
-  //     socketInstance.disconnect();
-  //   };
-  // }, [conversationId]);
-
-  // const sendMessage = () => {
-  //   if (socket && newMessage.trim()) {
-  //     const messageData = {
-  //       senderID: 1, // Replace with actual sender ID
-  //       senderRole: "student", // Replace with actual sender role
-  //       messageType: "text",
-  //       textContent: newMessage,
-  //       conversationId,
-  //     };
-
-  //     // Emit the message to the server
-  //     socket.emit("sendMessage", { conversationId, messageData });
-
-  //     // Optimistically add the message to the UI
-  //     setMessages((prevMessages) => [...prevMessages, messageData]);
-  //     setNewMessage("");
-  //   }
-  // };
-
+  const [userId, setUserId] = useState("");
+  const [recipientId, setRecipientId] = useState("");
+  const [message, setMessage] = useState("");
+  const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
   const [selectedUser, setSelectedUser] = useState<string>("1");
-  const [showMessages, setShowMessages] = useState<Message[]>();
+
+  useEffect(() => {
+    // Register user with the backend
+    if (userId) {
+      socket.emit("register", userId);
+    }
+
+    // listen for incoming messages
+    socket.on("receiveMessage", (data) => {
+      setReceivedMessages((prev) => [...prev, data]);
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, [userId]);
+
+  const sendMessage = () => {
+    if (userId && recipientId && message) {
+      socket.emit("sendMessage", { senderId: userId, recipientId, message });
+      setMessage(""); // Clear input
+    }
+  };
 
   const messagesBySender = messages.reduce((acc, message) => {
-    const { sender_id } = message;
-    if (!acc[sender_id]) {
-      acc[sender_id] = [];
+    const { senderId } = message;
+    if (!acc[senderId]) {
+      acc[senderId] = [];
     }
-    acc[sender_id].push(message);
+    acc[senderId].push(message);
     return acc;
   }, {} as Record<string, Message[]>);
 
-  const allSenders = messages.reduce((acc, message) => {
-    const { sender_id, sender_name } = message;
-    // if (!acc[sender_id] && sender_id != myID) {  it will exclude its own id
-    if (!acc[sender_id]) {
-      acc[sender_id] = {
-        sender_id,
-        sender_name,
+  const allSenders = receivedMessages.reduce((acc, message) => {
+    const { senderId, senderName } = message;
+    // if (!acc[senderId] && senderId != myID) {  it will exclude its own id
+    if (!acc[senderId]) {
+      acc[senderId] = {
+        senderId,
+        senderName,
       };
     }
     return acc;
@@ -160,7 +137,7 @@ const MessageHub = () => {
                   onClick={toggleOpener}
                 ></i>
               </div>
-              {Object.entries(allSenders).map(([senderId, { sender_name }]) => (
+              {Object.entries(allSenders).map(([senderId, { senderName }]) => (
                 <div
                   key={senderId}
                   onClick={() => handleSwitchToUser(senderId)}
@@ -170,7 +147,7 @@ const MessageHub = () => {
                   style={{ cursor: "pointer" }}
                 >
                   <p>
-                    <b>{sender_name}</b>
+                    <b>{senderName}</b>
                   </p>
                 </div>
               ))}
@@ -186,9 +163,9 @@ const MessageHub = () => {
                     className="w-full rounded-lg border-2 px-2"
                     style={{ border: "#eee 2px solid" }}
                   >
-                    <p>{msg.sender_name}:</p>
-                    <p>{msg.message_text}</p>
-                    <p>{new Date(msg.deliveredAt).toLocaleString()}</p>
+                    <p>{msg.senderName}:</p>
+                    <p>{msg.textContent}</p>
+                    <p>{new Date(msg.createdAt).toLocaleString()}</p>
                   </li>
                 ))}
               </ul>
@@ -207,7 +184,7 @@ const MessageHub = () => {
             />
             <button
               className="min-h-auto min-w-4 items-center"
-              // onClick={sendMessage}
+              onClick={sendMessage}
             >
               <i
                 className="fa-solid fa-arrow-right fa-2x h-full w-full"

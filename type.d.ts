@@ -29,15 +29,21 @@ type sideBarItems = {
 };
 
 type NotificationList = {
-  notificationID: number;
+  notificationId: number;
   conversationID: number;
+  senderName: string;
+  message: string;
   isRead: boolean;
-  createdAt: string;
+  createdAt: Date;
 };
 
 type Message = {
-  sender_id: string;
-  sender_name: string;
-  message_text: string;
-  deliveredAt: string;
+  senderId: string;
+  senderRole: string;
+  senderName: string;
+  messageType: "text" | "file" | "image";
+  textContent: string;
+  filePath: string;
+  imagePath: string;
+  createdAt: string;
 };
