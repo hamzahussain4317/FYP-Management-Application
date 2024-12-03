@@ -4,23 +4,62 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { UserSignUpSchema } from "@/Schemas/UserSignUpData";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
+import Error from "next/error";
 
 interface UserSignUpData {
+  userName:string;
   email: string;
   password: string;
   confirmPassword: string;
   role: "student" | "teacher";
-}
+};
 
 export default function UserSignUpForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [success ,setSuccess]=useState(false);
+
+  const submitSignUpForm=async (data:UserSignUpData)=>{
+    try{
+      const response = await fetch ('http://localhost:3001/auth/signup',{
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: data.userName,
+          password: data.password,
+          email: data.email,
+          role: data.role
+      })
+      });
+      if (response.ok){
+        const responseData = await response.json();
+                setSuccess(true);
+                console.log(responseData);
+                router.push('/login');
+      }
+      else if (response.status === 500) {
+        throw new Error('User already exist')
+    }
+    else {
+        throw new Error("failed to signup")
+    }
+    }
+    catch (error:any) {
+      setError("root", {
+          message: error?.message
+      })
+
+  }
+  }
+ 
   const {
     register,
     handleSubmit,
-    // setError,
-    // setValue,
-    // getValues,
+    setError,
     formState: { errors },
     reset,
   } = useForm<UserSignUpData>({
@@ -33,11 +72,24 @@ export default function UserSignUpForm() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
     reset();
-    //will use setErrorMessage if the data doesnot matches the api result//
+    submitSignUpForm(data);
   };
   return (
     <div className="signUpForm">
       <form className="form">
+      <div className="field">
+          <div className="labelIcon">
+            <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+            <label htmlFor="username">Your username</label>
+          </div>
+          <input
+            {...register("userName")}
+            type="text"
+            placeholder="enter your userName"
+            className="email"
+          />
+          {errors.userName && <div className="errors">{errors.userName.message}</div>}
+        </div>
         <div className="field">
           <div className="labelIcon">
             <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
