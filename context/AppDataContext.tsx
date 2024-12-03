@@ -1,15 +1,13 @@
 'use client'
 import { useContext , createContext , useState  } from "react";
 
-type ContextProps = {
-    studentDetails:Student[],
-}
-const AppDataContext = createContext({hello:"world"});
+
+const AppDataContext = createContext<any>(undefined);
 
 const AppWrapper = ({children} : {children : React.ReactNode}) =>{
-    const [check,setCheck] = useState({hello:"WOrld"});
+    const [userId,setUserId] = useState<number>();
     return (
-        <AppDataContext.Provider value={check}>
+        <AppDataContext.Provider value={{userId ,setUserId}}>
             {children}
         </AppDataContext.Provider>
     )

@@ -74,4 +74,12 @@ type Home = {
   dateOfBirth: date;
   profilePic: string;
   departmentName: string;
+  projectID:number;
+  description:string;
+  projectName:string;
+  startDate:Date;
+  status:string;
+  supervisorID:number;
+  groupName:string;
+  
 };

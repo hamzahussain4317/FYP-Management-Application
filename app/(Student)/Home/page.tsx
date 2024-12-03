@@ -1,6 +1,6 @@
-'use client'
-// import { useAppData } from "@/context/IntegrationAPI";
+"use client";
 import { useAppWrapper } from "@/context/AppDataContext";
+import { useEffect ,useState } from "react";
 
 const student = {
   studentRoll: "22k-4318",
@@ -25,8 +25,38 @@ const group = {
   supervisorEmail: "shaka.hussain@nu.edu.pk",
 };
 export default function StudentDashboard() {
-  const { hello } = useAppWrapper();
-  console.log(hello);
+  const [success, setSuccess] = useState(false);
+  const getProfile = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/student/getProfile/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        setSuccess(true);
+        console.log(responseData);
+      } else if (response.status === 500) {
+        throw new Error("User already exist");
+      } else {
+        throw new Error("failed to signup");
+      }
+    } catch (error: any) {
+      setError("root", {
+        message: error?.message,
+      });
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
+  const { userId } = useAppWrapper();
   return (
     <section className="wrapper flex-col items-center justify-center overflow-y-auto space-y-8">
       <h1 className="mt-[1rem] text-center font-semibold">Student | Home</h1>
