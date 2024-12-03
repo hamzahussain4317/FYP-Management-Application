@@ -11,5 +11,5 @@ export const AppDataProvider = ({
 
   return <AppContext.Provider value={allTasks}>{children}</AppContext.Provider>;
 };
-
+export default AppDataProvider;
 export const useAppData = () => useContext(AppContext);
