@@ -138,14 +138,14 @@ const MessageHub = () => {
     <section
       className={`absolute ${
         !isOpen
-          ? "min-h-20 min-w-20 bottom-10 right-10 rounded-full flex justify-center items-center"
+          ? "min-h-[60px] min-w-[60px] bottom-10 right-10 rounded-full flex justify-center items-center"
           : "min-h-[calc(100vh-5.5rem)] min-w-[calc(100vw - 10rem)] rounded-xl bottom-0 right-0 flex flex-col space-y-2 "
       } z-999`}
       style={{ background: "#c0cfe0" }}
     >
       {!isOpen ? (
         <i
-          className="fa-regular fa-message fa-3x"
+          className="fa-regular fa-message fa-2x hover:text-green-500"
           style={{ color: "black", cursor: "pointer" }}
           onClick={toggleOpener}
         ></i>

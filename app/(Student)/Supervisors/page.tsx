@@ -193,13 +193,21 @@ export default function Group() {
                 height={45}
               />{" "}
               <span className="supervisor-name">{supervisor.name}</span>
-              <div id={`${index}`} className="supervisor-more-details hidden">
-                <i
-                  className="fa-solid fa-envelope fa-2px"
-                  style={{ color: "black" }}
-                >{` : ${supervisor.email}`}</i>
+              <div
+                id={`${index}`}
+                className="supervisor-more-details space-x-2 rounded-lg hidden"
+              >
+                <div>
+                  <i
+                    className="fa-solid fa-envelope fa-0.5x text-center"
+                    style={{ color: "black" }}
+                  >
+                    {" "}
+                  </i>{" "}
+                  <span className="text-center">{` : ${supervisor.email}`}</span>
+                </div>
                 <p>
-                  <b>Above CGPA: {supervisor.cgpaCriteria}</b>
+                  Above CGPA:<b> {supervisor.cgpaCriteria}</b>
                 </p>
               </div>
             </div>

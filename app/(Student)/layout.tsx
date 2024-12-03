@@ -25,11 +25,11 @@ const itemDetails: sideBarItems[] = [
     itemName: "Task Monitoring",
     itemIcon: "fa-tasks",
   },
-  // {
-  //   itemRoute: "SendMessage",
-  //   itemName: "Message Center",
-  //   itemIcon: "fa-hourglass-start",
-  // },
+  {
+    itemRoute: "assignTask",
+    itemName: "Assign Task",
+    itemIcon: "fa-clipboard",
+  },
 ];
 
 const profileDetails: navItems = {
