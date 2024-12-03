@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Montserrat } from "next/font/google"; // Correct import for Montserrat
 import "./globals.css";
-import AppDataProvider from "@/context/IntegrationAPI";
+// import AppDataProvider from "@/context/IntegrationAPI";
 
 // Local fonts
 const geistSans = localFont({

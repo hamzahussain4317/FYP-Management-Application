@@ -7,7 +7,9 @@ import { createGroupSchema } from "@/Schemas/createGroup";
 
 interface group {
   groupName: string;
-  email: string;
+  email1: string;
+  email2:string;
+  email3:string;
 }
 
 const CreateGroup = () => {
@@ -56,8 +58,8 @@ const CreateGroup = () => {
             <label className="form-label">Group Name:</label>
             <input
               {...register("groupName")}
-              type="text"
-              name="projectName"
+              type="string"
+              name="groupName"
               className="input-field"
               required
             />
@@ -68,40 +70,38 @@ const CreateGroup = () => {
           <div className="form-section">
             <h2 className="section-title">Group Members</h2>
             <div className="supervisor-input">
-              <label className="form-label">Add New Member Email:</label>
+              <label className="form-label">Add Member 1 email:</label>
               <input
-                {...register("email")}
+                {...register("email1")}
                 type="email"
                 className="input-field"
-                onChange={(event) => {
-                  setMemberEmail(event?.target.value);
-                }}
-                value={memberEmail}
                 placeholder="Enter group member's email"
                 required
               />
-              <div className="errors">{errors.email?.message}</div>
-              <div className="px-8 py-2">
-                <ul
-                  className="h-auto w-full flex flex-col justify-start items-start space-y-2"
-                  style={{ listStyle: "number" }}
-                >
-                  {groupMembers.map((member, index) => (
-                    <li key={index} className="border-b-1px border-p-gray-500">
-                      {member}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <button
-                id="add-member"
-                type="button"
-                onClick={addNewMember}
-                // onClick={handleAddMember}
-                className="add-supervisor-button disabled:opacity-50"
-              >
-                Add New Member
-              </button>
+              <div className="errors">{errors.email1?.message}</div>
+              <label className="form-label">Add Member 2 email:</label>
+              <input
+                {...register("email2")}
+                type="email"
+                className="input-field"
+               
+                placeholder="Enter group member's email"
+                required
+              />
+              <div className="errors">{errors.email2?.message}</div>
+              <label className="form-label">Add member 3 email:</label>
+              <input
+                {...register("email3")}
+                type="email"
+                className="input-field"
+               
+                placeholder="Enter group member's email"
+                required
+              />
+              <div className="errors">{errors.email3?.message}</div>
+              {errors.email1?.type === "refine" && (
+              <div className="errors">{errors.email1.message}</div>
+            )}
             </div>
           </div>
           <div className="flex justify-center items-center">
