@@ -326,17 +326,21 @@ ul {
   color: #333;
 }
 .sideBar .sidebar-menu li:hover {
-  color: #0047ab;
+  opacity: 0.8;
+  border-radius: 10%;
+  border-bottom: rgba(128, 128, 128, 0.763) 2px solid;
 }
 .sideBar .sidebar-menu li i:hover {
-  color: #0047ab;
+  /* color: #0047ab; */
+  border-bottom: rgba(128, 128, 128, 0.763);
 }
 .active,
 .active i {
   color: #0047ab;
+  font-weight: bold;
 }
 .active span:hover {
-  color: white;
+  color: #0047ab;
 }
 
 /* content */

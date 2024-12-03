@@ -25,12 +25,18 @@ const itemDetails: sideBarItems[] = [
     itemName: "Task Monitoring",
     itemIcon: "fa-tasks",
   },
-  {
-    itemRoute: "assignTask",
-    itemName: "Assign Task",
-    itemIcon: "fa-clipboard",
-  },
 ];
+
+const isLeader = 0;
+{
+  isLeader
+    ? itemDetails.push({
+        itemRoute: "assignTask",
+        itemName: "Assign Task",
+        itemIcon: "fa-clipboard",
+      })
+    : itemDetails;
+}
 
 const profileDetails: navItems = {
   dashboardName: "Student DashBoard",
