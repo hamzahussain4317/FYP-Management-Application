@@ -47,3 +47,45 @@ type Message = {
   imagePath: string;
   createdAt: string;
 };
+
+type Student = {
+  id: number;
+  name: string;
+  studentId: string;
+  domain: string;
+  department: string;
+  section: string;
+  Degree: string;
+};
+
+type Supervisor = {
+  id: number;
+  name: string;
+  image: string;
+  projectsSupervised: number;
+  rating: number;
+  email: string;
+  cgpaCriteria: number;
+};
+
+type Home = {
+  fypStudentID: number;
+  groupID: number;
+  midEvaluation: number;
+  finalEvaluation: number;
+  isLeader: boolean;
+  studentRoll: string;
+  studentName: string;
+  email: string;
+  dateOfBirth: date;
+  profilePic: string;
+  departmentName: string;
+  projectID:number;
+  description:string;
+  projectName:string;
+  startDate:Date;
+  status:string;
+  supervisorID:number;
+  groupName:string;
+  
+};
