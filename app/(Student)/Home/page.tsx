@@ -1,6 +1,6 @@
 "use client";
 import { useAppWrapper } from "@/context/AppDataContext";
-import { useEffect ,useState } from "react";
+import { useEffect, useState } from "react";
 
 const student = {
   studentRoll: "22k-4318",
@@ -60,9 +60,9 @@ export default function StudentDashboard() {
   return (
     <section className="wrapper flex-col items-center justify-center overflow-y-auto space-y-8">
       <h1 className="mt-[1rem] text-center font-semibold">Student | Home</h1>
-      <div className="uni-info info">
-        <div className="info-head">
-          <i className="fa-solid fa-building-columns fa-2x"></i>
+      <div className="info">
+        <div className="info-head ">
+          <i className="fa-solid fa-user fa-2x"></i>
           <h3>Student Information</h3>
         </div>
         <div className="info-body">
@@ -92,9 +92,9 @@ export default function StudentDashboard() {
           </h3>
         </div>
       </div>
-      <div className="personal-info info">
+      <div className="info">
         <div className="info-head">
-          <i className="fa-solid fa-person"></i>
+          <i className="fa-solid fa-database"></i>
           <h3>Project Details</h3>
         </div>
         <div className="info-body">
@@ -116,9 +116,9 @@ export default function StudentDashboard() {
           </h3>
         </div>
       </div>
-      <div className="contact-info info">
+      <div className="info">
         <div className="info-head">
-          <i className="fa-solid fa-phone"></i>
+          <i className="fa-solid fa-users"></i>
           <h3>Group and Supervisor information</h3>
         </div>
         <div className="info-body">
