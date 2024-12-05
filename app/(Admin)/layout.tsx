@@ -8,6 +8,7 @@ import MessageHub from "@/Components/MessageHub";
 
 const itemDetails: sideBarItems[] = [
   { itemRoute: "profile", itemName: "Profile", itemIcon: "fa-user-tie" },
+  { itemRoute: "addUser", itemName: "Add User", itemIcon: "fa-user" },
   {
     itemRoute: "groups",
     itemName: "FYP Groups",

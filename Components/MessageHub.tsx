@@ -57,7 +57,11 @@ const MessageHub = () => {
     setIsOpen(!isOpen);
   };
 
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(
+    sessionStorage.getItem("userId") !== undefined
+      ? sessionStorage.getItem("userId")
+      : ""
+  );
   const [recipientId, setRecipientId] = useState("");
   const [message, setMessage] = useState("");
   const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);

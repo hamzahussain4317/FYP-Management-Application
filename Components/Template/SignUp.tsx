@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
 import UserSignUpForm from "../../Components/UserSignUpForm";
 import AdminSignInForm from "../AdminSignInForm";
 import Image from "next/image";
-export default function SignUp() {
-  const [form, setForm] = useState(1);
+type SignUpProps = {
+  user: string;
+};
+export default function SignUp({ user }: SignUpProps) {
   return (
-    <div className="formImg">
-      {form ? <AdminSignInForm setForm={setForm} /> : <UserSignUpForm />}
-      <div className="signUpImageDiv">
+    <div className="formImg flex flex-col md:flex-row justify-center items-center">
+      {user === "admin" ? <AdminSignInForm /> : <UserSignUpForm />}
+      <div className="signUpImageDiv hidden md:flex ">
         <Image
           className="signUpImage"
           src={`/signup.png`}

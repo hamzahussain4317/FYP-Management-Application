@@ -14,25 +14,9 @@ const itemDetails: sideBarItems[] = [
     itemIcon: "fa-people-group",
   },
   {
-    itemRoute: "project-oversight",
-    itemName: "Project Oversight",
-    itemIcon: "fa-chart-simple",
-  },
-  { itemRoute: "proposals", itemName: "Proposal", itemIcon: "fa-file" },
-  {
-    itemRoute: "Supervisors",
-    itemName: "Supervisor List",
-    itemIcon: "fa-list",
-  },
-  {
-    itemRoute: "manage-fyp",
-    itemName: "Task Monitoring",
-    itemIcon: "fa-paper-plane",
-  },
-  {
-    itemRoute: "future",
-    itemName: "Coming Soon",
-    itemIcon: "fa-hourglass-start",
+    itemRoute: "proposal-requests",
+    itemName: "Proposals Request",
+    itemIcon: "fa-file",
   },
 ];
 

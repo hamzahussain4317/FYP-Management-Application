@@ -1,20 +1,19 @@
 "use client";
 import { AdminSignInSchema } from "../Schemas/AdminSignUpData";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { adminValidation } from "@/AdminValidation/adminvalidation";
 import { useState } from "react";
-interface SignUpFormProps {
-  setForm: (formType: number) => void;
-}
+
+import { useRouter } from "next/navigation";
 
 interface AdminSignInData {
   name: string;
   email: string;
   password: string;
 }
-export default function SignUpForm({ setForm }: SignUpFormProps) {
+export default function SignUpForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const {
@@ -39,12 +38,12 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setIsLoading(false);
       reset();
-      setForm(0);
       setErrorMessage("");
-    }
-    else{
+      // sessionStorage.setItem(adminId, "admin001");
+      router.push("/addStudent");
+    } else {
       setErrorMessage("Invalid email, password, or username");
-      console.log("incorrect");
+      console.log("Incorrect");
     }
   };
   return (
@@ -87,18 +86,16 @@ export default function SignUpForm({ setForm }: SignUpFormProps) {
             placeholder="enter your password"
             className={errors.name ? "field-error" : "password"}
           />
-          {errors.password && <div className="errors">{errors.password.message}</div>}
+          {errors.password && (
+            <div className="errors">{errors.password.message}</div>
+          )}
         </div>
         <div className="signUpBtn">
-          <button onClick={handleSubmit(onSubmit)}>{isLoading ? "Loading..." : "Sign In"}</button>
+          <button onClick={handleSubmit(onSubmit)}>
+            {isLoading ? "Loading..." : "SignIn"}
+          </button>
         </div>
         {errorMessage && <div className="errors">{errorMessage}</div>}
-        <p className="accExist">
-          Already have an account?{" "}
-          <span>
-            <Link href="/login">Login</Link>
-          </span>
-        </p>
       </form>
     </div>
   );
