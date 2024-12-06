@@ -45,8 +45,12 @@ export default function RootLayout({
           href="/favicon-32x32.png"
         />
       </head>
-      <body>
-        <AppWrapper>{children}</AppWrapper>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased layout`}
+      >
+        <AppWrapper>
+        {children}
+        </AppWrapper>
       </body>
     </html>
   );

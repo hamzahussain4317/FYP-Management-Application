@@ -1,8 +1,8 @@
 "use client";
 import GroupDetails from "../Components/GroupDetails";
 import CreateGroup from "../Components/CreateGroup";
-import { useState } from "react";
-
+import { useAppWrapper } from "@/context/AppDataContext";
+import { useState, useEffect } from "react";
 const groupMember: Student[] = [
   {
     id: 1,
@@ -34,7 +34,7 @@ const groupMember: Student[] = [
   // Add more students if needed
 ];
 
-const groupMembers: Student[] = [];
+// const groupMember: Student[] = [];
 const supervisor = {
   supervisorID: 1,
   supervisorName: "Saleh Vohra",
@@ -43,19 +43,62 @@ const supervisor = {
 };
 
 export default function Group() {
+  const {  HomeDetails } = useAppWrapper();
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
+  const [groupId ,setGroupId]=useState<number>();
 
   const handleButton = () => {
     setIsButtonClicked(true);
   };
 
+  useEffect(() => {
+    
+    
+  }, []);
+  useEffect(() => {
+    const storedGroupId = sessionStorage.getItem("groupID");
+    console.log("Group Id:",storedGroupId);
+    setGroupId(Number(storedGroupId));
+    if (HomeDetails?.student[1][0]?.groupID !== undefined) {
+      const storedUserId = sessionStorage.getItem("userId");
+      console.log("Home Page:", storedUserId);
+      if (storedUserId) {
+        getGroupDetails(Number(storedUserId));
+        
+      }
+    } 
+  }, []);
+  const getGroupDetails = async (userId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/student/GroupDetails/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("iloveyou: ",responseData);
+      } else if (response.status === 500) {
+        throw new Error("User already exist");
+      } else {
+        throw new Error("failed to signup");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <section
       className={`wrapper justify-center items-center h-full ${
-        !isButtonClicked && !groupMembers.length && "flex"
+        !isButtonClicked && !groupMember.length && "flex"
       }`}
     >
-      {groupMembers.length === 0 ? (
+      {groupId === undefined ? (
         <>
           {!isButtonClicked ? (
             <button
@@ -70,7 +113,7 @@ export default function Group() {
           )}
         </>
       ) : (
-        <GroupDetails groupMembers={groupMembers} supervisor={supervisor} />
+        <GroupDetails groupMembers={groupMember} supervisor={supervisor} />
       )}
     </section>
   );

@@ -8,13 +8,13 @@ import { createGroupSchema } from "@/Schemas/createGroup";
 interface group {
   groupName: string;
   email1: string;
-  email2: string;
-  email3: string;
+  email2:string;
+  email3:string;
 }
 
 const CreateGroup = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -35,20 +35,20 @@ const CreateGroup = () => {
     //will use setErrorMessage if the data doesnot matches the api result//
   };
 
-  const [groupMembers, setGroupMembers] = useState<string[]>([]);
-  const [memberEmail, setMemberEmail] = useState<string>("");
-  const addNewMember = () => {
-    setGroupMembers((prev) => [...prev, memberEmail]);
-    setMemberEmail("");
-    if (groupMembers.length === 2) {
-      const buttonEl: HTMLButtonElement =
-        document.getElementById("add-member")!;
-      if (buttonEl instanceof HTMLButtonElement) {
-        buttonEl.style.opacity = "0.5";
-        buttonEl.disabled = true;
-      }
-    }
-  };
+  // const [groupMembers, setGroupMembers] = useState<string[]>([]);
+  // const [memberEmail, setMemberEmail] = useState<string>("");
+  // const addNewMember = () => {
+  //   setGroupMembers((prev) => [...prev, memberEmail]);
+  //   setMemberEmail("");
+  //   if (groupMembers.length === 2) {
+  //     const buttonEl: HTMLButtonElement =
+  //       document.getElementById("add-member")!;
+  //     if (buttonEl instanceof HTMLButtonElement) {
+  //       buttonEl.style.opacity = "0.5";
+  //       buttonEl.disabled = true;
+  //     }
+  //   }
+  // };
   return (
     <>
       <h1 className="proposal-heading">Initialize Your FYP Group</h1>
@@ -84,6 +84,7 @@ const CreateGroup = () => {
                 {...register("email2")}
                 type="email"
                 className="input-field"
+               
                 placeholder="Enter group member's email"
                 required
               />
@@ -93,18 +94,19 @@ const CreateGroup = () => {
                 {...register("email3")}
                 type="email"
                 className="input-field"
+               
                 placeholder="Enter group member's email"
                 required
               />
               <div className="errors">{errors.email3?.message}</div>
               {errors.email1?.type === "refine" && (
-                <div className="errors">{errors.email1.message}</div>
-              )}
+              <div className="errors">{errors.email1.message}</div>
+            )}
             </div>
           </div>
           <div className="flex justify-center items-center">
             <button
-              className="p-3 blue-regular-button w-[120px] hover:scale-95"
+              className="p-3 border-gray-500 border-2 w-[120px] rounded-lg hover:border-green-500"
               onClick={handleSubmit(onSubmit)}
             >
               {isLoading ? "Loading..." : "Create"}
