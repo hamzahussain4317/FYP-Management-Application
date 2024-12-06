@@ -24,9 +24,10 @@ ALTER TABLE FYPStudent ADD CONSTRAINT fypStudent_PK PRIMARY KEY(fypStudentID);
 ALTER TABLE FYPStudent MODIFY COLUMN fypStudentID INT AUTO_INCREMENT;
 
 
-
 -- Foreign Key Constraints
 ALTER TABLE FYPStudent ADD CONSTRAINT fypstd_student_FK FOREIGN KEY(fypStudentID) REFERENCES Students(studentID);
+ALTER TABLE FYPStudent ADD CONSTRAINT fypstd_group_FK FOREIGN KEY (groupId) REFERENCES ProjectGroup(groupID) ON DELETE SET NULL;
+
 
 CREATE TABLE Teachers(
 	teacherID INT NOT NULL,
@@ -298,7 +299,25 @@ END$$
 
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS CheckAndCreateGroup;
+DELIMITER $$
+
+CREATE PROCEDURE UpdateStudentMarks(IN marksData JSON)
+BEGIN
+    UPDATE fypstudent s
+    JOIN JSON_TABLE(
+        marksData, 
+        '$[*]' 
+        COLUMNS (
+            studentId INT PATH '$.studentId',
+            mid NUMBER PATH '$.midEvaluation',
+            final NUMBER PATH '$.finalEvaluation'
+        )
+    ) jt ON s.fypStudentId = jt.studentId
+    SET s.midEvaluation = jt.mid and s.finalEvaluation = jt.final;
+END $$
+
+DELIMITER ;
+
 
 
 
@@ -329,8 +348,11 @@ select * from message;
 select * from conversation;
 select * from notification;
 
-insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4318','Hamdan Vohra','CS','k224318@nu.edu.pk','02-10-2001');
-insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4317','Hamza Hussain','CS','k224317@nu.edu.pk','02-10-2001');
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4318','Hamdan Vohra','CS','k224318@nu.edu.pk',curdate());
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4317','Hamza Hussain','CS','k224317@nu.edu.pk',curdate());
+
+insert into teachers (firstName,lastName,departmentName,email,dateOfBirth) values('Zain','Noreen','Cs','zain.noreen@nu.edu.pk',curdate());
+
 
 insert into messageContent (messageType,textContent) values('text','This is my message content');
 insert into Message (senderId,senderRole,contentId)values(1,'student',1);
@@ -368,7 +390,6 @@ ON f.groupID=g.groupID
 JOIN Students s 
 ON s.studentID = f.fypStudentID
 AND g.supervisorID=5;
-
 
 insert into project (description,projectName,status) values("Hello this is my database project","fyp","Not Started");
 

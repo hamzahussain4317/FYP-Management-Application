@@ -33,7 +33,7 @@ const getAllGroupsDetails = async (req, res) => {
   }
 };
 const getGroupById = async (req, res) => {
-  const getGroupByIdQuery = `Select pg.groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as supervisorName,p.status as projectStatus ,s.studentRoll from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId AND pg.groupId = ' ' JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId`;
+  const getGroupByIdQuery = `Select pg.groupId as groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as supervisorName,p.status as projectStatus ,s.studentId as studentId ,s.studentRoll as studentRoll,s.studentName,f.midEvaluation ad midEvaluation,f.finalEvaluation as finalEvaluation from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId AND pg.groupId = ' ' JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId`;
   try {
     const [response] = db.promise().execute(getGroupByIdQuery);
 
@@ -50,7 +50,11 @@ const getGroupById = async (req, res) => {
     } = response[0]);
 
     const students = response.map((student) => {
-      studentRoll: student.studentId;
+      student.studentId,
+        student.studentName,
+        student.midEvaluation,
+        student.finalEvaluation,
+        student.studentRoll;
     });
 
     const results = { group, students };
@@ -60,8 +64,39 @@ const getGroupById = async (req, res) => {
     res.status(500).json({ errCode: 500, errorMessage: err.message });
   }
 };
-const patchGroupById = async (req, res) => {};
-const deleteGroupBYId = async (req, res) => {};
+const patchGroupById = async (req, res) => {
+  try {
+    const { students } = req.body;
+
+    if (!Array.isArray(students)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+
+    const studentJSON = JSON.stringify(students);
+
+    const query = `CALL UpdateStudentMarks(?)`;
+
+    const [response] = db.promise().execute(query, studentJSON);
+
+    res
+      .status(200)
+      .json({ message: "Marks updated successfully!", data: response });
+  } catch (err) {
+    res.status(500).josn({ errCode: res.status, errMessage: err.message });
+  }
+};
+const deleteGroupById = async (req, res) => {
+  const { groupId } = req.body;
+  const deleteQuery = `DELETE FROM ProjectGroup where groupId=?`;
+
+  try {
+    const [response] = await db.promise().execute(deleteQuery, groupId);
+
+    res.status(200).json({ Message: "Deleted Successfully!" });
+  } catch (err) {
+    res.status(500).json({ errCode: res.status, errMessage: err.message });
+  }
+};
 const getAllSupervisorDetails = async (req, res) => {};
 
 module.exports = {
@@ -69,6 +104,6 @@ module.exports = {
   getAllGroupsDetails,
   getGroupById,
   patchGroupById,
-  deleteGroupBYId,
+  deleteGroupById,
   getAllSupervisorDetails,
 };
