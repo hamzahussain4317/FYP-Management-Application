@@ -31,7 +31,7 @@ const profileDetails: navItems = {
 const id: string = "12";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="layout">
+    <div>
       <NavBar profileDetails={profileDetails} id={id} />
       <SideBar itemDetails={itemDetails} />
       <main className="content">{children}</main>

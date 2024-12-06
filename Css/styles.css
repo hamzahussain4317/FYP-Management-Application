@@ -187,6 +187,7 @@ i {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  /* position: relative; */
 }
 
 /* navbar */
@@ -620,16 +621,16 @@ ul {
 }
 
 .share-check {
-  opacity: 0; /* Make it invisible */
-  position: absolute; /* Remove it from the layout flow */
+  opacity: 0;
+  position: absolute;
   width: 0;
   height: 0;
   margin: 0;
-  pointer-events: none; /* Prevent accidental clicks */
+  pointer-events: none;
 }
 
 .share-label {
-  cursor: pointer; /* Make the icon clickable */
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
 }

@@ -15,18 +15,18 @@ const SearchGroup = ({
   const [searchText, setSearchText] = useState("");
 
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid grid-cols-3 gap-x-4 p-4">
       <div className="flex items-center col-span-2">
         <input
           type="text"
           className="p-2 border rounded-l-md w-full"
-          placeholder="Search tasks.."
+          placeholder="Search groups.."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           //we have to implement fetchAll for onClick on input field
         />
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-r-md"
+          className="px-4 py-2 bg-blue-500 text-white rounded-r-md md:min-w-[5rem]"
           onClick={() => onSearch(searchText)}
         >
           Search
@@ -65,7 +65,7 @@ const SearchGroup = ({
       >
         <option value="byGroupName"> GroupName</option>
         <option value="byProjectName">ProjectName</option>
-        <option value="byStudentRoll">Low</option>
+        <option value="byStudentRoll">StudentRoll</option>
       </select>
     </div>
   );

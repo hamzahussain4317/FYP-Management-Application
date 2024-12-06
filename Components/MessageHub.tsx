@@ -57,11 +57,18 @@ const MessageHub = () => {
     setIsOpen(!isOpen);
   };
 
-  const [userId, setUserId] = useState(
-    sessionStorage.getItem("userId") !== undefined
-      ? sessionStorage.getItem("userId")
-      : ""
-  );
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    // Ensure this logic runs only on the client side
+    if (typeof window !== "undefined") {
+      const storedUserId = sessionStorage.getItem("userId");
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    }
+  }, []);
+
   const [recipientId, setRecipientId] = useState("");
   const [message, setMessage] = useState("");
   const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);

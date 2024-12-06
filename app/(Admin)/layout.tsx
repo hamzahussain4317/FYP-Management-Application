@@ -5,6 +5,7 @@ import "../globals.css";
 import NavBar from "@/Components/NavBar";
 import SideBar from "@/Components/SideBar";
 import MessageHub from "@/Components/MessageHub";
+import AdminContextProvider from "@/context/AdminContext";
 
 const itemDetails: sideBarItems[] = [
   { itemRoute: "profile", itemName: "Profile", itemIcon: "fa-user-tie" },
@@ -32,12 +33,14 @@ const profileDetails: navItems = {
 const id: string = "123";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="layout">
-      <NavBar profileDetails={profileDetails} id={id} />
-      <SideBar itemDetails={itemDetails} />
-      <main className="content">{children}</main>
-      <MessageHub />
-    </div>
+    <AdminContextProvider>
+      <div className="layout">
+        <NavBar profileDetails={profileDetails} id={id} />
+        <SideBar itemDetails={itemDetails} />
+        <main className="content">{children}</main>
+        <MessageHub />
+      </div>
+    </AdminContextProvider>
   );
 };
 

@@ -1,5 +1,5 @@
 type GroupDetails = {
-  groupID: Integer;
+  groupID: number;
   groupName: string;
   status: string;
   projectID: Integer;
