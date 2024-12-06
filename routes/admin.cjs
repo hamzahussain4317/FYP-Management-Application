@@ -6,8 +6,8 @@ const router = express.Router();
 const adminControllers = require("../controllers/adminControllers.js");
 
 router.post("/registerUser", isAdmin, adminControllers.registerUser);
-router.get("/getAllGroups", isAdmin, adminControllers.getAllGroupsDetails);
-router.get("/getGroupById/:groupID", isAdmin, adminControllers.getGroupById);
+router.get("/getAllGroups", adminControllers.getAllGroupsDetails);
+router.get("/getGroupById/:groupID",adminControllers.getGroupById);
 router.patch("/", isAdmin, adminControllers.patchGroupById);
 
 module.exports = router;

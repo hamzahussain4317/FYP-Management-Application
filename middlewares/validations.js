@@ -1,17 +1,21 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config(); // To load environment variables
 
-// Function to validate the token
-const isValidToken = (token) => {
+const validateUser = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const token = authHeader.split(" ")[1];
   try {
-    // verifying the token using the secret key from environment variables
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded; //returning the decoded payload
-    //If we want to return true or false return !!decoded;
+    req.user = decoded;
+
+    next();
   } catch (err) {
-    console.error("Token validation failed:", err.message);
-    return null;
+    //Forbidden
+    res.status(403).json({ message: "Invalid or expired token" });
   }
 };
 
-module.exports = { isValidToken };
+module.exports = { validateUser };

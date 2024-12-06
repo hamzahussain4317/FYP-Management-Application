@@ -110,13 +110,10 @@ const signIn = async (req, res) => {
   const { email, password, role } = req.body;
   let query;
   if (role === "student") {
-    query = ` SELECT registration.*, students.studentID  FROM registration LEFT JOIN students ON registration.email = students.email  WHERE registration.email = ? AND registration.userRole = ?;`;
+    query = ` SELECT registration.*, students.studentID as userId  FROM registration LEFT JOIN students ON registration.email = students.email  WHERE registration.email = ? AND registration.userRole = ?;`;
   } else if (role === "teacher") {
-    query = ` SELECT registration.*, teachers.teacherID  FROM registration   LEFT JOIN teachers ON registration.email = teachers.email  WHERE registration.email = ? AND registration.userRole = ?`;
+    query = ` SELECT registration.*, teachers.teacherID as userId FROM registration   LEFT JOIN teachers ON registration.email = teachers.email  WHERE registration.email = ? AND registration.userRole = ?`;
   }
-
-  // Query the database
-  // const query = "SELECT * FROM registration WHERE email = ? and userRole = ?";
 
   db.query(query, [email, role], async (err, results) => {
     if (err) {
@@ -127,7 +124,7 @@ const signIn = async (req, res) => {
     }
 
     const user = results[0];
-    
+
     if (!user) {
       return res
         .status(401)
@@ -135,10 +132,8 @@ const signIn = async (req, res) => {
     }
 
     let isMatch;
-    
+
     try {
-      
-      
       isMatch = await bycrpt.compare(password, user.hashedPassword);
     } catch (err) {
       console.log(err);
@@ -150,9 +145,13 @@ const signIn = async (req, res) => {
 
     //JWT generation
     const SECRET_KEY = process.env.SECRET_KEY;
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, role: user.userRole },
+      SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
     let userID;
     if (role === "student") {
       userID = user.studentID;
@@ -164,6 +163,7 @@ const signIn = async (req, res) => {
   });
 };
 
+const adminSignIn = () => {};
 //exporting module functions
 module.exports = {
   signUp,
