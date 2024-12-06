@@ -49,6 +49,7 @@ export default function StudentDashboard() {
   );
 
   useEffect(() => {
+    sessionStorage.removeItem("groupID");
     const storedUserId = sessionStorage.getItem("userId");
     console.log("Home Page:", storedUserId);
     if (storedUserId) {
@@ -71,6 +72,7 @@ export default function StudentDashboard() {
         const responseData = await response.json();
         setStudentDetails(responseData);
         setHomeDetails(responseData);
+        sessionStorage.setItem("groupID",studentDetails.student[1][0].groupID.toString())
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {

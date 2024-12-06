@@ -43,15 +43,54 @@ const supervisor = {
 };
 
 export default function Group() {
-  const { HomeDetails } = useAppWrapper();
+  const {  HomeDetails } = useAppWrapper();
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
+  const [groupId ,setGroupId]=useState<number>();
 
   const handleButton = () => {
     setIsButtonClicked(true);
   };
+
   useEffect(() => {
-    console.log(HomeDetails?.student[1][0]?.groupID);
+    
+    
   }, []);
+  useEffect(() => {
+    const storedGroupId = sessionStorage.getItem("groupID");
+    console.log("Group Id:",storedGroupId);
+    setGroupId(Number(storedGroupId));
+    if (HomeDetails?.student[1][0]?.groupID !== undefined) {
+      const storedUserId = sessionStorage.getItem("userId");
+      console.log("Home Page:", storedUserId);
+      if (storedUserId) {
+        getGroupDetails(Number(storedUserId));
+        
+      }
+    } 
+  }, []);
+  const getGroupDetails = async (userId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/student/GroupDetails/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("iloveyou: ",responseData);
+      } else if (response.status === 500) {
+        throw new Error("User already exist");
+      } else {
+        throw new Error("failed to signup");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   return (
     <section
@@ -59,7 +98,7 @@ export default function Group() {
         !isButtonClicked && !groupMember.length && "flex"
       }`}
     >
-      {HomeDetails?.student[1][0]?.groupID === undefined ? (
+      {groupId === undefined ? (
         <>
           {!isButtonClicked ? (
             <button
