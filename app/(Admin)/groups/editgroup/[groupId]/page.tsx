@@ -6,7 +6,7 @@ import EditGroupForm from "../../../Components/EditGroupForm";
 
 const EditGroup = () => {
   const { groupId } = useParams();
-  const { findByGroupId } = useAdminContext();
+  const { findByGroupId, error, isLoading } = useAdminContext();
   const [group, setGroup] = useState<GroupDetails[] | null>(null);
   useEffect(() => {
     if (groupId) {
@@ -16,7 +16,12 @@ const EditGroup = () => {
   }, [groupId, findByGroupId]); // Dependency array
   return (
     <section className="wrapper flex justify-center items-center">
-      {group ? <EditGroupForm group={group} /> : <p>No such Group Exist</p>}
+      {isLoading && !error && <p>Loading Group Data...</p>}
+      {!error && group?.length ? (
+        <EditGroupForm group={group} />
+      ) : (
+        <p>{error}</p>
+      )}
     </section>
   );
 };

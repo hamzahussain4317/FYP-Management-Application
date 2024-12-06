@@ -4,7 +4,7 @@ import EditStudentMarks from "./EditStudentMarks";
 
 const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg w-full max-w-3xl p-6 space-y-6">
+    <div className="bg-white shadow-md rounded-lg w-full max-w-5xl p-6 space-y-6">
       <h2 className="text-2xl font-bold text-center text-gray-700">
         Group Details
       </h2>

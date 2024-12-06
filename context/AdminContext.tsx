@@ -9,8 +9,12 @@ export default function AdminContextProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const [baseUrl, setBaseUrl] = useState<string>(
+    "http://localhost:3001/admin/"
+  );
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredGroups, setFilteredGroups] = useState<GroupDetails[]>([]);
-
   const [filterBy, setFilterBy] = useState<groupFilterBy>({
     byGroupName: true,
     byProjectName: false,
@@ -19,130 +23,50 @@ export default function AdminContextProvider({
 
   //   Handle Functionalities
 
-  const fetchAllGroupDetails = () => {
+  const fetchAllGroupDetails = async () => {
     //api
-    setFilteredGroups([
-      {
-        groupID: 0,
-        groupName: "Group 1",
-        status: "Completed",
-        projectID: 12,
-        projectName: "Food On the Go",
-        supervisorID: 100,
-        supervisorName: "Hamdan Vohra",
-        students: [
-          {
-            studentRoll: "22K-4318",
-            name: "Hamdan Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4317",
-            name: "Hamza Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4280",
-            name: "Ghulam Vohra",
-            midEvaluation: 10,
-            finalEvaluation: 0,
-          },
-        ],
-      },
-      {
-        groupID: 1,
-        groupName: "Group 2",
-        status: "Not Started",
-        projectID: 11,
-        projectName: "My Project",
-        supervisorID: 101,
-        supervisorName: "Daniyal Vohra",
-        students: [
-          {
-            studentRoll: "22K-4327",
-            name: "Saleh Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4218",
-            name: "Usama Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4380",
-            name: "Talha Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-        ],
-      },
-      {
-        groupID: 2,
-        groupName: "Group 3",
-        status: "Completed",
-        projectID: 10,
-        projectName: "Kitty",
-        supervisorID: 102,
-        supervisorName: "Junaid Vohra",
-        students: [
-          {
-            studentRoll: "22K-2122",
-            name: "Monis Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "23K-4317",
-            name: "Fahad Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4210",
-            name: "Ghulam Hussain",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-        ],
-      },
-      {
-        groupID: 3,
-        groupName: "Group 4",
-        status: "Completed",
-        projectID: 14,
-        projectName: "FYP Portal",
-        supervisorID: 105,
-        supervisorName: "Qadir Vohra",
-        students: [
-          {
-            studentRoll: "22K-4318",
-            name: "Shuja Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4317",
-            name: "Subhan Vohra",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-          {
-            studentRoll: "22K-4280",
-            name: "Talha Kahsan",
-            midEvaluation: 0,
-            finalEvaluation: 0,
-          },
-        ],
-      },
-    ]);
+    try {
+      const response = await fetch(`${baseUrl}/getAllGroups`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const responseResults = await response.json();
+        const { groupDetails = [] } = responseResults;
+        setFilteredGroups(groupDetails);
+      } else if (response.status === 500) {
+        setError("Some Internale server Error");
+      } else if (response.status === 404) {
+        setError("Groups Not Found");
+      }
+    } catch (error: unknown) {
+      console.log(error);
+    } finally {
+      setIsLoading(true);
+    }
   };
-  const findByGroupId = (groupId: number) => {
-    //fetch api by groupId
-    return filteredGroups.filter((group) => group.groupID === groupId);
+  const findByGroupId = async (groupId: number) => {
+    try {
+      const response = await fetch(`${baseUrl}/getGroupById/${groupId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        return await response.json();
+      } else if (response.status === 404) {
+        setError(`No group with ID: ${groupId} exist`);
+      }
+    } catch (err) {
+      throw new Error(`${err}`);
+    } finally {
+      setIsLoading(true);
+      console.log("Get data succesfully");
+    }
   };
 
   const handleSearch = (searchText: string) => {
@@ -175,6 +99,8 @@ export default function AdminContextProvider({
       value={{
         filteredGroups,
         filterBy,
+        error,
+        isLoading,
         fetchAllGroupDetails,
         findByGroupId,
         handleSearch,
