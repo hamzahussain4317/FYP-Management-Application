@@ -46,7 +46,8 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased layout`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
+
       >
         <AppWrapper>
         {children}

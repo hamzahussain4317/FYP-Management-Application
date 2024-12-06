@@ -1,8 +1,8 @@
 "use client";
 import GroupDetails from "../Components/GroupDetails";
 import CreateGroup from "../Components/CreateGroup";
-import { useState } from "react";
-
+import { useAppWrapper } from "@/context/AppDataContext";
+import { useState, useEffect } from "react";
 const groupMember: Student[] = [
   {
     id: 1,
@@ -34,7 +34,7 @@ const groupMember: Student[] = [
   // Add more students if needed
 ];
 
-const groupMembers: Student[] = [];
+// const groupMember: Student[] = [];
 const supervisor = {
   supervisorID: 1,
   supervisorName: "Saleh Vohra",
@@ -43,19 +43,23 @@ const supervisor = {
 };
 
 export default function Group() {
+  const { HomeDetails } = useAppWrapper();
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
 
   const handleButton = () => {
     setIsButtonClicked(true);
   };
+  useEffect(() => {
+    console.log(HomeDetails?.student[1][0]?.groupID);
+  }, []);
 
   return (
     <section
       className={`wrapper justify-center items-center h-full ${
-        !isButtonClicked && !groupMembers.length && "flex"
+        !isButtonClicked && !groupMember.length && "flex"
       }`}
     >
-      {groupMembers.length === 0 ? (
+      {HomeDetails?.student[1][0]?.groupID === undefined ? (
         <>
           {!isButtonClicked ? (
             <button
@@ -70,7 +74,7 @@ export default function Group() {
           )}
         </>
       ) : (
-        <GroupDetails groupMembers={groupMembers} supervisor={supervisor} />
+        <GroupDetails groupMembers={groupMember} supervisor={supervisor} />
       )}
     </section>
   );
