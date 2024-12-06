@@ -60,15 +60,6 @@ const GroupList = ({ group }: Props) => {
             {group.students.length}
           </p>
         </div>
-
-        {/* <div className="col-span-2">
-          <button
-          className="w-full text-center text-xl bg-green-500 rounded-lg hover:bg-blue-500"
-          onClick={() => handleEditGroup(group.groupID)}
-          >
-          Edit
-          </button>
-          </div> */}
       </div>
     </Link>
     // </>

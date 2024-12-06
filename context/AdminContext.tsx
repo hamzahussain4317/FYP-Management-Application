@@ -30,47 +30,113 @@ export default function AdminContextProvider({
         projectName: "Food On the Go",
         supervisorID: 100,
         supervisorName: "Hamdan Vohra",
-        students: ["22k-4318", "22k-4317", "22k-4280"],
+        students: [
+          {
+            studentRoll: "22K-4318",
+            name: "Hamdan Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4317",
+            name: "Hamza Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4280",
+            name: "Ghulam Vohra",
+            midEvaluation: 10,
+            finalEvaluation: 0,
+          },
+        ],
       },
       {
         groupID: 1,
         groupName: "Group 2",
         status: "Not Started",
-        projectID: 12,
-        projectName: "Food On the Go",
-        supervisorID: 100,
-        supervisorName: "Hamdan Vohra",
-        students: ["22k-4318", "22k-4317", "22k-4280"],
+        projectID: 11,
+        projectName: "My Project",
+        supervisorID: 101,
+        supervisorName: "Daniyal Vohra",
+        students: [
+          {
+            studentRoll: "22K-4327",
+            name: "Saleh Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4218",
+            name: "Usama Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4380",
+            name: "Talha Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+        ],
       },
       {
         groupID: 2,
         groupName: "Group 3",
         status: "Completed",
-        projectID: 12,
-        projectName: "Hello",
-        supervisorID: 100,
-        supervisorName: "Hamdan Vohra",
-        students: ["22k-4318", "22k-4317", "22k-4280"],
+        projectID: 10,
+        projectName: "Kitty",
+        supervisorID: 102,
+        supervisorName: "Junaid Vohra",
+        students: [
+          {
+            studentRoll: "22K-2122",
+            name: "Monis Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "23K-4317",
+            name: "Fahad Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4210",
+            name: "Ghulam Hussain",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+        ],
       },
       {
         groupID: 3,
         groupName: "Group 4",
         status: "Completed",
-        projectID: 12,
+        projectID: 14,
         projectName: "FYP Portal",
-        supervisorID: 100,
-        supervisorName: "Hamdan Vohra",
-        students: ["22k-4318", "22k-4317", "22k-4280"],
-      },
-      {
-        groupID: 4,
-        groupName: "Group 5",
-        status: "Completed",
-        projectID: 12,
-        projectName: "Food On the Go",
-        supervisorID: 100,
-        supervisorName: "Hamdan Vohra",
-        students: ["22k-4318", "22k-4317", "22k-4280"],
+        supervisorID: 105,
+        supervisorName: "Qadir Vohra",
+        students: [
+          {
+            studentRoll: "22K-4318",
+            name: "Shuja Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4317",
+            name: "Subhan Vohra",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+          {
+            studentRoll: "22K-4280",
+            name: "Talha Kahsan",
+            midEvaluation: 0,
+            finalEvaluation: 0,
+          },
+        ],
       },
     ]);
   };
@@ -92,8 +158,10 @@ export default function AdminContextProvider({
       );
     else if (filterBy?.byStudentRoll)
       filtered = filteredGroups.filter((group) =>
-        group.students.forEach((rollNo) =>
-          rollNo.toLowerCase().includes(searchText.toLowerCase()) ? true : false
+        group.students.forEach((student) =>
+          student.studentRoll.toLowerCase().includes(searchText.toLowerCase())
+            ? true
+            : false
         )
       );
     setFilteredGroups(filtered);

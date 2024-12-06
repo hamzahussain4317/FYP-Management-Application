@@ -6,7 +6,14 @@ type GroupDetails = {
   projectName: string;
   supervisorID: Integer;
   supervisorName: string;
-  students: string[];
+  students: FYPStudent[];
+};
+
+type FYPStudent = {
+  studentRoll: string;
+  name: string;
+  midEvaluation: number;
+  finalEvaluation: number;
 };
 
 interface groupFilterBy {
