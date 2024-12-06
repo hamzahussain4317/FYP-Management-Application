@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;
@@ -147,6 +151,14 @@ i {
 .loginBtn {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.blue-regular-button {
+  @apply rounded-xl border-[2px] border-gray-500 hover:border-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg hover:shadow-blue-200;
+}
+
+.orange-regular-button {
+  @apply rounded-xl border-[2px] border-gray-500 hover:border-[#f0a500] transition-all duration-200 hover:scale-110 hover:shadow-lg hover:shadow-blue-200;
 }
 
 /* Student DashBoard */
@@ -355,19 +367,17 @@ ul {
 }
 
 /* student Home page */
-.uni-info,
-.personal-info,
-.contact-info {
-  align-self: center;
-  border: 1px solid #0047ab;
-  height: 30vh;
-}
+
 .info {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  align-self: center;
+  border: 1px solid #0047ab;
+  height: 30vh;
+  border-radius: 0.75rem;
 }
 
 .info-body {
@@ -382,6 +392,8 @@ ul {
   align-items: center;
   text-align: center;
   background-color: #0047ab;
+  border-top: 2px;
+  border-radius: 0.75rem;
   width: 100%;
   height: 10vh;
   color: white;

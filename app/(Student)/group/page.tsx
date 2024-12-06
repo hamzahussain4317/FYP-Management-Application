@@ -64,7 +64,7 @@ export default function Group() {
           {!isButtonClicked ? (
             <button
               id="create-button"
-              className="rounded-xl h-[60px] w-[150px] bg-green-500 hover:bg-blue-500 hover:text-zinc-50 border-2px"
+              className="h-[60px] w-[150px] blue-regular-button"
               onClick={handleButton}
             >
               Create Group

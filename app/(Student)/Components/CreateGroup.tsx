@@ -8,8 +8,8 @@ import { createGroupSchema } from "@/Schemas/createGroup";
 interface group {
   groupName: string;
   email1: string;
-  email2:string;
-  email3:string;
+  email2: string;
+  email3: string;
 }
 
 const CreateGroup = () => {
@@ -84,7 +84,6 @@ const CreateGroup = () => {
                 {...register("email2")}
                 type="email"
                 className="input-field"
-               
                 placeholder="Enter group member's email"
                 required
               />
@@ -94,19 +93,18 @@ const CreateGroup = () => {
                 {...register("email3")}
                 type="email"
                 className="input-field"
-               
                 placeholder="Enter group member's email"
                 required
               />
               <div className="errors">{errors.email3?.message}</div>
               {errors.email1?.type === "refine" && (
-              <div className="errors">{errors.email1.message}</div>
-            )}
+                <div className="errors">{errors.email1.message}</div>
+              )}
             </div>
           </div>
           <div className="flex justify-center items-center">
             <button
-              className="p-3 border-gray-500 border-2 w-[120px] rounded-lg hover:border-green-500"
+              className="p-3 blue-regular-button w-[120px] hover:scale-95"
               onClick={handleSubmit(onSubmit)}
             >
               {isLoading ? "Loading..." : "Create"}
