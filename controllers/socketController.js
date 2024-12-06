@@ -11,14 +11,14 @@ const socketController = {
   // Send a message to a specific room
   sendMessage: async (socket, data) => {
     const {
-      senderID,
+      senderId,
       senderRole,
-      groupID,
+      groupId,
       messageType,
       textContent,
       filePath,
       imagePath,
-      receiverID,
+      receiverId,
       receiverRole,
     } = data;
 
@@ -39,19 +39,19 @@ const socketController = {
         "INSERT INTO Message (senderID, senderRole, groupID, contentID) VALUES (?, ?, ?, ?)";
 
       const [messageResult] = await db.execute(insertIntoMessage, [
-        senderID,
+        senderId,
         senderRole,
-        groupID,
+        groupId,
         contentID,
       ]);
 
-      const messageID = messageResult.insertId;
+      const messageId = messageResult.insertId;
 
       const insertIntoConversation =
         "INSERT INTO Conversation (conversationID, receiverID, receiverRole) VALUES (?, ?, ?)";
       const [conversationResults] = await db.execute(insertIntoConversation, [
-        messageID,
-        receiverID,
+        messageId,
+        receiverId,
         receiverRole,
       ]);
 
@@ -59,7 +59,7 @@ const socketController = {
       const insertIntoNotification =
         "INSERT INTO Notification (conversationID) VALUES (?,?,?)";
       const [notificationResults] = await db.execute(insertIntoNotification, [
-        messageID,
+        messageId,
       ]);
 
       const notificationId = notificationResults.insertId;
@@ -77,7 +77,7 @@ const socketController = {
 
       //these are the socket functionalititis fetched from client side
       const messageData = {
-        senderID,
+        senderId,
         senderRole,
         senderName,
         messageType,
@@ -87,25 +87,28 @@ const socketController = {
         createdAt: new Date(),
       };
 
-      const receipentSocketId = connectedUsers[receiverID];
-      if (receiverID) {
+      const receipentSocketId = connectedUsers[receiverId];
+      if (receiverId) {
         io.to(receipentSocketId).emit("receiveMessage", messageData);
       }
 
       const notificationContent = textContent
         ? textContent.length > 25
-          ? textContent.substr(0, 25)
+          ? textContent.substr(0, 15) || ".."
           : textContent
         : filePath
-        ? `File Provided From ${senderID}`
-        : `Image is provided from ${senderID}`;
+        ? `File Provided From ${senderId}`
+        : `Image is provided from ${senderId}`;
 
       const notificationData = {
-        messageID,
+        notificationId,
+        messageId,
+        senderName,
         notificationContent,
         createdAt: new Date(),
+        isRead: false,
       };
-      socket.io(receiverID).emit("sendNotification", notificationData);
+      socket.io(receiverId).emit("sendNotification", notificationData);
 
       console.log("Message sent successfully:", messageData);
     } catch (error) {

@@ -101,7 +101,6 @@ CREATE TABLE proposal (
 ALTER TABLE proposal ADD CONSTRAINT proposal_pk PRIMARY KEY(groupID,supervisorID);
 ALTER TABLE proposal ADD CONSTRAINT proposal_group_fk FOREIGN KEY(groupID) REFERENCES projectGroup(groupID);
 ALTER TABLE proposal ADD CONSTRAINT proposal_supervisor_fk FOREIGN KEY(supervisorID) REFERENCES supervisor(supervisorID);
-ALTER TABLE proposal ADD COLUMN proposalStatus boolean default 0;
 
 
 CREATE TABLE Project(
@@ -115,7 +114,6 @@ CREATE TABLE Project(
 );
 ALTER TABLE Project ADD CONSTRAINT Project_PK primary key(projectID);
 ALTER TABLE Project MODIFY COLUMN projectID INT AUTO_INCREMENT;
-Alter Table project drop column endDate;
 
 
 CREATE TABLE ProjectGroup(
@@ -138,6 +136,8 @@ ALTER TABLE ProjectGroup ADD CONSTRAINT group_supervisor_FK FOREIGN KEY (supervi
 ALTER TABLE ProjectGroup ADD CONSTRAINT group_project_FK FOREIGN KEY (projectID) REFERENCES Project(projectID);
 
 
+-- NOTIFICATION CENTER REALTED TABLES
+ 
 CREATE TABLE MessageContent (
     contentID INT,
     messageType ENUM('text', 'file', 'image') NOT NULL, 
@@ -201,9 +201,6 @@ CREATE table tasks(
  taskStatus boolean default null,
  assignedDate TIMESTAMP default current_timestamp
 );
-
-
-
 ALTER TABLE Tasks ADD CONSTRAINT tasks_PK PRIMARY KEY(taskID);
 ALTER TABLE Tasks MODIFY COLUMN taskID INT AUTO_INCREMENT;
 
@@ -306,24 +303,39 @@ DROP PROCEDURE IF EXISTS CheckAndCreateGroup;
 
 
 -- All drop queries 
-drop table notification;
-drop table message;
-drop table messageContent;
 drop table registration;
-drop table project;
-drop table projectgroup;
-drop table fypstudent;
-drop table supervisor;
-drop table teachers;
-drop table students;
+drop table notification;
 drop table tasks;
 drop table proposal;
 drop table supervisorRatings;
 drop view supervisorList;
-
+drop table conversation;
+drop table message;
+drop table messageContent;
+drop table projectgroup;
+drop table project;
+drop table fypstudent;
+drop table supervisor;
+drop table teachers;
+drop table students;
 
 
 -- Remaining Stuff 
+
+
+
+select * from messageContent;
+select * from message;
+select * from conversation;
+select * from notification;
+
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4318','Hamdan Vohra','CS','k224318@nu.edu.pk','02-10-2001');
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4317','Hamza Hussain','CS','k224317@nu.edu.pk','02-10-2001');
+
+insert into messageContent (messageType,textContent) values('text','This is my message content');
+insert into Message (senderId,senderRole,contentId)values(1,'student',1);
+insert into Conversation(conversationID,receiverID,receiverRole) values(1,2,'student');
+
 show triggers like "registration";
 drop trigger if exists before_registration_insert;
 
@@ -335,7 +347,7 @@ JOIN students s ON f.fypStudentID = s.studentID
 WHERE s.studentRoll = '22k-4317';
 
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE projectGroup;
+TRUNCATE TABLE messageCOntent;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -388,8 +400,6 @@ select p.projectID
 from fypStudent f
 join projectGroup p
 on f.groupID=p.groupID
-where f.fypStudentID=21;
-
-
+where f.fypStudentID=21
 
 

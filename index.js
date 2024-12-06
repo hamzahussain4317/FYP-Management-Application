@@ -12,6 +12,7 @@ const auth = require("./routes/auth");
 const student = require("./routes/student");
 const supervisor = require("./routes/supervisor");
 const messages = require("./routes/messages");
+const admin = require("./routes/admin.cjs");
 const { socketRouter } = require("./routes/socket.js");
 
 const app = express();
@@ -41,6 +42,7 @@ app.use("/auth", auth);
 app.use("/student", student);
 app.use("/supervisor", supervisor);
 app.use("/messages", messages);
+app.use("/admin", admin);
 
 // middleware for authentication for socket
 io.use((socket, next) => {
