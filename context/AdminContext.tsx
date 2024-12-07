@@ -1,4 +1,3 @@
-import GroupDetails from "@/app/(Student)/Components/GroupDetails";
 import { useContext, createContext } from "react";
 import { useState } from "react";
 
@@ -42,9 +41,15 @@ export default function AdminContextProvider({
         setError("Groups Not Found");
       }
     } catch (error: unknown) {
-      console.log(error);
+      if (error instanceof Error) {
+        // setError(error.message);
+
+        console.log(error);
+      } else {
+        console.log("Unknown error:", error);
+      }
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
   const findByGroupId = async (groupId: number) => {

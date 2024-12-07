@@ -19,10 +19,14 @@ export default function FYPGroups() {
   return (
     <section className="wrapper">
       <SearchGroup onFilterBy={handleFilterBy} onSearch={handleSearch} />
-      <div className="container mx-auto p-4">
+      <div
+        className={`container mx-auto p-4 ${
+          error.length ? "flex h-[500px] w-full" : ""
+        } items-center justify-center`}
+      >
         <ul className="flex flex-col justify-center space-y-6 w-full">
           {isLoading && !error && <p>Loading Groups List...</p>}
-          {!error && filteredGroups.length ? (
+          {!error.length && filteredGroups.length ? (
             filteredGroups.map((group: GroupDetails, index: number) => {
               return (
                 <li
@@ -36,7 +40,9 @@ export default function FYPGroups() {
               );
             })
           ) : (
-            <div>{error}</div>
+            <div className="text-center text-red-500 font-bold">
+              {error}. . .
+            </div>
           )}
         </ul>
       </div>
