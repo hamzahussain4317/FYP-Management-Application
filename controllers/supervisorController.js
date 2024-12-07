@@ -25,12 +25,10 @@ const addSupervisor = async (req, res) => {
         [firstName, lastName, departmentName, email, dob, imagePath],
         async (err, result) => {
           if (err) {
-            return res
-              .status(500)
-              .json({
-                message: "database query execution failed",
-                error: err.message,
-              });
+            return res.status(500).json({
+              message: "database query execution failed",
+              error: err.message,
+            });
           }
           return res
             .status(200)
@@ -166,9 +164,47 @@ const updateProposal = async (req, res) => {
   }
 };
 
+const getProposalRequests = async () => {
+  const { supervisorID } = req.params;
+  const getProposalQuery = `SELECT 
+  p.groupID,
+  p.supervisorID,
+  p.projectName,
+  g.groupName,
+  p.projectDomain,
+  p.projectDescription,
+  p.projectFile,
+  p.proposalStatus
+  FROM Proposal p
+  JOIN ProjectGroup g ON p.groupID = g.groupID
+  where p.supervisorID = ?`;
+
+  try {
+    const [resultRows] = db.promise().query(getProposalQuery, [supervisorID]);
+
+    const proposals = resultRows.map((row) => ({
+      groupID: row.groupID,
+      supervisorID: row.supervisorID,
+      projectName: row.projectName,
+      groupName: row.groupName,
+      projectDomain: row.projectDomain || null,
+      projectDescription: row.projectDescription,
+      projectFile: row.projectFile
+        ? Buffer.from(row.projectFile).toString("base64")
+        : null,
+      proposalStatus: row.proposalStatus ? "Accepted" : "Pending",
+    }));
+    res.status(200).json(proposals);
+  } catch (error) {
+    console.error("Error fetching proposals:", error);
+    res.status(500).json({ error: "Failed to fetch proposals" });
+  }
+};
+
 module.exports = {
+  addSupervisor,
   getProfile,
   getSupervisingGroups,
-  addSupervisor,
+  getProposalRequests,
   updateProposal,
 };
