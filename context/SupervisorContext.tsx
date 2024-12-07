@@ -28,7 +28,25 @@ export default function SupervisorContextProvider({
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result);
+        const destructedData: SupervisorProfile = {
+          personalInfo: {
+            name: `${result.supervisor.firstName} ${result.supervisor.lastName}`,
+            email: result.supervisor.email,
+            contactNumber: result.supervisor.contactNo,
+            department: result.supervisor.departmentName,
+          },
+          academicInfo: {
+            domain: result.supervisor.specializedDomain,
+            cgpaCriteria: result.supervisor.cgpaCriteria,
+            designation: result.supervisor.designation,
+            qualification: result.supervisor.qualification,
+          },
+          projectDetails: {
+            currentProjects: result.supervisor.No_Of_Projects,
+          },
+        };
+
+        setProfile(destructedData);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -98,6 +116,7 @@ export default function SupervisorContextProvider({
   return (
     <SupervisorContext.Provider
       value={{
+        profile,
         proposals,
         loading,
         error,

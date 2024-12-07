@@ -3,35 +3,31 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { useSupervisorContext } from "@/context/SupervisorContext";
 
-
-const supervisorDetails: SupervisorProfile = {
-  personalInfo: {
-    name: "Zain Noreen",
-    email: "zain.noreen.nu.edu.pk",
-    contactNumber: "+923042222123",
-    department: "Computer Science",
-  },
-  academicInfo: {
-    domain: "DataBase Design and Architecture",
-    cgpaCriteria: 3.5,
-    designation: "",
-    qualification: "",
-  },
-  projectDetails: {
-    currentProjects: 5,
-    completedProjects: 20,
-    supervisedProjects: 25,
-    groupsHandled: 20,
-  },
-};
+// const supervisorDetails: SupervisorProfile = {
+//   personalInfo: {
+//     name: "Zain Noreen",
+//     email: "zain.noreen.nu.edu.pk",
+//     contactNumber: "+923042222123",
+//     department: "Computer Science",
+//   },
+//   academicInfo: {
+//     domain: "DataBase Design and Architecture",
+//     cgpaCriteria: 3.5,
+//     designation: "",
+//     qualification: "",
+//   },
+//   projectDetails: {
+//     currentProjects: 5,
+//   },
+// };
 const Profile = () => {
-  const {fetchProfile}=useSupervisorContext();
-  const { personalInfo, academicInfo, projectDetails } = supervisorDetails;
+  const { profile, fetchProfile } = useSupervisorContext();
+  const { personalInfo, academicInfo, projectDetails } = profile;
 
-  useEffect(()=>{
-   const userId= sessionStorage.getItem("userId");
+  useEffect(() => {
+    const userId = sessionStorage.getItem("userId");
     fetchProfile(userId);
-  },[])
+  });
   return (
     <section className="wrapper">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
@@ -91,7 +87,7 @@ const Profile = () => {
             <strong>Currently Handling Projects:</strong>{" "}
             {projectDetails.currentProjects}
           </li>
-          <li>
+          {/* <li>
             <strong>Completed Projects:</strong>{" "}
             {projectDetails.completedProjects}
           </li>
@@ -101,7 +97,7 @@ const Profile = () => {
           </li>
           <li>
             <strong>Groups Handled:</strong> {projectDetails.groupsHandled}
-          </li>
+          </li> */}
         </ul>
       </div>
     </section>
