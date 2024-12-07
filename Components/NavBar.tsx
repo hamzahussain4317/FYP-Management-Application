@@ -1,3 +1,4 @@
+import { useAppWrapper } from "@/context/AppDataContext";
 import Image from "next/image";
 import NotificationList from "./NotificationList";
 
@@ -16,7 +17,11 @@ const toggleNotificationSection = () => {
   }
 };
 
+
 export default function NavBar({ profileDetails, id }: navBarProps) {
+  const { userName , profilePic } = useAppWrapper();
+  console.log(profilePic);
+
   const {
     dashboardName,
     profileName,
@@ -34,11 +39,11 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
         <li className="stdName">
           {gender === "M" ? (
             <p>
-              Hello Mr, <span>{profileName}</span>
+              Hello Mr, <span>{userName}</span>
             </p>
           ) : (
             <p>
-              Hello Ms, <span>{profileName}</span>
+              Hello Ms, <span>{userName}</span>
             </p>
           )}
         </li>

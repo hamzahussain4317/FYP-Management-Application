@@ -1,5 +1,6 @@
 "use client";
 import { useStudentContext } from "@/context/StudentContext";
+import { useAppWrapper } from "@/context/AppDataContext";
 import { useEffect, useState } from "react";
 const defaultStudentDetails: ApiResponse = {
   student: [
@@ -42,7 +43,8 @@ const defaultStudentDetails: ApiResponse = {
 };
 
 export default function StudentDashboard() {
-  const { setHomeDetails } = useStudentContext();
+  const { setHomeDetails} = useStudentContext();
+  const { setUserName,setProfilePic } = useAppWrapper();
   const [studentDetails, setStudentDetails] = useState<ApiResponse>(
     defaultStudentDetails
   );
@@ -73,6 +75,9 @@ export default function StudentDashboard() {
         // console.log("Response Data: ", responseData);
         setStudentDetails(responseData);
         setHomeDetails(responseData);
+        console.log(responseData.student[0][0].studentName);
+        setUserName(responseData.student[0][0].studentName);
+        setProfilePic(responseData.student[0][0].profilePic);
 
         // console.log("std details grouId: ", responseData.student[1][0].groupID);
         sessionStorage.setItem(

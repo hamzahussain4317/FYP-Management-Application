@@ -34,3 +34,33 @@ interface ProjectGroup {
 interface ApiResponse {
   student: [StudentHome[], ProjectGroup[]]; // Two arrays, one for student data, another for project and group data
 }
+
+interface group {
+  studentID: number;
+  studentRoll: string;
+  studentName: string;
+  email: string;
+  dateOfBirth: string;
+  profilePic: string;
+  departmentName: string;
+  section: string | null;
+  batch: string | null;
+  campus: string | null;
+}
+
+interface supervisor{
+  teacherID: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+  profilePic: string;
+  departmentName: string;
+  contactNo: string | null;
+  designation: string | null;
+  qualification: string | null;
+}
+
+interface groupDetails{
+  student:[group[],supervisor[]];
+}

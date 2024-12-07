@@ -9,9 +9,11 @@ export default function AppWrapper({
   children: React.ReactNode;
 }) {
   const [userId, setUserId] = useState<number>();
+  const [userName , setUserName]=useState<string>();
+  const [profilePic , setProfilePic]=useState<string>();
   return (
     <AppDataContext.Provider
-      value={{ userId, setUserId}}
+      value={{ userId, setUserId , userName , setUserName , profilePic , setProfilePic}}
     >
       {children}
     </AppDataContext.Provider>
