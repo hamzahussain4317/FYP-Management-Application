@@ -1,4 +1,4 @@
-import { useContext, createContext } from "react";
+import { useContext, createContext, useEffect } from "react";
 import { useState } from "react";
 
 const SupervisorContext = createContext<any>(undefined);
@@ -12,11 +12,18 @@ export default function SupervisorContextProvider({
   const [baseUrl, setBaseUrl] = useState<string>(
     "http://localhost:3001/supervisor/"
   );
+  const [supervisorId, setSupervisorId] = useState();
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [groups, setGroups] = useState<groupDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<SupervisorProfile>();
 
+  useEffect(() => {
+    const userId = sessionStorage.getItem("userId");
+    setSupervisorId(userId);
+  });
+  // Profile Fetching
   const fetchProfile = async (userId: number) => {
     try {
       const response = await fetch(`${baseUrl}/getProfile/${userId}`, {
@@ -53,6 +60,37 @@ export default function SupervisorContextProvider({
         console.log("Unknown error:", error);
       }
     } finally {
+      setError(null);
+      setLoading(false);
+    }
+  };
+
+  //Groups Fetching
+  const fetchGroups = async (userId: number) => {
+    try {
+      const response = await fetch(
+        `${baseUrl}/getSupervisingGroups/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+        console.log(error);
+      } else {
+        console.log("Unknown error:", error);
+      }
+    } finally {
+      setError(null);
       setLoading(false);
     }
   };
@@ -113,11 +151,14 @@ export default function SupervisorContextProvider({
   return (
     <SupervisorContext.Provider
       value={{
+        supervisorId,
         profile,
+        groups,
         proposals,
         loading,
         error,
         fetchProfile,
+        fetchGroups,
         getProposals,
         handleReject,
         handleAccept,
