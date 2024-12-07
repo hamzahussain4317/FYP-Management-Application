@@ -51,9 +51,10 @@ export default function LoginForm() {
       });
       if (response.ok) {
         const responseData = await response.json();
-        console.log("userID hamza", responseData.userID);
-        setUserId(responseData.userID);
-        sessionStorage.setItem("userId",responseData.userID)
+        console.log("userID hamza", responseData);
+        setUserId(responseData.userId);
+        sessionStorage.setItem("userId",responseData.userId)
+        console.log(sessionStorage.getItem("userId"));
         router.push("/Home");
       } else if (response.status === 500) {
         throw new Error("User already exist");
