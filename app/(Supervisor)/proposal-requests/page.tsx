@@ -4,7 +4,8 @@ import { useSupervisorContext } from "@/context/SupervisorContext";
 
 const ProposalRequestsList = () => {
   const {
-    getProposals,
+    fetchProposalRequests,
+    supervisorId,
     handleAccept,
     handleReject,
     proposals,
@@ -13,7 +14,7 @@ const ProposalRequestsList = () => {
   } = useSupervisorContext();
 
   useEffect(() => {
-    getProposals();
+    fetchProposalRequests(supervisorId);
   }, []);
 
   const handleDownloadFile = (proposal: Proposal) => {
