@@ -22,7 +22,7 @@ export default function SupervisorContextProvider({
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
     setSupervisorId(Number(userId));
-  },[]);
+  }, []);
   // Profile Fetching
   const fetchProfile = async (userId: number) => {
     try {
