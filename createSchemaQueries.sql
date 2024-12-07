@@ -16,8 +16,8 @@ ALTER TABLE Students  MODIFY COLUMN studentID INT AUTO_INCREMENT;
 CREATE TABLE FYPStudent(
 	fypStudentID INT NOT NULL,
     groupID INT DEFAULT NULL,
-    midEvaluation DOUBLE DEFAULT 0.0,
-    finalEvaluation DOUBLE DEFAULT 0.0,
+    midEvaluation DOUBLE DEFAULT NULL,
+    finalEvaluation DOUBLE DEFAULT NULL,
     isLeader boolean DEFAULT 0
 );
 ALTER TABLE FYPStudent ADD CONSTRAINT fypStudent_PK PRIMARY KEY(fypStudentID);
