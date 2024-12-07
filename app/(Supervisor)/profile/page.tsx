@@ -12,7 +12,8 @@ const supervisorDetails: SupervisorProfile = {
   academicInfo: {
     domain: "DataBase Design and Architecture",
     cgpaCriteria: 3.5,
-    experience: "5 years of teaching and research",
+    designation: "",
+    qualification: "",
   },
   projectDetails: {
     currentProjects: 5,
