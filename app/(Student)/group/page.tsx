@@ -1,7 +1,7 @@
 "use client";
 import GroupDetails from "../Components/GroupDetails";
 import CreateGroup from "../Components/CreateGroup";
-import { useAppWrapper } from "@/context/AppDataContext";
+import { useStudentContext } from "@/context/StudentContext";
 import { useState, useEffect } from "react";
 const groupMember: Student[] = [
   {
@@ -43,7 +43,7 @@ const supervisor = {
 };
 
 export default function Group() {
-  const {  HomeDetails } = useAppWrapper();
+  const {  HomeDetails } = useStudentContext();
   const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
   const [groupId ,setGroupId]=useState<number>();
 
@@ -58,6 +58,7 @@ export default function Group() {
   useEffect(() => {
     const storedGroupId = sessionStorage.getItem("groupID");
     console.log("Group Id:",storedGroupId);
+    console.log("global HomeDetails: ",HomeDetails);
     setGroupId(Number(storedGroupId));
     if (HomeDetails?.student[1][0]?.groupID !== undefined) {
       const storedUserId = sessionStorage.getItem("userId");
