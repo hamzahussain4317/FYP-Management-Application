@@ -152,14 +152,9 @@ const signIn = async (req, res) => {
         expiresIn: "1h",
       }
     );
-    let userID;
-    if (role === "student") {
-      userID = user.studentID;
-    } else if (role === "teacher") {
-      userID = user.teacherID;
-    }
-
-    res.status(200).json({ message: "Logged in successfully", token, userID });
+    
+    const userId=user.userId
+    res.status(201).json({ message: "Logged in successfully", token, userId });
   });
 };
 
