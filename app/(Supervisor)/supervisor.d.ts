@@ -21,9 +21,6 @@ interface SupervisorProfile {
   };
   projectDetails: {
     currentProjects: number;
-    completedProjects: number;
-    supervisedProjects: number;
-    groupsHandled: number;
   };
 }
 
