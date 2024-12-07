@@ -15,6 +15,31 @@ export default function SupervisorContextProvider({
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<SupervisorProfile>();
+
+  const fetchProfile = async (userId: number) => {
+    try {
+      const response = await fetch(`${baseUrl}/getProfile/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log(response);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+        console.log(error);
+      } else {
+        console.log("Unknown error:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   async function fetchProposals(): Promise<Proposal[]> {
     // here will be the fetch request for API
@@ -75,6 +100,7 @@ export default function SupervisorContextProvider({
         proposals,
         loading,
         error,
+        fetchProfile,
         getProposals,
         handleReject,
         handleAccept,

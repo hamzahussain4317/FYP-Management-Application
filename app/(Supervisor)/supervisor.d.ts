@@ -16,7 +16,8 @@ interface SupervisorProfile {
   academicInfo: {
     domain: string;
     cgpaCriteria: number;
-    experience: string;
+    designation: string;
+    qualification: string;
   };
   projectDetails: {
     currentProjects: number;

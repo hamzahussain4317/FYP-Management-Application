@@ -26,7 +26,7 @@ const ProposalRequestsList = () => {
   return (
     <div className="proposal-list-container max-w-4xl mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Proposals</h2>
-      {proposals.map((proposal) => (
+      {proposals.map((proposal: Proposal) => (
         <div
           key={proposal.groupID}
           className="proposal-card border border-gray-200 rounded-lg p-6 mb-4 shadow-sm hover:shadow-md transition-shadow"
