@@ -8,6 +8,7 @@ CREATE TABLE Students(
     profilePic MEDIUMBLOB DEFAULT NULL,
     section varchar(10),
     batch varchar(10),
+    campus VARCHAR (10),
 	CONSTRAINT emailValidation CHECK (email REGEXP '^k[0-9]{6}@nu\\.edu\\.pk$' OR email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$'),
 	CONSTRAINT idValidation CHECK(studentRoll REGEXP '^[0-9]{2}[K | L | I | P ]\\-[0-9]{4}$')
 );
