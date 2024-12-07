@@ -46,7 +46,7 @@ const getProfile = async (req, res) => {
   const { stdID } = req.params;
 
   const query = `SELECT * FROM fypstudent f JOIN students s ON f.fypStudentID = s.studentID WHERE f.fypStudentID = ?;
-  select f.groupID, p.* , pg.* from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID where f.fypStudentID=?;`;
+  select f.groupID, p.* , pg.* , t.email , CONCAT(t.firstName, ' ', t.lastName) AS fullName from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID join supervisor s on pg.supervisorID=s.supervisorID join teachers t on t.teacherID = s.supervisorID where f.fypStudentID=?;`;
   db.query(query, [stdID, stdID], async (err, result) => {
     if (err) {
       console.error("Error executing query: ", err);
@@ -57,7 +57,7 @@ const getProfile = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
-    // console.log(result);
+   
     if (result[0][0]?.profilePic) {
       result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
         result[0][0].profilePic
@@ -129,8 +129,9 @@ const assignGroup = async (req, res) => {
 
 const getGroupDetails = async (req, res) => {
   const { stdID } = req.params;
-  const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?))`;
-  db.query(groupDetailsQuery, [stdID], async (err, result) => {
+  const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?));
+  select t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
+  db.query(groupDetailsQuery, [stdID,stdID], async (err, result) => {
     if (err) {
       return res
         .status(500)
@@ -141,6 +142,25 @@ const getGroupDetails = async (req, res) => {
         .status(404)
         .json({ message: "Student does not have any group" });
     }
+    
+    result[0].map((item,index)=>{
+      if (result[0][index]?.profilePic) {
+        result[0][index].profilePic = `data:image/jpeg;base64,${Buffer.from(
+          result[0][index].profilePic
+        ).toString("base64")}`;
+      }
+    });
+    if (result[1][0]?.profilePic) {
+      result[1][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
+        result[1][0].profilePic
+      ).toString("base64")}`;
+    }
+      
+    
+    
+    console.log(result[0][2].profilePic);
+    console.log(result[0][2].studentName);
+    
     return res.status(200).json({ student: result });
   });
 };
