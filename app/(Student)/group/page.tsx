@@ -60,7 +60,7 @@ export default function Group() {
     console.log("Group Id:",storedGroupId);
     console.log("global HomeDetails: ",HomeDetails);
     setGroupId(Number(storedGroupId));
-    if (HomeDetails?.student[1][0]?.groupID !== undefined) {
+    if (HomeDetails?.student[1][0]?.groupID !== null) {
       const storedUserId = sessionStorage.getItem("userId");
       console.log("Home Page:", storedUserId);
       if (storedUserId) {
@@ -99,7 +99,7 @@ export default function Group() {
         !isButtonClicked && !groupMember.length && "flex"
       }`}
     >
-      {groupId === undefined ? (
+      {sessionStorage.getItem("groupID") === null ? (
         <>
           {!isButtonClicked ? (
             <button

@@ -1,6 +1,8 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { useSupervisorContext } from "@/context/SupervisorContext";
+
 
 const supervisorDetails: SupervisorProfile = {
   personalInfo: {
@@ -23,8 +25,13 @@ const supervisorDetails: SupervisorProfile = {
   },
 };
 const Profile = () => {
+  const {fetchProfile}=useSupervisorContext();
   const { personalInfo, academicInfo, projectDetails } = supervisorDetails;
 
+  useEffect(()=>{
+   const userId= sessionStorage.getItem("userId");
+    fetchProfile(userId);
+  },[])
   return (
     <section className="wrapper">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">

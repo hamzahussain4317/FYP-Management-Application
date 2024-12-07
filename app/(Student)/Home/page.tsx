@@ -50,7 +50,7 @@ export default function StudentDashboard() {
   useEffect(() => {
     sessionStorage.removeItem("groupID");
     const storedUserId = sessionStorage.getItem("userId");
-    console.log("Home Page:", storedUserId);
+    // console.log("Home Page:", storedUserId);
     console.log("studentDetails is this: ", studentDetails);
     if (storedUserId) {
       getProfile(Number(storedUserId));
@@ -70,16 +70,16 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        console.log("Response Data: ", responseData);
+        // console.log("Response Data: ", responseData);
         setStudentDetails(responseData);
         setHomeDetails(responseData);
 
-        console.log("std details grouId: ", responseData.student[1][0].groupID);
+        // console.log("std details grouId: ", responseData.student[1][0].groupID);
         sessionStorage.setItem(
           "groupID",
           responseData.student[1][0].groupID.toString()
         );
-        console.log("group Id is this: ", sessionStorage.getItem("groupID"));
+        // console.log("group Id is this: ", sessionStorage.getItem("groupID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {

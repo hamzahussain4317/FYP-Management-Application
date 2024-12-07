@@ -27,7 +27,8 @@ export default function SupervisorContextProvider({
       });
 
       if (response.ok) {
-        console.log(response);
+        const result = await response.json();
+        console.log(result);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
