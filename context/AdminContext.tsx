@@ -21,7 +21,6 @@ export default function AdminContextProvider({
   });
 
   //   Handle Functionalities
-
   const fetchAllGroupDetails = async () => {
     //api
     try {
@@ -42,8 +41,7 @@ export default function AdminContextProvider({
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        // setError(error.message);
-
+        setError(error.message);
         console.log(error);
       } else {
         console.log("Unknown error:", error);
