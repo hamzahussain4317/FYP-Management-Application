@@ -51,6 +51,7 @@ export default function StudentDashboard() {
     sessionStorage.removeItem("groupID");
     const storedUserId = sessionStorage.getItem("userId");
     console.log("Home Page:", storedUserId);
+    console.log("studentDetails is this: ", studentDetails);
     if (storedUserId) {
       getProfile(Number(storedUserId));
     }
@@ -69,14 +70,14 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData)
+        console.log("Response Data: ", responseData);
         setStudentDetails(responseData);
-
         setHomeDetails(responseData);
-        console.log("std details grouId: ",studentDetails.student[1][0].groupID);
+
+        console.log("std details grouId: ", responseData.student[1][0].groupID);
         sessionStorage.setItem(
           "groupID",
-          studentDetails.student[1][0].groupID.toString()
+          responseData.student[1][0].groupID.toString()
         );
         console.log("group Id is this: ", sessionStorage.getItem("groupID"));
       } else if (response.status === 500) {
@@ -191,11 +192,15 @@ export default function StudentDashboard() {
         <div id="marks-body" className="marks-info info-body">
           <h3>
             <span>Mid Evaluation Marks:</span>{" "}
-            {studentDetails.student[0][0].midEvaluation}
+            {studentDetails.student[0][0].midEvaluation === null
+              ? "-"
+              : studentDetails.student[0][0].midEvaluation}
           </h3>
           <h3>
             <span>Final Evaluation Marks:</span>{" "}
-            {studentDetails.student[0][0].finalEvaluation}
+            {studentDetails.student[0][0].finalEvaluation === null
+              ? "-"
+              : studentDetails.student[0][0].finalEvaluation}
           </h3>
         </div>
       </div>{" "}

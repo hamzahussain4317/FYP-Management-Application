@@ -9,10 +9,9 @@ export default function AppWrapper({
   children: React.ReactNode;
 }) {
   const [userId, setUserId] = useState<number>();
-  const [HomeDetails, setHomeDetails] = useState<ApiResponse>();
   return (
     <AppDataContext.Provider
-      value={{ userId, setUserId, HomeDetails, setHomeDetails }}
+      value={{ userId, setUserId}}
     >
       {children}
     </AppDataContext.Provider>
