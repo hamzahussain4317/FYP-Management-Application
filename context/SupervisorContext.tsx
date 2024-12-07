@@ -12,7 +12,7 @@ export default function SupervisorContextProvider({
   const [baseUrl, setBaseUrl] = useState<string>(
     "http://localhost:3001/supervisor/"
   );
-  const [supervisorId, setSupervisorId] = useState();
+  const [supervisorId, setSupervisorId] = useState<number>();
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [groups, setGroups] = useState<groupDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -21,8 +21,8 @@ export default function SupervisorContextProvider({
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
-    setSupervisorId(userId);
-  });
+    setSupervisorId(Number(userId));
+  },[]);
   // Profile Fetching
   const fetchProfile = async (userId: number) => {
     try {

@@ -4,37 +4,6 @@ import Link from "next/link";
 import { useSupervisorContext } from "@/context/SupervisorContext";
 
 export default function ManageGroups() {
-  // const [groups, setGroups] = useState<groupDetails[]>([
-  //   {
-  //     groupId: 1,
-  //     groupName: "Techno Gamers",
-  //     studentRoll: ["22k-4318", "22k-4317", "22k-4316"],
-  //     projectName: "FYP Portal",
-  //     status: "In Progress",
-  //   },
-  //   {
-  //     groupId: 2,
-  //     groupName: "Techno Gamers",
-  //     studentRoll: ["22k-4319", "22k-4311", "22k-4312"],
-  //     projectName: "Zameen.com",
-  //     status: "In Progress",
-  //   },
-  //   {
-  //     groupId: 3,
-  //     groupName: "Techno Gamers",
-  //     studentRoll: ["22k-4280", "22k-4234", "22k-4270"],
-  //     projectName: "Careem",
-  //     status: "Not Started",
-  //   },
-  //   {
-  //     groupId: 4,
-  //     groupName: "Techno Gamers",
-  //     studentRoll: ["22k-4123", "22k-4601", "22k-4449"],
-  //     projectName: "Food On the GO",
-  //     status: "Completed",
-  //   },
-  // ]);
-
   const { supervisorId, fetchGroups, groups, isLoading, error } =
     useSupervisorContext();
 
@@ -47,9 +16,9 @@ export default function ManageGroups() {
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           Supervisor&apos;s Groups
         </h1>
-        {error && `${error}`}
-        {!isLoading &&
-          !error &&
+        {error && <div className="text-red-500 font-bold">{error}</div>}
+        {isLoading && <div>Loading Groups...</div>}
+        {!isLoading && !error && groups.length ? (
           groups.map((group: groupDetails) => {
             return (
               <div key={group.groupId} className="grid mb-4">
@@ -100,7 +69,10 @@ export default function ManageGroups() {
                 </div>
               </div>
             );
-          })}
+          })
+        ) : (
+          <div>No Supervised Groups Yet</div>
+        )}
       </div>
     </section>
   );
