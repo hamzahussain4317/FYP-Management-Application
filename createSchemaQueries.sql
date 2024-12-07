@@ -6,14 +6,14 @@ CREATE TABLE Students(
 	email VARCHAR(30) NOT NULL UNIQUE,
 	dateOfBirth DATE ,
     profilePic MEDIUMBLOB DEFAULT NULL,
+    section varchar(10),
+    batch varchar(10),
+    campus VARCHAR (10),
 	CONSTRAINT emailValidation CHECK (email REGEXP '^k[0-9]{6}@nu\\.edu\\.pk$' OR email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$'),
 	CONSTRAINT idValidation CHECK(studentRoll REGEXP '^[0-9]{2}[K | L | I | P ]\\-[0-9]{4}$')
 );
 ALTER TABLE Students ADD CONSTRAINT students_PK PRIMARY KEY(studentID);
 ALTER TABLE Students  MODIFY COLUMN studentID INT AUTO_INCREMENT;
-alter table Students add column section varchar(10);
-alter table Students add column batch varchar(10);
-
 
 CREATE TABLE FYPStudent(
 	fypStudentID INT NOT NULL,
@@ -26,9 +26,10 @@ ALTER TABLE FYPStudent ADD CONSTRAINT fypStudent_PK PRIMARY KEY(fypStudentID);
 ALTER TABLE FYPStudent MODIFY COLUMN fypStudentID INT AUTO_INCREMENT;
 
 
-
 -- Foreign Key Constraints
 ALTER TABLE FYPStudent ADD CONSTRAINT fypstd_student_FK FOREIGN KEY(fypStudentID) REFERENCES Students(studentID);
+ALTER TABLE FYPStudent ADD CONSTRAINT fypstd_group_FK FOREIGN KEY (groupId) REFERENCES ProjectGroup(groupID) ON DELETE SET NULL;
+
 
 CREATE TABLE Teachers(
 	teacherID INT NOT NULL,
@@ -38,14 +39,13 @@ CREATE TABLE Teachers(
 	email VARCHAR(30) NOT NULL UNIQUE,
 	dateOfBirth DATE ,
     profilePic MEDIUMBLOB ,
+    contactNo varchar(11),
+    qualification varchar(25),
+    designation varchar(25),
 	CONSTRAINT teacherEmailValidation CHECK (email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$')
 );
 ALTER TABLE Teachers ADD CONSTRAINT teacher_PK PRIMARY KEY(teacherID);
 ALTER TABLE Teachers  MODIFY COLUMN teacherID INT AUTO_INCREMENT;
-
-Alter table Teachers add column contactNo varchar(11);
-Alter table Teachers add column designation varchar(25);
-alter table Teachers add column qualification varchar(25);
 
 
 
@@ -107,7 +107,6 @@ CREATE TABLE proposal (
 ALTER TABLE proposal ADD CONSTRAINT proposal_pk PRIMARY KEY(groupID,supervisorID);
 ALTER TABLE proposal ADD CONSTRAINT proposal_group_fk FOREIGN KEY(groupID) REFERENCES projectGroup(groupID);
 ALTER TABLE proposal ADD CONSTRAINT proposal_supervisor_fk FOREIGN KEY(supervisorID) REFERENCES supervisor(supervisorID);
-ALTER TABLE proposal ADD COLUMN proposalStatus boolean default 0;
 
 
 CREATE TABLE Project(
@@ -121,7 +120,6 @@ CREATE TABLE Project(
 );
 ALTER TABLE Project ADD CONSTRAINT Project_PK primary key(projectID);
 ALTER TABLE Project MODIFY COLUMN projectID INT AUTO_INCREMENT;
-Alter Table project drop column endDate;
 
 
 CREATE TABLE ProjectGroup(
@@ -144,6 +142,8 @@ ALTER TABLE ProjectGroup ADD CONSTRAINT group_supervisor_FK FOREIGN KEY (supervi
 ALTER TABLE ProjectGroup ADD CONSTRAINT group_project_FK FOREIGN KEY (projectID) REFERENCES Project(projectID);
 
 
+-- NOTIFICATION CENTER REALTED TABLES
+ 
 CREATE TABLE MessageContent (
     contentID INT,
     messageType ENUM('text', 'file', 'image') NOT NULL, 
@@ -207,17 +207,13 @@ CREATE table tasks(
  taskStatus boolean default null,
  assignedDate TIMESTAMP default current_timestamp
 );
-
-
-
 ALTER TABLE Tasks ADD CONSTRAINT tasks_PK PRIMARY KEY(taskID);
 ALTER TABLE Tasks MODIFY COLUMN taskID INT AUTO_INCREMENT;
 
 ALTER TABLE Tasks ADD CONSTRAINT tasks_project_FK FOREIGN KEY(projectID) REFERENCES Project(projectID);
 ALTER TABLE Tasks ADD CONSTRAINT tasks_fypstudent_FK FOREIGN KEY(fypStudentID) REFERENCES fypStudent(fypStudentID);
 
-Alter table tasks drop column taskStatus;
-alter table tasks add column taskStatus boolean default 0;
+
 -- Triggers
 
 -- Trigger For Handling Registeration Check and Data feeding into fypstudent or supervisor
@@ -308,29 +304,65 @@ END$$
 
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS CheckAndCreateGroup;
+DELIMITER $$
+
+CREATE PROCEDURE UpdateStudentMarks(IN marksData JSON)
+BEGIN
+    UPDATE fypstudent s
+    JOIN JSON_TABLE(
+        marksData, 
+        '$[*]' 
+        COLUMNS (
+            studentId INT PATH '$.studentId',
+            mid NUMBER PATH '$.midEvaluation',
+            final NUMBER PATH '$.finalEvaluation'
+        )
+    ) jt ON s.fypStudentId = jt.studentId
+    SET s.midEvaluation = jt.mid and s.finalEvaluation = jt.final;
+END $$
+
+DELIMITER ;
+
 
 
 
 -- All drop queries 
-drop table notification;
-drop table message;
-drop table messageContent;
 drop table registration;
-drop table project;
-drop table projectgroup;
-drop table fypstudent;
-drop table supervisor;
-drop table teachers;
-drop table students;
+drop table notification;
 drop table tasks;
 drop table proposal;
 drop table supervisorRatings;
 drop view supervisorList;
-
+drop table conversation;
+drop table message;
+drop table messageContent;
+drop table projectgroup;
+drop table project;
+drop table fypstudent;
+drop table supervisor;
+drop table teachers;
+drop table students;
 
 
 -- Remaining Stuff 
+
+
+
+select * from messageContent;
+select * from message;
+select * from conversation;
+select * from notification;
+
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4318','Hamdan Vohra','CS','k224318@nu.edu.pk',curdate());
+insert into students (studentRoll,studentName,departmentName,email,dateOfBirth) values('22K-4317','Hamza Hussain','CS','k224317@nu.edu.pk',curdate());
+
+insert into teachers (firstName,lastName,departmentName,email,dateOfBirth) values('Zain','Noreen','Cs','zain.noreen@nu.edu.pk',curdate());
+
+
+insert into messageContent (messageType,textContent) values('text','This is my message content');
+insert into Message (senderId,senderRole,contentId)values(1,'student',1);
+insert into Conversation(conversationID,receiverID,receiverRole) values(1,2,'student');
+
 show triggers like "registration";
 drop trigger if exists before_registration_insert;
 
@@ -342,7 +374,7 @@ JOIN students s ON f.fypStudentID = s.studentID
 WHERE s.studentRoll = '22k-4317';
 
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE projectGroup;
+TRUNCATE TABLE messageCOntent;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -363,7 +395,6 @@ ON f.groupID=g.groupID
 JOIN Students s 
 ON s.studentID = f.fypStudentID
 AND g.supervisorID=5;
-
 
 insert into project (description,projectName,status) values("Hello this is my database project","fyp","Not Started");
 
@@ -397,89 +428,4 @@ join projectGroup p
 on f.groupID=p.groupID
 where f.fypStudentID=21;
 
-select * from tasks where fypStudentID=19;
-
-update tasks 
-set taskStatus=0
-where fypStudentID=17 and taskName="make admin backend";
-
-select * from supervisorlist;
-drop view supervisorlist;
-CREATE OR REPLACE VIEW SupervisorList AS
-        SELECT 
-          s.supervisorID,
-          t.firstName OR ' ' OR t.lastName as supervisorName,
-          t.departmentName as departmentName,
-          s.specializedDomain,
-          pg.groupsCount as groupsCount,
-          s.cgpaCriteria
-        FROM 
-          supervisor s
-        JOIN 
-          teachers t 
-        ON t.teacherID = s.supervisorID
-        LEFT JOIN 
-          (SELECT COUNT(groupID) as groupsCount,supervisorID from projectGroup GROUP BY supervisorID) pg
-        ON pg.supervisorID = s.supervisorID
-        LEFT JOIN 
-          (SELECT supervisorID,AVG(ratings) as ratings FROM supervisorRatings
-          GROUP BY supervisorID) r
-        ON r.supervisorID = s.supervisorID;
-        
-        
-        
--- On updating proposalStatus to 1 we have to ensure that 4 tables has to be updated 1-Supervisor(no of projects attribute incremented) 2-project(insert proposal data into project) 3-projectGroup(set projectId and supervisorID) 4-proposal status(1)
-
-DELIMITER $$
-
-CREATE TRIGGER before_update_proposalStatus
-BEFORE UPDATE ON Proposal
-FOR EACH ROW
-BEGIN
-      DECLARE currentProjects INT;
-      DECLARE recentProjectID INT;
-    -- Check if the proposalStatus is being updated to 1
-    IF NEW.proposalStatus = 1 AND OLD.proposalStatus != 1 THEN
-    
-    
-        SELECT No_Of_Projects INTO currentProjects
-        FROM Supervisor
-        WHERE supervisorID = NEW.supervisorID;
-
-        -- Step 3: Throw an exception if the supervisor already has 7 or more projects
-        IF currentProjects >= 7 THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Supervisor cannot supervise more than 7 projects';
-        END IF;
-    
-        -- Step 1: Increment the supervisor's number of projects
-        UPDATE Supervisor
-        SET No_Of_Projects = No_Of_Projects + 1
-        WHERE supervisorID = NEW.supervisorID;
-
-        -- Step 2: Insert proposal data into the Project table
-        INSERT INTO Project (description, projectName, startDate, status , createdAt)
-        VALUES ( NEW.projectDescription, NEW.projectName, NOW(),'In progress',NOW());
-        
-         SET recentProjectID = LAST_INSERT_ID();
-
-        -- Step 3: Update the ProjectGroup table with projectId and supervisorId
-        UPDATE ProjectGroup
-        SET projectID = recentProjectID, supervisorID = NEW.supervisorID
-        WHERE groupID = NEW.groupID;
-
-        -- Step 4: Ensure the Proposal table's status is set to 1 (already being done by the API call)
-        -- This step may not be necessary since the API updates the status
-    END IF;
-END$$
-
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS before_update_proposalStatus;
-
-
-update projectGroup
-set projectID=null,supervisorID=null
-where groupID=11;
-delete from project where projectID=2;
-select f.groupID, p.* , pg.*, t.firstName || ' ' ||t.lastName AS fullName , t.email from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID join supervisor s on s.supervisorID =pg.supervisorID join teachers t on s.supervisorID=t.teacherID  where f.fypStudentID=?;
+Select pg.groupId as groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as supervisorName,p.status as projectStatus ,s.studentId as studentId ,s.studentRoll as studentRoll,s.studentName,f.midEvaluation as midEvaluation,f.finalEvaluation as finalEvaluation from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId AND pg.groupId = ' ' JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId
