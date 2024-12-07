@@ -27,8 +27,8 @@ const io = new Server(server, {
 //middlewares for http-requests using express app
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST",
+    origin: "*",
+    methods: "GET,POST,PATCH",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
   })
