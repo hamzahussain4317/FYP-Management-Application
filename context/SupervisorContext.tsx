@@ -95,46 +95,62 @@ export default function SupervisorContextProvider({
     }
   };
 
-  async function fetchProposals(): Promise<Proposal[]> {
-    // here will be the fetch request for API
-    const proposals = [
-      {
-        groupID: 1,
-        supervisorID: 2,
-        projectName: "AI Chatbot",
-        groupName: "Team Alpha",
-        projectDomain: "AI",
-        projectDescription: "A chatbot using NLP.",
-        projectFile: null,
-        proposalStatus: false,
-      },
-      {
-        groupID: 2,
-        supervisorID: 2,
-        projectName: "E-commerce Platform",
-        groupName: "Team Beta",
-        projectDomain: "Web Development",
-        projectDescription: "A platform for online shopping.",
-        projectFile: "/files/ecommerce.pdf",
-        proposalStatus: true,
-      },
-    ];
-    return proposals;
-  }
+  // async function fetchProposals(): Promise<Proposal[]> {
+  //   // here will be the fetch request for API
+  //   const proposals = [
+  //     {
+  //       groupID: 1,
+  //       supervisorID: 2,
+  //       projectName: "AI Chatbot",
+  //       groupName: "Team Alpha",
+  //       projectDomain: "AI",
+  //       projectDescription: "A chatbot using NLP.",
+  //       projectFile: null,
+  //       proposalStatus: false,
+  //     },
+  //     {
+  //       groupID: 2,
+  //       supervisorID: 2,
+  //       projectName: "E-commerce Platform",
+  //       groupName: "Team Beta",
+  //       projectDomain: "Web Development",
+  //       projectDescription: "A platform for online shopping.",
+  //       projectFile: "/files/ecommerce.pdf",
+  //       proposalStatus: true,
+  //     },
+  //   ];
+  //   return proposals;
+  // }
 
-  const getProposals = async () => {
+  const fetchProposalRequests = async (userId: number) => {
     try {
       //here we will use real api route adn diminish the above function the above is just use for static data
-      const data = await fetchProposals();
-      // Sort proposals to show pending ones first
-      const pendingProposals = data.filter((p) => !p.proposalStatus);
-      const reviewedProposals = data.filter((p) => p.proposalStatus);
-      setProposals([...pendingProposals, ...reviewedProposals]);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      const response = await fetch(`${baseUrl}/getProposalRequests/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const results = await response.json();
+        const pendingProposals = results.filter(
+          (p: Proposal) => p.proposalStatus === "Pending"
+        );
+        const reviewedProposals = results.filter(
+          (p: Proposal) => p.proposalStatus !== "Pending"
+        );
+        setProposals([...pendingProposals, ...reviewedProposals]);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+        console.log(error);
+      } else {
+        console.log("Unknown error:", error);
+      }
     } finally {
+      setError(null);
       setLoading(false);
     }
   };
@@ -159,7 +175,7 @@ export default function SupervisorContextProvider({
         error,
         fetchProfile,
         fetchGroups,
-        getProposals,
+        fetchProposalRequests,
         handleReject,
         handleAccept,
       }}

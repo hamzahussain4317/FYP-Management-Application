@@ -16,6 +16,23 @@ const ProposalRequestsList = () => {
     getProposals();
   }, []);
 
+  const handleDownloadFile = (proposal: Proposal) => {
+    if (proposal.projectFile) {
+      // Create a Blob URL for the file
+      const blob = new Blob(
+        [Uint8Array.from(atob(proposal.projectFile), (c) => c.charCodeAt(0))],
+        { type: "application/octet-stream" }
+      );
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${proposal.projectName}_file`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } else {
+      alert("No file attached for this proposal.");
+    }
+  };
+
   if (loading)
     return (
       <div className="text-center text-gray-600">Loading proposals...</div>
@@ -46,16 +63,22 @@ const ProposalRequestsList = () => {
             {proposal.projectDescription}
           </p>
           {proposal.projectFile && (
-            <div className="mt-2">
-              <a
-                href={proposal.projectFile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:underline"
-              >
-                📎 View File
-              </a>
-            </div>
+            // <div className="mt-2">
+            //   <a
+            //     href={proposal.projectFile}
+            //     target="_blank"
+            //     rel="noopener noreferrer"
+            //     className="inline-flex items-center text-blue-600 hover:underline"
+            //   >
+            //     📎 View File
+            //   </a>
+            // </div>
+            <button
+              onClick={() => handleDownloadFile(proposal)}
+              className="download-button"
+            >
+              📎 Download File
+            </button>
           )}
           <div className="flex gap-4 mt-6">
             <button

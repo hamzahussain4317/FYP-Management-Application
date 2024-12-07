@@ -28,6 +28,6 @@ interface Proposal {
   groupName: string;
   projectDomain?: string;
   projectDescription: string;
-  projectFile?: string | null; // URL or null if no file
-  proposalStatus: boolean; // false for pending, true for reviewed
+  projectFile?: string | null;
+  proposalStatus: string;
 }
