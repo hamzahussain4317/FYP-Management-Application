@@ -19,9 +19,6 @@ interface SupervisorProfile {
     designation: string;
     qualification: string;
   };
-  projectDetails: {
-    currentProjects: number;
-  };
 }
 
 interface Proposal {

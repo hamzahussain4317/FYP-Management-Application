@@ -84,29 +84,6 @@ const Profile = () => {
               </button>
             </ul>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md bg-[#f9f9f9] min-h-[30vh] flex flex-col">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-              Project Details
-            </h2>
-            <ul className="space-y-4 text-gray-600 grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-0 min-w-full flex-grow">
-              <li className="mt-4">
-                <strong>Currently Handling Projects:</strong>{" "}
-                {`${profile.projectDetails.currentProjects || "None"}`}
-              </li>
-              {/* <li>
-            <strong>Completed Projects:</strong>{" "}
-            {projectDetails.completedProjects}
-            </li>
-            <li>
-            <strong>Supervised Projects:</strong>{" "}
-            {projectDetails.supervisedProjects}
-            </li>
-            <li>
-            <strong>Groups Handled:</strong> {projectDetails.groupsHandled}
-            </li> */}
-            </ul>
-          </div>
         </>):(
           <div>Loading....</div>
         )

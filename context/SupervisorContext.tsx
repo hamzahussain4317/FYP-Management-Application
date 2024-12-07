@@ -41,9 +41,6 @@ export default function SupervisorContextProvider({
             designation: result.supervisor.designation,
             qualification: result.supervisor.qualification,
           },
-          projectDetails: {
-            currentProjects: result.supervisor.No_Of_Projects,
-          },
         };
 
         setProfile(destructedData);
