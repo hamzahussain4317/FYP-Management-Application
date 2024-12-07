@@ -1,5 +1,5 @@
 "use client";
-import { useAppWrapper } from "@/context/AppDataContext";
+import { useStudentContext } from "@/context/StudentContext";
 import { useEffect, useState } from "react";
 const defaultStudentDetails: ApiResponse = {
   student: [
@@ -42,8 +42,7 @@ const defaultStudentDetails: ApiResponse = {
 };
 
 export default function StudentDashboard() {
-  const { setHomeDetails } = useAppWrapper();
-  // const [user, setUser] = useState(userId);
+  const { setHomeDetails } = useStudentContext();
   const [studentDetails, setStudentDetails] = useState<ApiResponse>(
     defaultStudentDetails
   );
@@ -76,7 +75,7 @@ export default function StudentDashboard() {
           "groupID",
           studentDetails.student[1][0].groupID.toString()
         );
-        console.log("group Id is this: ",sessionStorage.getItem("groupID"));
+        console.log("group Id is this: ", sessionStorage.getItem("groupID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {

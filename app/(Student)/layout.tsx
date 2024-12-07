@@ -5,6 +5,7 @@ import "../globals.css";
 import NavBar from "@/Components/NavBar";
 import SideBar from "@/Components/SideBar";
 import MessageHub from "@/Components/MessageHub";
+import StudentContextProvider from "@/context/StudentContext";
 
 const itemDetails: sideBarItems[] = [
   { itemRoute: "Home", itemName: "Home", itemIcon: "fa-house" },
@@ -51,12 +52,14 @@ const id: string = "12";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="layout relative">
-      <NavBar profileDetails={profileDetails} id={id} />
-      <SideBar itemDetails={itemDetails} />
-      <main className="content">{children}</main>
-      <MessageHub />
-    </div>
+    <StudentContextProvider>
+      <div className="layout relative">
+        <NavBar profileDetails={profileDetails} id={id} />
+        <SideBar itemDetails={itemDetails} />
+        <main className="content">{children}</main>
+        <MessageHub />
+      </div>
+    </StudentContextProvider>
   );
 };
 
