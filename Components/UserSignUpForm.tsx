@@ -4,58 +4,56 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { UserSignUpSchema } from "@/Schemas/UserSignUpData";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Error from "next/error";
 
 interface UserSignUpData {
-  userName:string;
+  userName: string;
   email: string;
   password: string;
   confirmPassword: string;
   role: "student" | "teacher";
-};
+}
 
 export default function UserSignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [success ,setSuccess]=useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const submitSignUpForm=async (data:UserSignUpData)=>{
-    try{
-      const response = await fetch ('http://localhost:3001/auth/signup',{
-        method: 'POST',
-        headers:{
-          'Content-Type': 'application/json',
+  const submitSignUpForm = async (data: UserSignUpData) => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: data.userName,
           password: data.password,
           email: data.email,
-          role: data.role
-      })
+          role: data.role,
+        }),
       });
-      if (response.ok){
+      if (response.ok) {
         const responseData = await response.json();
-                setSuccess(true);
-                console.log(responseData);
-                router.push('/login');
+        setSuccess(true);
+        console.log(responseData);
+        router.push("/login");
+      } else if (response.status === 500) {
+        throw new Error("User already exist");
+      } else if (response.status === 404) {
+        throw new Error("User does not exist");
+      } else {
+        throw new Error("failed to signup");
       }
-      else if (response.status === 500) {
-        throw new Error('User already exist')
-    }
-    else {
-        throw new Error("failed to signup")
-    }
-    }
-    catch (error:any) {
+    } catch (error: any) {
       setError("root", {
-          message: error?.message
-      })
+        message: error?.message,
+      });
+    }
+  };
 
-  }
-  }
- 
   const {
     register,
     handleSubmit,
@@ -77,7 +75,7 @@ export default function UserSignUpForm() {
   return (
     <div className="signUpForm">
       <form className="form">
-      <div className="field">
+        <div className="field">
           <div className="labelIcon">
             <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
             <label htmlFor="username">Your username</label>
@@ -88,7 +86,9 @@ export default function UserSignUpForm() {
             placeholder="enter your userName"
             className="email"
           />
-          {errors.userName && <div className="errors">{errors.userName.message}</div>}
+          {errors.userName && (
+            <div className="errors">{errors.userName.message}</div>
+          )}
         </div>
         <div className="field">
           <div className="labelIcon">
@@ -139,17 +139,27 @@ export default function UserSignUpForm() {
           </label>
           <div className="radioGroup">
             <div>
-              <input {...register("role")} type="radio" id="student" name="role" value="student" />
+              <input
+                {...register("role")}
+                type="radio"
+                id="student"
+                name="role"
+                value="student"
+              />
               <label htmlFor="student">Student</label>
             </div>
             <div>
-              <input {...register("role")} type="radio" id="teacher" name="role" value="teacher" />
+              <input
+                {...register("role")}
+                type="radio"
+                id="teacher"
+                name="role"
+                value="teacher"
+              />
               <label htmlFor="teacher">Teacher</label>
             </div>
           </div>
-          {errors.role && (
-            <div className="errors">{errors.role.message}</div>
-          )}
+          {errors.role && <div className="errors">{errors.role.message}</div>}
         </div>
         <div className="signUpBtn">
           <button onClick={handleSubmit(onSubmit)}>

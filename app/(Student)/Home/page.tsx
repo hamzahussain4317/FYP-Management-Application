@@ -76,6 +76,7 @@ export default function StudentDashboard() {
           "groupID",
           studentDetails.student[1][0].groupID.toString()
         );
+        console.log("group Id is this: ",sessionStorage.getItem("groupID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
