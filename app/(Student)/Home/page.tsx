@@ -72,7 +72,10 @@ export default function StudentDashboard() {
         const responseData = await response.json();
         setStudentDetails(responseData);
         setHomeDetails(responseData);
-        sessionStorage.setItem("groupID",studentDetails.student[1][0].groupID.toString())
+        sessionStorage.setItem(
+          "groupID",
+          studentDetails.student[1][0].groupID.toString()
+        );
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
@@ -118,10 +121,9 @@ export default function StudentDashboard() {
           </h3>
         </div>
       </div>
-
       {studentDetails.student[1][0]?.projectID !== undefined ? (
         <>
-          <div className="personal-info info">
+          <div className="info">
             <div className="info-head">
               <i className="fa-solid fa-person"></i>
               <h3>Project Details</h3>
@@ -145,7 +147,7 @@ export default function StudentDashboard() {
               </h3>
             </div>
           </div>
-          <div className="contact-info info">
+          <div className="info">
             <div className="info-head">
               <i className="fa-solid fa-phone"></i>
               <h3>Group and Supervisor information</h3>
@@ -172,8 +174,28 @@ export default function StudentDashboard() {
       ) : (
         <div>No project Started Yet</div>
       )}
-
-      <div className="footer"></div>
+      <div className="info">
+        <div
+          className="info-head"
+          onClick={() => {
+            const el: HTMLElement = document.getElementById("marks-body")!;
+            el.classList.toggle("hidden");
+          }}
+        >
+          <i className="fa-solid fa-check"></i>
+          <h3>Project Evaluation Marks</h3>
+        </div>
+        <div id="marks-body" className="marks-info info-body">
+          <h3>
+            <span>Mid Evaluation Marks:</span>{" "}
+            {studentDetails.student[0][0].midEvaluation}
+          </h3>
+          <h3>
+            <span>Final Evaluation Marks:</span>{" "}
+            {studentDetails.student[0][0].finalEvaluation}
+          </h3>
+        </div>
+      </div>{" "}
     </section>
   );
 }

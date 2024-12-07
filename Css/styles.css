@@ -385,7 +385,7 @@ ul {
   text-align: center;
   align-self: center;
   border: 1px solid #0047ab;
-  height: 30vh;
+  height: auto;
   border-radius: 0.75rem;
 }
 
@@ -432,7 +432,12 @@ ul {
 .info-body h3 span {
   font-weight: 600;
 }
-
+.marks-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: start;
+}
 /* student Proposal Page */
 .proposal-head {
   padding: 2rem;
