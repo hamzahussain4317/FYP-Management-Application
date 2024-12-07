@@ -70,8 +70,11 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
+        console.log(responseData)
         setStudentDetails(responseData);
+
         setHomeDetails(responseData);
+        console.log("std details grouId: ",studentDetails.student[1][0].groupID);
         sessionStorage.setItem(
           "groupID",
           studentDetails.student[1][0].groupID.toString()
