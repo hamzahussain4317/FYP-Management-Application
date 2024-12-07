@@ -6,12 +6,13 @@ CREATE TABLE Students(
 	email VARCHAR(30) NOT NULL UNIQUE,
 	dateOfBirth DATE ,
     profilePic MEDIUMBLOB DEFAULT NULL,
+    section varchar(10),
+    batch varchar(10),
 	CONSTRAINT emailValidation CHECK (email REGEXP '^k[0-9]{6}@nu\\.edu\\.pk$' OR email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$'),
 	CONSTRAINT idValidation CHECK(studentRoll REGEXP '^[0-9]{2}[K | L | I | P ]\\-[0-9]{4}$')
 );
 ALTER TABLE Students ADD CONSTRAINT students_PK PRIMARY KEY(studentID);
 ALTER TABLE Students  MODIFY COLUMN studentID INT AUTO_INCREMENT;
-
 
 CREATE TABLE FYPStudent(
 	fypStudentID INT NOT NULL,
@@ -37,6 +38,9 @@ CREATE TABLE Teachers(
 	email VARCHAR(30) NOT NULL UNIQUE,
 	dateOfBirth DATE ,
     profilePic MEDIUMBLOB ,
+    contactNo varchar(11),
+    qualification varchar(25),
+    designation varchar(25),
 	CONSTRAINT teacherEmailValidation CHECK (email REGEXP '^[A-Za-z]+\\.[A-Za-z]+@nu\\.edu\\.pk$')
 );
 ALTER TABLE Teachers ADD CONSTRAINT teacher_PK PRIMARY KEY(teacherID);
