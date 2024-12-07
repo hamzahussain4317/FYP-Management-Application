@@ -1,8 +1,7 @@
 const db = require("../dbPool/createPool.js");
 const upload = require("../middlewares/multer");
 
-
-const addSupervisor=async(req,res)=>{
+const addSupervisor = async (req, res) => {
   upload.single("profilePic")(req, res, async (err) => {
     if (err) {
       return res
@@ -10,31 +9,39 @@ const addSupervisor=async(req,res)=>{
         .json({ message: "File upload failed", error: err.message });
     }
 
-  const {firstName , lastName , departmentName , email , dob }=req.body
-  if(!firstName || !lastName || !email || !dob || !departmentName){
-    return res.status(400).json({message:"Incomplete data"});
-  }
-  if(!req.file){
-    return res.status(400).json({ message: "Image is required." });
-  }
+    const { firstName, lastName, departmentName, email, dob } = req.body;
+    if (!firstName || !lastName || !email || !dob || !departmentName) {
+      return res.status(400).json({ message: "Incomplete data" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required." });
+    }
 
-  const imagePath=req.file.path;
-  try{
-    query=`insert into teachers (firstName, lastName , departmentName, email , dateOfBirth , profilePic) values (?,?,?,?,?,?)`;
-    db.query(query,[firstName , lastName , departmentName , email , dob , imagePath] ,async(err,result)=>{
-      if(err){
-        return res
-        .status(500)
-        .json({ message: "database query execution failed" , error:err.message});
+    const imagePath = req.file.path;
+    try {
+      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth , profilePic) values (?,?,?,?,?,?)`;
+      db.query(
+        query,
+        [firstName, lastName, departmentName, email, dob, imagePath],
+        async (err, result) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({
+                message: "database query execution failed",
+                error: err.message,
+              });
+          }
+          return res
+            .status(200)
+            .json({ message: "teacher Successfully added" });
         }
-        return res.status(200).json({message:"teacher Successfully added"});
-    })
-  }
-  catch(err){
-    return res.status(500).json({message:"error assigning student"});
-  }
-})
-}
+      );
+    } catch (err) {
+      return res.status(500).json({ message: "error assigning student" });
+    }
+  });
+};
 
 //controller for supervisorProfile
 const getProfile = async (req, res) => {
@@ -47,14 +54,14 @@ const getProfile = async (req, res) => {
         .status(500)
         .json({ message: "Error! DataBase query execution failed" });
     }
-    
+
     if (result.length === 0) {
       return res
         .status(404)
         .json({ message: "Supervisor is not registered yet!" });
     }
 
-    if(result[0].profilePic){
+    if (result[0].profilePic) {
       result[0].profilePic = `data:image/jpeg;base64,${Buffer.from(
         result[0].profilePic
       ).toString("base64")}`;
@@ -124,8 +131,8 @@ const getSupervisingGroups = async (req, res) => {
   });
 };
 
-const updateProposal=async(req,res)=>{
-  const { groupID , supervisorID } = req.body;
+const updateProposal = async (req, res) => {
+  const { groupID, supervisorID } = req.body;
 
   if (!groupID || !supervisorID) {
     return res.status(400).json({ message: "proposalID is required" });
@@ -134,7 +141,7 @@ const updateProposal=async(req,res)=>{
   const updateProposalQuery = `UPDATE Proposal SET proposalStatus = 1 WHERE groupID = ? and supervisorID=?`;
 
   try {
-    db.query(updateProposalQuery, [groupID , supervisorID], (err, result) => {
+    db.query(updateProposalQuery, [groupID, supervisorID], (err, result) => {
       if (err) {
         console.error("Database query failed:", err);
         return res.status(500).json({
@@ -153,10 +160,11 @@ const updateProposal=async(req,res)=>{
     });
   } catch (error) {
     console.error("Error updating proposal:", error);
-    res.status(500).json({ message: "An error occurred", error: error.message });
+    res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
   }
-
-}
+};
 
 module.exports = {
   getProfile,
