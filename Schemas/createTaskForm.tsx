@@ -1,5 +1,5 @@
 import { z } from "zod";
-export const createGroupSchema = z.object({
+export const createTaskSchema = z.object({
   taskName: z.string(),
   taskDescription: z.string(),
   taskDeadline: z.string(),

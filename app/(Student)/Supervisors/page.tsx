@@ -193,7 +193,7 @@ export default function Group() {
       element.checkVisibility() ? null : element.classList.toggle("hidden");
       Array.from(parent?.children || []).forEach((child) => {
         if (child !== element && child instanceof HTMLElement) {
-          child.style.opacity = "0.5"; // Set opacity to 50%
+          child.style.opacity = "0.5"; 
         }
       });
     } else if (element && event.type === "mouseleave") {
@@ -309,7 +309,7 @@ export default function Group() {
         <div className="button-container">
           <button
             className="proposal-button"
-            onClick={handleRequestButton} //this will enable when we integrate API
+            onClick={handleRequestButton} 
           ></button>
         </div>
       </ul>

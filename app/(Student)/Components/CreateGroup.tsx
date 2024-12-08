@@ -15,7 +15,8 @@ interface group {
 
 const CreateGroup = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const {
     register,
     handleSubmit,
@@ -25,6 +26,8 @@ const CreateGroup = () => {
   } = useForm<group>({
     resolver: zodResolver(createGroupSchema),
   });
+
+  
 
   const assignGroup = async (data: group) => {
     try {

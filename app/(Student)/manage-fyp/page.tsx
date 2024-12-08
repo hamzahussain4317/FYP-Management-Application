@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskFilters from "@/Components/TaskFilters";
 import SearchBar from "@/Components/SearchBar";
 import TaskForm from "@/Components/TaskForm";
@@ -7,47 +7,23 @@ import ProgressBar from "@/Components/ProgressBar";
 import TaskStatistics from "@/Components/TaskStatistics";
 import TaskDetails from "@/Components/TaskDetails";
 
-const TasksPage = () => {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 1,
-      title: "Task 1",
-      priority: "High",
-      status: "Pending",
-      dueDate: "2024-11-25",
-      completionDate: "",
-      assignee: "Hamdan Vohra",
-    },
-    {
-      id: 2,
-      title: "Task 2",
-      priority: "Medium",
-      status: "Completed",
-      completionDate: "2024-11-18",
-      dueDate: "2024-11-20",
-      assignee: "Hamza",
-    },
-    {
-      id: 3,
-      title: "Task 3",
-      priority: "Low",
-      status: "Overdue",
-      dueDate: "2024-11-10",
-      completionDate: "",
-      assignee: "Ghulam Hussian",
-    },
-  ]);
+const defaultTask: Task[] = [];
 
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+const TasksPage = () => {
+  const [tasks, setTasks] = useState<Task[]>(defaultTask);
+
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(defaultTask);
 
   const handleFilter = (filters: individualTaskFilters) => {
     const { priority, status, dueDate } = filters;
     let filtered = tasks;
 
     if (priority)
-      filtered = filtered.filter((task) => task.priority === priority);
-    if (status) filtered = filtered.filter((task) => task.status === status);
-    if (dueDate) filtered = filtered.filter((task) => task.dueDate === dueDate);
+      filtered = filtered.filter((tasks: Task) => tasks.priority === priority);
+    if (status)
+      filtered = filtered.filter((tasks: Task) => tasks.status === status);
+    if (dueDate)
+      filtered = filtered.filter((tasks: Task) => tasks.dueDate === dueDate);
     setFilteredTasks(filtered);
   };
 
@@ -77,9 +53,46 @@ const TasksPage = () => {
     }
   };
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "Completed"
+  const completedTasks = tasks.filter((task) => task.taskStatus === 1).length;
+  const AssignedTasks=tasks.length;
+  const overDueTask = tasks.filter(
+    (task) => new Date(task.taskDeadline) < new Date()
   ).length;
+
+
+
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem("userId");
+    if (storedUserId) {
+      viewTasks(Number(storedUserId));
+    }
+    console.log(tasks);
+  }, []);
+
+  const viewTasks = async (userId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/student/viewTasks/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        // console.log(responseData);
+        setTasks(responseData.tasks);
+      } else if (response.status === 500) {
+        throw new Error("User already exist");
+      } else {
+        throw new Error("failed to signup");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   return (
     <section className="wrapper">
@@ -98,9 +111,9 @@ const TasksPage = () => {
         </div>
         <div className="mb-6">
           <TaskStatistics
-            taskAssigned={tasks.length}
+            taskAssigned={AssignedTasks}
             taskCompleted={completedTasks}
-            taskOverDue={completedTasks}
+            taskOverDue={overDueTask}
             hiddenToggler={hiddenToggler}
           />
           {/* <TaskPieChart /> */}

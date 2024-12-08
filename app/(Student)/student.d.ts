@@ -80,3 +80,18 @@ interface Supervisor {
 interface SupervisorListResponse {
   supervisorList: Supervisor[];
 }
+
+
+interface Task {
+  taskID: number;
+  projectID: number;
+  fypStudentID: number;
+  taskName: string;
+  taskDescription: string;
+  taskDeadline: string; // ISO 8601 formatted date
+  assignedDate: string; // ISO 8601 formatted date
+  taskStatus: number; // Use enum for clarity if possible
+}
+
+
+

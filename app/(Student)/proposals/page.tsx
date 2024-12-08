@@ -14,6 +14,8 @@ export default function Group() {
   const handleSupervisorChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSupervisorEmail(e.target.value);
   };
+
+  console.log(supervisors);
   return (
     <section className="wrapper">
       <h1 className="proposal-heading">Create Your Proposal</h1>
@@ -56,70 +58,12 @@ export default function Group() {
           <div className="form-section">
             <h2 className="section-title">Group Details</h2>
             <div className="student-details">
-              <h3 className="student-title">Student 1</h3>
               <div className="input-row">
                 <div className="input-group">
-                  <label className="form-label">Student ID:</label>
+                  <label className="form-label">Group Name:</label>
                   <input
                     type="text"
-                    name="student1Id"
-                    className="input-field"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label className="form-label">Domain:</label>
-                  <input
-                    type="text"
-                    name="student1Domain"
-                    className="input-field"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="student-details">
-              <h3 className="student-title">Student 2</h3>
-              <div className="input-row">
-                <div className="input-group">
-                  <label className="form-label">Student ID:</label>
-                  <input
-                    type="text"
-                    name="student2Id"
-                    className="input-field"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label className="form-label">Domain:</label>
-                  <input
-                    type="text"
-                    name="student2Domain"
-                    className="input-field"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="student-details">
-              <h3 className="student-title">Student 3</h3>
-              <div className="input-row">
-                <div className="input-group">
-                  <label className="form-label">Student ID:</label>
-                  <input
-                    type="text"
-                    name="student3Id"
-                    className="input-field"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label className="form-label">Domain:</label>
-                  <input
-                    type="text"
-                    name="student3Domain"
+                    name="GroupName"
                     className="input-field"
                     required
                   />

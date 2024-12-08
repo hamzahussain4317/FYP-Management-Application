@@ -16,7 +16,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({ allTasks }) => {
   );
 
   return (
-    <div id="task-details" className="p-4 bg-white rounded-md shadow-md hidden">
+    <div id="task-details" className="p-4 bg-white rounded-md shadow-md">
       <h2 className="text-lg font-semibold">Task Details</h2>
 
       {/* Tasks Assigned */}

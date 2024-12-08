@@ -21,7 +21,7 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({
             <h2 className="text-lg font-semibold">
               <button
                 className="tasks-assigned"
-                onClick={() => hiddenToggler()}
+                // onClick={() => hiddenToggler()}
               >
                 Tasks Assigned
               </button>
@@ -50,7 +50,7 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({
             <h2 className="text-lg font-semibold">
               <button
                 className="tasks-completed"
-                onClick={() => hiddenToggler()}
+                // onClick={() => hiddenToggler()}
               >
                 Tasks Completed
               </button>
@@ -77,7 +77,9 @@ const TaskStatistics: React.FC<TaskStatisticsProps> = ({
         <div className="bg-white p-6 shadow-md rounded-md flex items-center justify-between h-full">
           <div>
             <h2 className="text-lg font-semibold">
-              <button className="tasks-overdue" onClick={hiddenToggler}>
+              <button className="tasks-overdue" 
+              // onClick={hiddenToggler}
+              >
                 Tasks OverDue
               </button>
             </h2>
