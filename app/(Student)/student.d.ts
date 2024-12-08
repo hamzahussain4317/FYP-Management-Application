@@ -64,3 +64,19 @@ interface supervisor{
 interface groupDetails{
   student:[group[],supervisor[]];
 }
+
+
+interface Supervisor {
+  email: string;
+  profilePic: string;
+  supervisorID: number;
+  supervisorName: string;
+  departmentName: string;
+  specializedDomain: string | null;
+  groupsCount: number | null;
+  cgpaCriteria: number | null;
+}
+
+interface SupervisorListResponse {
+  supervisorList: Supervisor[];
+}

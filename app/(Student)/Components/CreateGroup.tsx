@@ -4,51 +4,71 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createGroupSchema } from "@/Schemas/createGroup";
+import { useRouter } from "next/navigation";
 
 interface group {
   groupName: string;
   email1: string;
-  email2:string;
-  email3:string;
+  email2: string;
+  email3: string;
 }
 
 const CreateGroup = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
-    // setError,
-    // setValue,
-    // getValues,
+    setError,
     formState: { errors },
     reset,
   } = useForm<group>({
     resolver: zodResolver(createGroupSchema),
   });
+
+  const assignGroup = async (data: group) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/student/createGroup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emails: [data.email1, data.email2, data.email3],
+            groupName: data.groupName,
+          }),
+        }
+      );
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData);
+        router.push("/Home");
+      } else if (response.status === 400) {
+        throw new Error("exactly three emails required");
+      } else if (response.status === 500) {
+        throw new Error("Transcation start failed");
+      } else {
+        throw new Error("failed to create group");
+      }
+    } catch (error: any) {
+      setError("root", {
+        message: error?.message,
+      });
+      console.log(error);
+    }
+  };
+
   const onSubmit = async (data: group) => {
     setIsLoading(true);
     console.log(data);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
     reset();
-    //will use setErrorMessage if the data doesnot matches the api result//
+    assignGroup(data);
   };
 
-  // const [groupMembers, setGroupMembers] = useState<string[]>([]);
-  // const [memberEmail, setMemberEmail] = useState<string>("");
-  // const addNewMember = () => {
-  //   setGroupMembers((prev) => [...prev, memberEmail]);
-  //   setMemberEmail("");
-  //   if (groupMembers.length === 2) {
-  //     const buttonEl: HTMLButtonElement =
-  //       document.getElementById("add-member")!;
-  //     if (buttonEl instanceof HTMLButtonElement) {
-  //       buttonEl.style.opacity = "0.5";
-  //       buttonEl.disabled = true;
-  //     }
-  //   }
-  // };
   return (
     <>
       <h1 className="proposal-heading">Initialize Your FYP Group</h1>
@@ -84,7 +104,6 @@ const CreateGroup = () => {
                 {...register("email2")}
                 type="email"
                 className="input-field"
-               
                 placeholder="Enter group member's email"
                 required
               />
@@ -94,14 +113,13 @@ const CreateGroup = () => {
                 {...register("email3")}
                 type="email"
                 className="input-field"
-               
                 placeholder="Enter group member's email"
                 required
               />
               <div className="errors">{errors.email3?.message}</div>
               {errors.email1?.type === "refine" && (
-              <div className="errors">{errors.email1.message}</div>
-            )}
+                <div className="errors">{errors.email1.message}</div>
+              )}
             </div>
           </div>
           <div className="flex justify-center items-center">

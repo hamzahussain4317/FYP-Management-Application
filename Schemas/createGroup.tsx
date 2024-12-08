@@ -10,4 +10,4 @@ export const createGroupSchema = z.object({
     message: "All three emails must be different",
     path: ["email3"],
   }
-);;
+);
