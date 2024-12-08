@@ -27,7 +27,7 @@ const addSupervisor = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth ,contactNo, profilePic) values (?,?,?,?,?,?)`;
+      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth ,contactNo, profilePic) values (?,?,?,?,?,?,?)`;
       db.query(
         query,
         [firstName, lastName, departmentName, email, dob, contactNo, imagePath],

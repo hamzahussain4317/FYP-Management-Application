@@ -33,34 +33,16 @@ const getAllGroupsDetails = async (req, res) => {
   }
 };
 const getGroupById = async (req, res) => {
-  const getGroupByIdQuery = `Select pg.groupId as groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as supervisorName,p.status as projectStatus ,s.studentId as studentId ,s.studentRoll as studentRoll,s.studentName,f.midEvaluation as midEvaluation,f.finalEvaluation as finalEvaluation from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId AND pg.groupId = ' ' JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId`;
+  const {groupID} = req.params;
+  const getGroupByIdQuery = `Select pg.groupId as groupId,pg.groupName,p.projectId,p.projectName,CONCAT(t.firstName , ' ' , t.lastName) as supervisorName,p.status as projectStatus ,s.studentId as studentId ,s.studentRoll as studentRoll,s.studentName,f.midEvaluation as midEvaluation,f.finalEvaluation as finalEvaluation from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId where pg.groupId = ? `;
   try {
-    const [response] = db.promise().execute(getGroupByIdQuery);
+    let [response] = await db.promise().execute(getGroupByIdQuery,[groupID]);
 
     if (response.length === 0) {
-      return res.json(404).json({ message: "No such group exist" });
+      return res.status(404).json({ message: "No such group exist" });
     }
-    console.log(response);
-    const group = ({
-      groupId,
-      groupName,
-      projectId,
-      projectName,
-      projectStatus,
-      supervisorName,
-    } = response[0]);
 
-    const students = response.map((student) => {
-      student.studentId,
-        student.studentName,
-        student.midEvaluation,
-        student.finalEvaluation,
-        student.studentRoll;
-    });
-
-    const results = { group, students };
-
-    return res.status(200).json({ groupDetails: results });
+    return res.status(200).json({ groupDetails: response });
   } catch (err) {
     res.status(500).json({ errCode: 500, errorMessage: err.message });
   }
@@ -87,11 +69,11 @@ const patchGroupById = async (req, res) => {
   }
 };
 const deleteGroupById = async (req, res) => {
-  const { groupId } = req.body;
-  const deleteQuery = `DELETE FROM ProjectGroup where groupId=?`;
+  const { groupID } = req.body;
+  const deleteQuery = `DELETE FROM ProjectGroup where groupID=?`;
 
   try {
-    const [response] = await db.promise().execute(deleteQuery, groupId);
+    const [response] = await db.promise().execute(deleteQuery, groupID);
 
     res.status(200).json({ Message: "Deleted Successfully!" });
   } catch (err) {
