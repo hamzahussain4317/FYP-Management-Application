@@ -57,7 +57,7 @@ const getProfile = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
-   
+
     if (result[0][0]?.profilePic) {
       result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
         result[0][0].profilePic
@@ -130,8 +130,8 @@ const assignGroup = async (req, res) => {
 const getGroupDetails = async (req, res) => {
   const { stdID } = req.params;
   const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?));
-  select t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
-  db.query(groupDetailsQuery, [stdID,stdID], async (err, result) => {
+  select f.isLeader,t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
+  db.query(groupDetailsQuery, [stdID, stdID], async (err, result) => {
     if (err) {
       return res
         .status(500)
@@ -142,8 +142,8 @@ const getGroupDetails = async (req, res) => {
         .status(404)
         .json({ message: "Student does not have any group" });
     }
-    
-    result[0].map((item,index)=>{
+
+    result[0].map((item, index) => {
       if (result[0][index]?.profilePic) {
         result[0][index].profilePic = `data:image/jpeg;base64,${Buffer.from(
           result[0][index].profilePic
@@ -155,12 +155,10 @@ const getGroupDetails = async (req, res) => {
         result[1][0].profilePic
       ).toString("base64")}`;
     }
-      
-    
-    
-    console.log(result[0][2].profilePic);
-    console.log(result[0][2].studentName);
-    
+
+    // console.log(result[0][2].profilePic);
+    // console.log(result[0][2].studentName);
+
     return res.status(200).json({ student: result });
   });
 };
@@ -168,8 +166,10 @@ const getGroupDetails = async (req, res) => {
 const getSupervisorList = async (req, res) => {
   const createViewQuery = `CREATE OR REPLACE VIEW SupervisorList AS
         SELECT 
+          t.email,
+          t.profilePic,
           s.supervisorID,
-          t.firstName OR ' ' OR t.lastName as supervisorName,
+          CONCAT ( t.firstName,' ' , t.lastName) as supervisorName,
           t.departmentName as departmentName,
           s.specializedDomain,
           pg.groupsCount as groupsCount,
@@ -206,7 +206,14 @@ const getSupervisorList = async (req, res) => {
       if (results.length === 0) {
         res.status(404).json({ message: "No supervisor Registered Yet!" });
       }
-
+      results.map((item,index)=>{
+        if (results[index]?.profilePic) {
+          results[index].profilePic = `data:image/jpeg;base64,${Buffer.from(
+            results[index].profilePic
+          ).toString("base64")}`;
+        }
+      })
+    
       res.status(200).json({ supervisorList: results });
     });
   });
@@ -467,30 +474,35 @@ const updateTask = async (req, res) => {
   }
 };
 
-const projectOversight=async(req,res)=>{
-  const {stdID}=req.params;
-  if(!stdID){
+const projectOversight = async (req, res) => {
+  const { stdID } = req.params;
+  if (!stdID) {
     return res.status(400).json({ message: "studentID is required" });
   }
-  try{
-    const [retrieveProjectID]=await db
-    .promise()
-    .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
-       const projectID=retrieveProjectID[0]?.projectID;
-       if (!projectID) {
-        return res.status(404).json({ message: "No project found for this student" });
-      }
-      const [tasks] = await db
+  try {
+    const [retrieveProjectID] = await db
+      .promise()
+      .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
+    const projectID = retrieveProjectID[0]?.projectID;
+    if (!projectID) {
+      return res
+        .status(404)
+        .json({ message: "No project found for this student" });
+    }
+    const [tasks] = await db
       .promise()
       .query("SELECT * FROM tasks WHERE projectID = ?", [projectID]);
 
     if (tasks.length === 0) {
-      return res.status(404).json({ message: "No tasks found for this project" });
+      return res
+        .status(404)
+        .json({ message: "No tasks found for this project" });
     }
 
-    return res.status(200).json({ message: "Tasks fetched successfully", tasks });
-  }
-  catch(error){
+    return res
+      .status(200)
+      .json({ message: "Tasks fetched successfully", tasks });
+  } catch (error) {
     console.error("Database error:", error);
     return res
       .status(500)

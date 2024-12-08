@@ -164,8 +164,9 @@ const updateProposal = async (req, res) => {
   }
 };
 
-const getProposalRequests = async () => {
+const getProposalRequests = async (req,res) => {
   const { supervisorID } = req.params;
+  console.log(supervisorID);
   const getProposalQuery = `SELECT 
   p.groupID,
   p.supervisorID,
@@ -180,7 +181,7 @@ const getProposalRequests = async () => {
   where p.supervisorID = ?`;
 
   try {
-    const [resultRows] = db.promise().query(getProposalQuery, [supervisorID]);
+    const [resultRows] = await db.promise().query(getProposalQuery, [supervisorID]);
 
     const proposals = resultRows.map((row) => ({
       groupID: row.groupID,
