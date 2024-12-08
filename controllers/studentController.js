@@ -9,8 +9,26 @@ const addStudent = async (req, res) => {
         .json({ message: "File upload failed", error: err.message });
     }
 
-    const { studentRoll, studentName, departmentName, email, dob } = req.body;
-    if (!studentRoll || !studentName || !email || !dob || !departmentName) {
+    const {
+      studentRoll,
+      studentName,
+      departmentName,
+      email,
+      dob,
+      section,
+      campus,
+      batch,
+    } = req.body;
+    if (
+      !studentRoll ||
+      !studentName ||
+      !email ||
+      !dob ||
+      !departmentName ||
+      !section ||
+      !campus ||
+      !batch
+    ) {
       return res.status(400).json({ message: "Incomplete data" });
     }
     if (!req.file) {
@@ -19,10 +37,20 @@ const addStudent = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,profilePic) values (?,?,?,?,?,?)`;
+      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,section,batch,campus,profilePic) values (?,?,?,?,?,?)`;
       db.query(
         query,
-        [studentRoll, studentName, departmentName, email, dob, imagePath],
+        [
+          studentRoll,
+          studentName,
+          departmentName,
+          email,
+          dob,
+          section,
+          batch,
+          campus,
+          imagePath,
+        ],
         async (err, result) => {
           if (err) {
             return res.status(500).json({
@@ -57,12 +85,13 @@ const getProfile = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
-   
+
     if (result[0][0]?.profilePic) {
       result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
         result[0][0].profilePic
       ).toString("base64")}`;
     }
+    x;
     return res.status(200).json({ student: result });
   });
 };
@@ -131,7 +160,7 @@ const getGroupDetails = async (req, res) => {
   const { stdID } = req.params;
   const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?));
   select t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
-  db.query(groupDetailsQuery, [stdID,stdID], async (err, result) => {
+  db.query(groupDetailsQuery, [stdID, stdID], async (err, result) => {
     if (err) {
       return res
         .status(500)
@@ -142,8 +171,8 @@ const getGroupDetails = async (req, res) => {
         .status(404)
         .json({ message: "Student does not have any group" });
     }
-    
-    result[0].map((item,index)=>{
+
+    result[0].map((item, index) => {
       if (result[0][index]?.profilePic) {
         result[0][index].profilePic = `data:image/jpeg;base64,${Buffer.from(
           result[0][index].profilePic
@@ -155,12 +184,10 @@ const getGroupDetails = async (req, res) => {
         result[1][0].profilePic
       ).toString("base64")}`;
     }
-      
-    
-    
+
     console.log(result[0][2].profilePic);
     console.log(result[0][2].studentName);
-    
+
     return res.status(200).json({ student: result });
   });
 };
@@ -220,7 +247,7 @@ const createProposal = async (req, res) => {
         .json({ message: "File upload failed", error: err.message });
     }
 
-    const {
+    let {
       projectName,
       projectDomain,
       projectDescription,
@@ -238,7 +265,7 @@ const createProposal = async (req, res) => {
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
-
+    supervisorEmails = [supervisorEmails];
     if (!Array.isArray(supervisorEmails) || supervisorEmails.length === 0) {
       return res.status(400).json({
         message: "Supervisor emails must be an array with at least one email.",
@@ -467,30 +494,35 @@ const updateTask = async (req, res) => {
   }
 };
 
-const projectOversight=async(req,res)=>{
-  const {stdID}=req.params;
-  if(!stdID){
+const projectOversight = async (req, res) => {
+  const { stdID } = req.params;
+  if (!stdID) {
     return res.status(400).json({ message: "studentID is required" });
   }
-  try{
-    const [retrieveProjectID]=await db
-    .promise()
-    .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
-       const projectID=retrieveProjectID[0]?.projectID;
-       if (!projectID) {
-        return res.status(404).json({ message: "No project found for this student" });
-      }
-      const [tasks] = await db
+  try {
+    const [retrieveProjectID] = await db
+      .promise()
+      .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
+    const projectID = retrieveProjectID[0]?.projectID;
+    if (!projectID) {
+      return res
+        .status(404)
+        .json({ message: "No project found for this student" });
+    }
+    const [tasks] = await db
       .promise()
       .query("SELECT * FROM tasks WHERE projectID = ?", [projectID]);
 
     if (tasks.length === 0) {
-      return res.status(404).json({ message: "No tasks found for this project" });
+      return res
+        .status(404)
+        .json({ message: "No tasks found for this project" });
     }
 
-    return res.status(200).json({ message: "Tasks fetched successfully", tasks });
-  }
-  catch(error){
+    return res
+      .status(200)
+      .json({ message: "Tasks fetched successfully", tasks });
+  } catch (error) {
     console.error("Database error:", error);
     return res
       .status(500)

@@ -1,4 +1,5 @@
 //importing packages
+require("dotenv").config();
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../dbPool/createPool.js");
@@ -48,7 +49,7 @@ const signUp = async (req, res) => {
           .json({ error: `${role} not found in the database` });
       }
       if (role === "student") {
-        if (results[0].studentName !== username) {
+        if (results[0].studentName.toLowerCase() !== username.toLowerCase()) {
           return res
             .status(400)
             .json({ message: "enter the correct student name" });
@@ -152,15 +153,46 @@ const signIn = async (req, res) => {
         expiresIn: "1h",
       }
     );
-    
-    const userId=user.userId
+
+    const userId = user.userId;
     res.status(201).json({ message: "Logged in successfully", token, userId });
   });
 };
 
-const adminSignIn = () => {};
+const adminSignIn = async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email || !password) {
+    res.status(400).json({ err: "please fill in all fields" });
+  }
+
+  const adminName = process.env.ADMIN_NAME || "admin";
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@fyp.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "12345678";
+
+  console.log(adminName, typeof adminName);
+  console.log(adminEmail, typeof adminEmail);
+  console.log(adminPassword, typeof adminPassword);
+
+  if (adminName !== username) {
+    return res.status(401).json({ message: "Incorrect username" });
+  } else if (adminEmail !== email) {
+    return res.status(401).json({ message: "Incorrect email" });
+  } else if (adminPassword !== password) {
+    return res.status(401).json({ message: "Incorrect password" });
+  }
+
+  const SECRET_KEY = process.env.SECRET_KEY;
+  const token = jwt.sign({ userName: username, role: "admin" }, SECRET_KEY, {
+    expiresIn: "2h",
+  });
+  res
+    .status(201)
+    .json({ message: "Logged in successfully", token, role: "admin" });
+};
 //exporting module functions
 module.exports = {
   signUp,
   signIn,
+  adminSignIn,
 };
