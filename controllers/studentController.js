@@ -91,7 +91,7 @@ const getProfile = async (req, res) => {
         result[0][0].profilePic
       ).toString("base64")}`;
     }
-    x;
+    
     return res.status(200).json({ student: result });
   });
 };
@@ -159,11 +159,7 @@ const assignGroup = async (req, res) => {
 const getGroupDetails = async (req, res) => {
   const { stdID } = req.params;
   const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?));
-<<<<<<< HEAD
   select f.isLeader,t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
-=======
-  select t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
->>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
   db.query(groupDetailsQuery, [stdID, stdID], async (err, result) => {
     if (err) {
       return res
@@ -189,13 +185,7 @@ const getGroupDetails = async (req, res) => {
       ).toString("base64")}`;
     }
 
-<<<<<<< HEAD
-    // console.log(result[0][2].profilePic);
-    // console.log(result[0][2].studentName);
-=======
-    console.log(result[0][2].profilePic);
-    console.log(result[0][2].studentName);
->>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
+    
 
     return res.status(200).json({ student: result });
   });

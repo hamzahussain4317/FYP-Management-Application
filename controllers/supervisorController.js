@@ -172,15 +172,9 @@ const updateProposal = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-const getProposalRequests = async (req,res) => {
-  const { supervisorID } = req.params;
-  console.log(supervisorID);
-=======
 const getProposalRequests = async (req, res) => {
   const { supervisorID } = req.params;
 
->>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
   const getProposalQuery = `SELECT 
     p.groupID,
     p.supervisorID,
@@ -195,16 +189,12 @@ const getProposalRequests = async (req, res) => {
     WHERE p.supervisorID = ?`;
 
   try {
-<<<<<<< HEAD
-    const [resultRows] = await db.promise().query(getProposalQuery, [supervisorID]);
-=======
     const [resultRows] = await db
       .promise()
       .query(getProposalQuery, [supervisorID]);
 
     // Assuming the backend URL is stored in an environment variable
     const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
->>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
 
     const proposals = resultRows.map((row) => ({
       groupID: row.groupID,
