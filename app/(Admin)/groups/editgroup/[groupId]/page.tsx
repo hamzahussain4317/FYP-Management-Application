@@ -8,16 +8,22 @@ const EditGroup = () => {
   const { groupId } = useParams();
   const { findByGroupId, error, isLoading } = useAdminContext();
   const [group, setGroup] = useState<GroupDetails[] | null>(null);
+  const fetchGroupData = async()=>{
+    const data = await findByGroupId(Number(groupId));
+    console.log(data);
+    setGroup(data);
+  }
   useEffect(() => {
+    console.log(groupId);
     if (groupId) {
-      const groupData = findByGroupId(Number(groupId));
-      setGroup(groupData);
+      fetchGroupData()
     }
-  }, [groupId, findByGroupId]); // Dependency array
+  }, [groupId]); // Dependency array
+  
   return (
     <section className="wrapper flex justify-center items-center">
       {isLoading && !error && <p>Loading Group Data...</p>}
-      {!error && group?.length ? (
+      {group? (
         <EditGroupForm group={group} />
       ) : (
         <p>{error}</p>

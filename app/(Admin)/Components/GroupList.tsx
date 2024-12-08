@@ -9,7 +9,7 @@ const GroupList = ({ group }: Props) => {
   return (
     // <>
     <Link
-      href={`groups/editgroup/${group.groupID}`}
+      href={`groups/editgroup/${group.groupId}`}
       className="border-blue-500 hover:border-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg"
       // onClick={() => handleEditGroup(group.groupID)}
     >
@@ -18,7 +18,7 @@ const GroupList = ({ group }: Props) => {
           <h4 className="text-sm font-medium text-gray-500 text-lg">
             Group ID
           </h4>
-          <p className="text-base font-bold text-gray-700">{group.groupID}</p>
+          <p className="text-base font-bold text-gray-700">{group.groupId}</p>
         </div>
         <div className="col-span-1">
           <h4 className="text-sm font-medium text-gray-500">Group Name</h4>

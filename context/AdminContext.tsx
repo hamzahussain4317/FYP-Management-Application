@@ -14,6 +14,7 @@ export default function AdminContextProvider({
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [filteredGroups, setFilteredGroups] = useState<GroupDetails[]>([]);
+  const [group,setGroup] = useState<GroupDetails>();
   const [filterBy, setFilterBy] = useState<groupFilterBy>({
     byGroupName: true,
     byProjectName: false,
@@ -51,6 +52,7 @@ export default function AdminContextProvider({
     }
   };
   const findByGroupId = async (groupId: number) => {
+    console.log(groupId);
     try {
       const response = await fetch(`${baseUrl}/getGroupById/${groupId}`, {
         method: "GET",
@@ -60,14 +62,35 @@ export default function AdminContextProvider({
       });
 
       if (response.ok) {
-        return await response.json();
+        const responseResult =  await response.json();
+        const {groupDetails} = responseResult;
+        console.log(groupDetails);
+        const { groupId, groupName, projectStatus, projectId, projectName, supervisorName } = groupDetails[0];
+        const students = groupDetails.map((item) => ({
+          studentRoll: item.studentRoll,
+          name: item.studentName,
+          midEvaluation: item.midEvaluation,
+          finalEvaluation: item.finalEvaluation,
+        }));
+
+        return{
+          groupId,
+          groupName,
+          status: projectStatus,
+          projectId,
+          projectName,
+          supervisorId: null, 
+          supervisorName,
+          students
+        }
       } else if (response.status === 404) {
         setError(`No group with ID: ${groupId} exist`);
       }
     } catch (err) {
       throw new Error(`${err}`);
+      // setError(err);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
       console.log("Get data succesfully");
     }
   };
@@ -100,6 +123,7 @@ export default function AdminContextProvider({
   return (
     <AdminContext.Provider
       value={{
+        group,
         filteredGroups,
         filterBy,
         error,

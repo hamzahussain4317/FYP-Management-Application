@@ -8,18 +8,17 @@ import MessageHub from "@/Components/MessageHub";
 import AdminContextProvider from "@/context/AdminContext";
 
 const itemDetails: sideBarItems[] = [
-  { itemRoute: "profile", itemName: "Profile", itemIcon: "fa-user-tie" },
   { itemRoute: "addUser", itemName: "Add User", itemIcon: "fa-user" },
   {
     itemRoute: "groups",
     itemName: "FYP Groups",
     itemIcon: "fa-people-group",
   },
-  {
-    itemRoute: "supervisors",
-    itemName: "Supervisors",
-    itemIcon: "fa-chart-simple",
-  },
+  // {
+  //   itemRoute: "supervisors",
+  //   itemName: "Supervisors",
+  //   itemIcon: "fa-chart-simple",
+  // },
 ];
 
 const profileDetails: navItems = {

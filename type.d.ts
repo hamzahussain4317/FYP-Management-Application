@@ -1,12 +1,12 @@
-type Task = {
-  id: number;
-  title: string;
-  priority: string;
-  status: string;
-  dueDate: string;
-  completionDate: string;
-  assignee: string;
-};
+// type Task = {
+//   id: number;
+//   title: string;
+//   priority: string;
+//   status: string;
+//   dueDate: string;
+//   completionDate: string;
+//   assignee: string;
+// };
 
 type individualTaskFilters = {
   priority: string;

@@ -239,7 +239,7 @@ export default function Group() {
             >
               <div className="supervisor-column supervisor-info relative ">
                 <Image
-                  src={`/Hamza.jpg`}
+                  src={`/Picture${index+1}.png`}
                   alt={""}
                   className="supervisor-image"
                   width={45}

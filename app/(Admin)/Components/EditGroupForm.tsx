@@ -21,7 +21,7 @@ const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
           <input
             type="text"
             id="groupID"
-            value={group[0].groupID}
+            value={group.groupId}
             readOnly
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
           />
@@ -38,7 +38,7 @@ const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
           <input
             type="text"
             id="groupName"
-            value={group[0].groupName}
+            value={group.groupName}
             readOnly
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
           />
@@ -55,7 +55,7 @@ const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
           <input
             type="text"
             id="status"
-            value={group[0].status}
+            value={group.status}
             readOnly
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
           />
@@ -71,7 +71,7 @@ const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
           <input
             type="text"
             id="projectName"
-            value={group[0].projectName}
+            value={group.projectName}
             readOnly
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
           />
@@ -87,13 +87,13 @@ const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
           <input
             type="text"
             id="supervisorName"
-            value={group[0].supervisorName}
+            value={group.supervisorName}
             readOnly
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
           />
         </div>
         <div className="flex flex-col justify-center items-center space-y-4">
-          {group[0].students.map((student, index) => {
+          {group.students.map((student, index) => {
             return (
               <div
                 key={index}

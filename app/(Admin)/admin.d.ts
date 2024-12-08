@@ -1,10 +1,10 @@
 type GroupDetails = {
-  groupID: number;
+  groupId: number;
   groupName: string;
   status: string;
-  projectID: Integer;
+  projectId: Integer;
   projectName: string;
-  supervisorID: Integer;
+  supervisorId: Integer;
   supervisorName: string;
   students: FYPStudent[];
 };

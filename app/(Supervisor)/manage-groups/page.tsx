@@ -9,7 +9,8 @@ export default function ManageGroups() {
 
   useEffect(() => {
     fetchGroups(supervisorId);
-  });
+  },[]);
+
   return (
     <section className="wrapper">
       <div className="container mx-auto">
@@ -24,16 +25,16 @@ export default function ManageGroups() {
               <div key={group.groupId} className="grid mb-4">
                 <div className="bg-[#f9f9f9] border-[#f0a500] rounded-lg shadow-md p-6 hover:shadow-lg transition">
                   <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                    Group Name:{`${group.groupName} || 'None'`}
+                    Group Name: {`${group.groupName || 'None'} `}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2">
                     <p className="text-gray-600">
                       <span className="font-medium">Group ID:</span>{" "}
-                      {`${group.groupId} || 'None'`}
+                      {`${group.groupId || 'None'} `}
                     </p>
                     <p className="text-gray-600 mt-2">
                       <span className="font-medium">Project Name:</span>{" "}
-                      {`${group.projectName} || 'None'`}
+                      {`${group.projectName || 'None'} `}
                     </p>
                     <p className="text-gray-600 mt-2">
                       <span className="font-medium">Status:</span>{" "}
@@ -44,13 +45,13 @@ export default function ManageGroups() {
                             : "text-blue-600"
                         } `}
                       >
-                        {`${group.status} || 'None'`}
+                        {`${group.status || 'None'} `}
                       </span>
                     </p>
                     <div className="mt-4">
                       <h3 className="text-gray-700 font-medium">Students:</h3>
                       <ul className="list-disc list-inside text-gray-600 grid md:flex justify-between space-x-1  min-w-[calc(100%)]">
-                        {group.studentRoll.map((roll) => (
+                        {group.students.map((roll) => (
                           <li key={roll} className="list-none mb-1">
                             <Link
                               href={``}

@@ -39,7 +39,7 @@ export default function UserSignUpForm() {
         const responseData = await response.json();
         setSuccess(true);
         console.log(responseData);
-        router.push("/login");
+        // router.push("/login");
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else if (response.status === 404) {
