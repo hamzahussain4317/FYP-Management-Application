@@ -123,36 +123,59 @@ export default function SupervisorContextProvider({
   // }
 
   const fetchProposalRequests = async (userId: number) => {
-    try {
-      //here we will use real api route adn diminish the above function the above is just use for static data
-      const response = await fetch(`${baseUrl}/getProposalRequests/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    // try {
+    //   //here we will use real api route adn diminish the above function the above is just use for static data
+    //   const response = await fetch(`${baseUrl}/getProposalRequests/${userId}`, {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   });
 
-      if (response.ok) {
-        const results = await response.json();
-        const pendingProposals = results.filter(
-          (p: Proposal) => p.proposalStatus === "Pending"
-        );
-        const reviewedProposals = results.filter(
-          (p: Proposal) => p.proposalStatus !== "Pending"
-        );
-        setProposals([...pendingProposals, ...reviewedProposals]);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
-        console.log(error);
-      } else {
-        console.log("Unknown error:", error);
-      }
-    } finally {
-      setError(null);
-      setLoading(false);
-    }
+    //   if (response.ok) {
+    //     const results = await response.json();
+    //     const pendingProposals = results.filter(
+    //       (p: Proposal) => p.proposalStatus === "Pending"
+    //     );
+    //     const reviewedProposals = results.filter(
+    //       (p: Proposal) => p.proposalStatus !== "Pending"
+    //     );
+    //     setProposals([...pendingProposals, ...reviewedProposals]);
+    //   }
+    // } catch (error: unknown) {
+    //   if (error instanceof Error) {
+    //     setError(error.message);
+    //     console.log(error);
+    //   } else {
+    //     console.log("Unknown error:", error);
+    //   }
+    // } finally {
+    //   setError(null);
+    //   setLoading(false);
+    // }
+    setLoading(false);
+    setProposals([
+      {
+        groupID: 1,
+        supervisorID: 2,
+        projectName: "AI Chatbot",
+        groupName: "Team Alpha",
+        projectDomain: "AI",
+        projectDescription: "A chatbot using NLP.",
+        projectFile: null,
+        proposalStatus: false,
+      },
+      {
+        groupID: 2,
+        supervisorID: 2,
+        projectName: "E-commerce Platform",
+        groupName: "Team Beta",
+        projectDomain: "Web Development",
+        projectDescription: "A platform for online shopping.",
+        projectFile: "/files/ecommerce.pdf",
+        proposalStatus: true,
+      },
+    ]);
   };
 
   const handleAccept = (groupID: number) => {
