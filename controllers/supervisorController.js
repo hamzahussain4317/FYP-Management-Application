@@ -9,8 +9,16 @@ const addSupervisor = async (req, res) => {
         .json({ message: "File upload failed", error: err.message });
     }
 
-    const { firstName, lastName, departmentName, email, dob } = req.body;
-    if (!firstName || !lastName || !email || !dob || !departmentName) {
+    const { firstName, lastName, departmentName, email, dob, contactNo } =
+      req.body;
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !dob ||
+      !departmentName ||
+      !contactNo
+    ) {
       return res.status(400).json({ message: "Incomplete data" });
     }
     if (!req.file) {
@@ -19,10 +27,10 @@ const addSupervisor = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth , profilePic) values (?,?,?,?,?,?)`;
+      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth ,contactNo, profilePic) values (?,?,?,?,?,?)`;
       db.query(
         query,
-        [firstName, lastName, departmentName, email, dob, imagePath],
+        [firstName, lastName, departmentName, email, dob, contactNo, imagePath],
         async (err, result) => {
           if (err) {
             return res.status(500).json({
@@ -164,24 +172,39 @@ const updateProposal = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 const getProposalRequests = async (req,res) => {
   const { supervisorID } = req.params;
   console.log(supervisorID);
+=======
+const getProposalRequests = async (req, res) => {
+  const { supervisorID } = req.params;
+
+>>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
   const getProposalQuery = `SELECT 
-  p.groupID,
-  p.supervisorID,
-  p.projectName,
-  g.groupName,
-  p.projectDomain,
-  p.projectDescription,
-  p.projectFile,
-  p.proposalStatus
-  FROM Proposal p
-  JOIN ProjectGroup g ON p.groupID = g.groupID
-  where p.supervisorID = ?`;
+    p.groupID,
+    p.supervisorID,
+    p.projectName,
+    g.groupName,
+    p.projectDomain,
+    p.projectDescription,
+    p.projectFile,
+    p.proposalStatus
+    FROM Proposal p
+    JOIN ProjectGroup g ON p.groupID = g.groupID
+    WHERE p.supervisorID = ?`;
 
   try {
+<<<<<<< HEAD
     const [resultRows] = await db.promise().query(getProposalQuery, [supervisorID]);
+=======
+    const [resultRows] = await db
+      .promise()
+      .query(getProposalQuery, [supervisorID]);
+
+    // Assuming the backend URL is stored in an environment variable
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+>>>>>>> a1f3ae2a2917bc683582876a41679d839ce25359
 
     const proposals = resultRows.map((row) => ({
       groupID: row.groupID,
@@ -191,10 +214,12 @@ const getProposalRequests = async (req,res) => {
       projectDomain: row.projectDomain || null,
       projectDescription: row.projectDescription,
       projectFile: row.projectFile
-        ? Buffer.from(row.projectFile).toString("base64")
+        ? `${backendUrl}/uploads/${row.projectFile}`
         : null,
-      proposalStatus: row.proposalStatus ? "Accepted" : "Pending",
+      proposalStatus: row.proposalStatus === 1 ? "Accepted" : "Pending",
     }));
+
+    console.log(proposals[0].projectFile);
     res.status(200).json(proposals);
   } catch (error) {
     console.error("Error fetching proposals:", error);
