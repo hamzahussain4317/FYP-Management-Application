@@ -5,13 +5,13 @@ interface TaskStatisticsProps {
   taskAssigned: number;
   taskCompleted: number;
   taskOverDue: number;
-  hiddenToggler: () => void;
+  // hiddenToggler: () => void;
 }
 const TaskStatistics: React.FC<TaskStatisticsProps> = ({
   taskAssigned,
   taskCompleted,
   taskOverDue,
-  hiddenToggler,
+  // hiddenToggler,
 }) => {
   return (
     <>

@@ -1,7 +1,7 @@
 // components/TaskForm.tsx
 import React, { useState } from "react";
-
-const TaskForm = ({ onSubmit }: { onSubmit: (task: any) => void }) => {
+// { onSubmit }: { onSubmit: (task: any) => void }
+const TaskForm = () => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("low");
   const [dueDate, setDueDate] = useState("");

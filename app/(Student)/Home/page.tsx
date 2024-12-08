@@ -51,8 +51,9 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     sessionStorage.removeItem("groupID");
+    sessionStorage.removeItem("isLeader");
+    sessionStorage.removeItem("projectID");
     const storedUserId = sessionStorage.getItem("userId");
-    console.log("studentDetails is this: ", studentDetails);
     if (storedUserId) {
       getProfile(Number(storedUserId));
     }
@@ -73,10 +74,12 @@ export default function StudentDashboard() {
         const responseData = await response.json();
         setStudentDetails(responseData);
         setHomeDetails(responseData);
-        console.log("groupID in Home: ",responseData.student[0][0].groupID);
         setUserName(responseData.student[0][0].studentName);
         setProfilePic(responseData.student[0][0].profilePic);
         sessionStorage.setItem("groupID",responseData.student[0][0].groupID.toString());
+        sessionStorage.setItem("isLeader",responseData.student[0][0].isLeader.toString());
+        sessionStorage.setItem("projectID",responseData.student[1][0]?.projectID.toString());
+
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {

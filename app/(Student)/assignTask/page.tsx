@@ -16,6 +16,7 @@ interface createTask{
 const AssignTask = () => {
   const router = useRouter();
   const [userId , setUserId]=useState<number>(0);
+  const [projectID,setProjectID]=useState<boolean>();
 
 
   const {
@@ -30,6 +31,12 @@ const AssignTask = () => {
 
   useEffect(()=>{
     setUserId(Number(sessionStorage.getItem("userId")));
+    console.log("projectID:", sessionStorage.getItem("projectID"));
+    if(sessionStorage.getItem("projectID")!==undefined){
+      console.log("inside if")
+      setProjectID(true)
+    }
+
   },[])
 
  const createTask=async(data:createTask)=>{
@@ -84,6 +91,11 @@ const AssignTask = () => {
       <h1 className="text-2xl font-bold mb-10 text-center text-gray-700">
         Assign Task
       </h1>
+      {(!projectID)?(
+        <div>
+          <h1>No project Started Yet</h1>
+        </div>
+      ):(
       <form className="space-y-8  ">
         <div>
           <label
@@ -172,7 +184,7 @@ const AssignTask = () => {
         >
           Assign Task
         </button>
-      </form>
+      </form>)}
     </section>
   );
 };

@@ -48,7 +48,7 @@ interface group {
   campus: string | null;
 }
 
-interface supervisor{
+interface supervisor {
   teacherID: number;
   firstName: string;
   lastName: string;
@@ -61,10 +61,9 @@ interface supervisor{
   qualification: string | null;
 }
 
-interface groupDetails{
-  student:[group[],supervisor[]];
+interface groupDetails {
+  student: [group[], supervisor[]];
 }
-
 
 interface Supervisor {
   email: string;
@@ -81,7 +80,6 @@ interface SupervisorListResponse {
   supervisorList: Supervisor[];
 }
 
-
 interface Task {
   taskID: number;
   projectID: number;
@@ -93,5 +91,13 @@ interface Task {
   taskStatus: number; // Use enum for clarity if possible
 }
 
-
-
+interface overSightTask {
+  taskID: number;
+  projectID: number;
+  fypStudentID: number;
+  taskName: string;
+  taskDescription: string;
+  taskDeadline: string;
+  assignedDate: string;
+  taskStatus: number;
+}
