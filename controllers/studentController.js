@@ -37,7 +37,7 @@ const addStudent = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,section,batch,campus,profilePic) values (?,?,?,?,?,?)`;
+      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,section,batch,campus,profilePic) values (?,?,?,?,?,?,?,?,?)`;
       db.query(
         query,
         [
