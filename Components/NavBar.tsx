@@ -17,10 +17,8 @@ const toggleNotificationSection = () => {
   }
 };
 
-
 export default function NavBar({ profileDetails, id }: navBarProps) {
-  const { userName , profilePic } = useAppWrapper();
-  console.log(profilePic);
+  const { userName, profilePic } = useAppWrapper();
 
   const {
     dashboardName,
@@ -31,24 +29,33 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
   } = profileDetails;
 
   return (
-    <nav className="stdNav">
-      <div className="logo">
-        {dashboardName} <span>(FYPM)</span>{" "}
+    <nav className="navbar">
+      <div className="flex justify-around items-center text-2xl font-bold p-4 h-full">
+        <Image
+          className="logo-image"
+          src={"/logo_darkbg.png"}
+          alt={""}
+          priority={false}
+          width={250}
+          height={250}
+          quality={100}
+        ></Image>
+        {dashboardName}
       </div>
       <ul className="nav-links">
-        <li className="stdName">
+        <li className="profileName">
           {gender === "M" ? (
-            <p>
-              Hello Mr, <span>{userName}</span>
+            <p className="text-lg">
+              Hello Mr, <span>{profileName}</span>
             </p>
           ) : (
             <p>
-              Hello Ms, <span>{userName}</span>
+              Hello Ms, <span>{profileName}</span>
             </p>
           )}
         </li>
-        <li className="notification">
-          <button type="button" className="icon-button">
+        <li className="notification w-[3.5rem] h-[3.5rem]">
+          <button type="button" className="icon-button w-full h-full">
             <span className="material-icons">
               <i
                 className="fa-solid fa-bell fa-2x"
@@ -65,17 +72,15 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
           </button>
         </li>
         <li className="profile">
-          <div className="profile-outer-div">
-            <Image
-              className="profile-pic"
-              src={profilePhoto}
-              alt={""}
-              priority={false}
-              width={45}
-              height={45}
-              quality={100}
-            ></Image>
-          </div>
+          <Image
+            className="profile-pic"
+            src={profilePhoto}
+            alt={""}
+            priority={false}
+            width={60}
+            height={60}
+            quality={100}
+          ></Image>
         </li>
       </ul>
     </nav>

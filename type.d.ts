@@ -68,12 +68,11 @@ type Supervisor = {
   cgpaCriteria: number;
 };
 
-
-
-
-
-
-
-
-
-
+type Notifications = {
+  notificationId: number;
+  messageID: number;
+  senderName: string;
+  notificationContent: string;
+  createdAt: Date;
+  isRead: boolean;
+};

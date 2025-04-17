@@ -2,6 +2,7 @@
 import { useStudentContext } from "@/context/StudentContext";
 import { useAppWrapper } from "@/context/AppDataContext";
 import { useEffect, useState } from "react";
+import socket from "@/utils/socket";
 const defaultStudentDetails: ApiResponse = {
   student: [
     [
@@ -43,8 +44,8 @@ const defaultStudentDetails: ApiResponse = {
 };
 
 export default function StudentDashboard() {
-  const { setHomeDetails} = useStudentContext();
-  const { setUserName,setProfilePic } = useAppWrapper();
+  const { setHomeDetails } = useStudentContext();
+  const { setUserName, setProfilePic } = useAppWrapper();
   const [studentDetails, setStudentDetails] = useState<ApiResponse>(
     defaultStudentDetails
   );
@@ -55,6 +56,7 @@ export default function StudentDashboard() {
     sessionStorage.removeItem("projectID");
     const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
+      socket.emit("register", storedUserId);
       getProfile(Number(storedUserId));
     }
   }, []);
@@ -76,10 +78,18 @@ export default function StudentDashboard() {
         setHomeDetails(responseData);
         setUserName(responseData.student[0][0].studentName);
         setProfilePic(responseData.student[0][0].profilePic);
-        sessionStorage.setItem("groupID",responseData.student[0][0].groupID.toString());
-        sessionStorage.setItem("isLeader",responseData.student[0][0].isLeader.toString());
-        sessionStorage.setItem("projectID",responseData.student[1][0]?.projectID.toString());
-
+        sessionStorage.setItem(
+          "groupID",
+          responseData.student[0][0].groupID.toString()
+        );
+        sessionStorage.setItem(
+          "isLeader",
+          responseData.student[0][0].isLeader.toString()
+        );
+        sessionStorage.setItem(
+          "projectID",
+          responseData.student[1][0]?.projectID.toString()
+        );
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
