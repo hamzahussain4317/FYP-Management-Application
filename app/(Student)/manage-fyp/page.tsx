@@ -54,10 +54,10 @@ const TasksPage = () => {
   // };
 
   const completedTasks = tasks.filter((task) => task.taskStatus === 1).length;
-  const AssignedTasks = tasks.length;
   const overDueTask = tasks.filter(
-    (task) => new Date(task.taskDeadline) < new Date()
+    (task) => new Date(task.taskDeadline) < new Date() && task.taskStatus !== 1
   ).length;
+  const AssignedTasks = tasks.length - completedTasks - overDueTask;
 
   useEffect(() => {
     const storedUserId = sessionStorage.getItem("userId");
@@ -125,7 +125,7 @@ const TasksPage = () => {
           {/* <TaskPieChart /> */}
         </div>
 
-        {/* Progress   Tracking */}
+        {/* Progress  Tracking */}
         <div className="mb-6">
           <ProgressBar completed={completedTasks} total={tasks.length} />
         </div>
