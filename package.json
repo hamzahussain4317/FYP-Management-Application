@@ -4,7 +4,7 @@
   "description": "This is backend branch for project",
   "main": "index.js",
   "scripts": {
-    "start": "dotenv -e .env -- nodemon app.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
