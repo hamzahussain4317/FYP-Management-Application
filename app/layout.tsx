@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Montserrat } from "next/font/google"; // Correct import for Montserrat
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import AppWrapper from "@/context/AppDataContext";
+import ThemeProvider from "@/Components/ThemeProvider";
 
-// Local fonts
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -16,7 +16,6 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-// Google Montserrat font import with various weights
 const montserrat = Montserrat({
   weight: ["300", "400", "500", "600", "700"], // Specify the weights you need
   subsets: ["latin"], // Subsets to optimize loading
@@ -35,9 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
-        {/* Link to the favicon */}
         <link
           rel="icon"
           type="image/png"
@@ -48,7 +46,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
       >
-        <AppWrapper>{children}</AppWrapper>
+        <AppWrapper>
+          <ThemeProvider>{children}</ThemeProvider>
+        </AppWrapper>
       </body>
     </html>
   );
