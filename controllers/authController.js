@@ -170,10 +170,6 @@ const adminSignIn = async (req, res) => {
   const adminEmail = process.env.ADMIN_EMAIL || "admin@fyp.com";
   const adminPassword = process.env.ADMIN_PASSWORD || "12345678";
 
-  console.log(adminName, typeof adminName);
-  console.log(adminEmail, typeof adminEmail);
-  console.log(adminPassword, typeof adminPassword);
-
   if (adminName !== username) {
     return res.status(401).json({ message: "Incorrect username" });
   } else if (adminEmail !== email) {
