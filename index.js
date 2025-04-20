@@ -4,9 +4,35 @@ const morgan = require("morgan");
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
+const {Client}=require("pg")
 
-const db = require("./dbPool/createPool.js");
+// const db = require("./dbPool/createPool.js");
 const { isValidToken } = require("./middlewares/validations.js");
+
+// db.js
+
+
+const client = new Client({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  connectionString: process.env.DATABASE_URL,
+});
+
+client.connect()
+  .then(() => {
+    console.log('✅ Connected to Supabase PostgreSQL successfully!');
+  })
+  .catch((err) => {
+    console.error('❌ Connection error:', err.stack);
+  });
+
+
 
 const auth = require("./routes/auth");
 const student = require("./routes/student");
@@ -60,17 +86,25 @@ app.use("/admin", admin);
 socketRouter(io);
 
 // db connection check and server start
-(async () => {
-  db.getConnection((err, connection) => {
-    if (err) console.error("Error connecting to the database:", err);
+// (async () => {
+//   db.getConnection((err, connection) => {
+//     if (err) console.error("Error connecting to the database:", err);
 
-    console.log("Connected to MySQL database");
-    const PORT = 5000 | process.env.SOCKET_PORT;
-    server.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-      // connection.release();
-    });
-  });
-})();
+//     console.log("Connected to MySQL database");
+//     const PORT = 3001 | process.env.SOCKET_PORT;
+//     server.listen(PORT, () => {
+//       console.log(`Server running on http://localhost:${PORT}`);
+//       // connection.release();
+//     });
+//   });
+// })();
 
+
+const PORT = 3001 | process.env.SOCKET_PORT;
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  // connection.release();
+});
 module.exports = io;
+module.exports = client;
+module.exports = server;
