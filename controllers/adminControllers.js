@@ -1,4 +1,4 @@
-const db = require("../dbPool/createPool.js");
+const db = require("../db/pool.js");
 
 const registerUser = async (req, res) => {};
 const getAllGroupsDetails = async (req, res) => {

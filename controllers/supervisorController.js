@@ -1,4 +1,4 @@
-const db = require("../dbPool/createPool.js");
+const db = require("../db/pool.js");
 const upload = require("../middlewares/multer");
 
 const addSupervisor = async (req, res) => {
