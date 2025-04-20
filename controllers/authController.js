@@ -2,7 +2,7 @@
 require("dotenv").config();
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const db = require("../dbPool/createPool.js");
+const db = require("../db/pool.js");
 const registrationSchemaQuery = require("../models/registeration");
 
 const createRegistrationSchema = () => {

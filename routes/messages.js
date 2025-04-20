@@ -1,5 +1,5 @@
 const express = require("express");
-const db = require("../dbPool/createPool");
+const db = require("../db/pool");
 const router = express.Router();
 
 router.get("/:conversationId", async (req, res) => {

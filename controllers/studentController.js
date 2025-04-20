@@ -1,4 +1,4 @@
-const db = require("../dbPool/createPool.js");
+const db = require("../db/pool.js");
 const upload = require("../middlewares/multer");
 
 const addStudent = async (req, res) => {
@@ -37,7 +37,19 @@ const addStudent = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into students (studentRoll, studentName, departmentName, email, dateOfBirth,section,batch,campus,profilePic) values (?,?,?,?,?,?,?,?,?)`;
+      query = `INSERT INTO students (
+    "studentRoll", 
+    "studentName", 
+    "departmentName", 
+    "email", 
+    "dateOfBirth", 
+    "section", 
+    "batch", 
+    "campus", 
+    "profilePic"
+) 
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+`;
       db.query(
         query,
         [
