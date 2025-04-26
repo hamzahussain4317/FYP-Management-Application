@@ -1,4 +1,4 @@
-const db = require("../db/pool.js");
+const dbPool = require("../db/pool.js");
 const upload = require("../middlewares/multer");
 
 const addSupervisor = async (req, res) => {
@@ -27,10 +27,11 @@ const addSupervisor = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `insert into teachers (firstName, lastName , departmentName, email , dateOfBirth ,contactNo, profilePic) values (?,?,?,?,?,?,?)`;
-      db.query(
+      query = `insert into teachers (firstname, lastname , departmentname, email , dateofbirth ,contactno, profilepic) values ($1,$2,$3,$4,$5,$6,$7)`;
+      values=[firstName, lastName, departmentName, email, dob, contactNo, imagePath];
+      dbPool.query(
         query,
-        [firstName, lastName, departmentName, email, dob, contactNo, imagePath],
+        values,
         async (err, result) => {
           if (err) {
             return res.status(500).json({

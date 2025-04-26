@@ -1,4 +1,4 @@
-const db = require("../db/pool.js");
+const dbPool = require("../db/pool.js");
 const upload = require("../middlewares/multer");
 
 const addStudent = async (req, res) => {
@@ -37,44 +37,41 @@ const addStudent = async (req, res) => {
 
     const imagePath = req.file.path;
     try {
-      query = `INSERT INTO students (
-    "studentRoll", 
-    "studentName", 
-    "departmentName", 
+      const query = `INSERT INTO students (
+    "studentroll", 
+    "studentname", 
+    "departmentname", 
     "email", 
-    "dateOfBirth", 
+    "dateofbirth", 
     "section", 
     "batch", 
     "campus", 
-    "profilePic"
+    "profilepic"
 ) 
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
 `;
-      db.query(
-        query,
-        [
-          studentRoll,
-          studentName,
-          departmentName,
-          email,
-          dob,
-          section,
-          batch,
-          campus,
-          imagePath,
-        ],
-        async (err, result) => {
-          if (err) {
-            return res.status(500).json({
-              message: "database query execution failed",
-              error: err.message,
-            });
-          }
-          return res
-            .status(200)
-            .json({ message: "student Successfully added" });
+
+      const values = [
+        studentRoll,
+        studentName,
+        departmentName,
+        email,
+        dob,
+        section,
+        batch,
+        campus,
+        imagePath,
+      ];
+
+      dbPool.query(query, values, async (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            message: "database query execution failed",
+            error: err.message,
+          });
         }
-      );
+        return res.status(200).json({ message: "student Successfully added" });
+      });
     } catch (err) {
       return res.status(500).json({ message: "error assigning student" });
     }
@@ -103,7 +100,7 @@ const getProfile = async (req, res) => {
         result[0][0].profilePic
       ).toString("base64")}`;
     }
-    
+
     return res.status(200).json({ student: result });
   });
 };
@@ -197,8 +194,6 @@ const getGroupDetails = async (req, res) => {
       ).toString("base64")}`;
     }
 
-    
-
     return res.status(200).json({ student: result });
   });
 };
@@ -246,14 +241,14 @@ const getSupervisorList = async (req, res) => {
       if (results.length === 0) {
         res.status(404).json({ message: "No supervisor Registered Yet!" });
       }
-      results.map((item,index)=>{
+      results.map((item, index) => {
         if (results[index]?.profilePic) {
           results[index].profilePic = `data:image/jpeg;base64,${Buffer.from(
             results[index].profilePic
           ).toString("base64")}`;
         }
-      })
-    
+      });
+
       res.status(200).json({ supervisorList: results });
     });
   });

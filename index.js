@@ -59,6 +59,74 @@ app.use("/admin", admin);
 //socket route handler
 socketRouter(io);
 
+const func = async () => {
+
+  const query = `
+
+    INSERT INTO students (
+
+      "studentroll", 
+
+      "studentname", 
+
+      "departmentname", 
+
+      "email", 
+
+      "dateofbirth", 
+
+      "section", 
+
+      "batch", 
+
+      "campus"
+
+    ) 
+
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+
+  `;
+
+  const values = [
+
+    "22K-4327",
+
+    "Hamza Hussain",
+
+    "CS",
+
+    "k224327@nu.edu.pk",
+
+    "2003-12-30", // Use ISO format for date
+
+    "BCS-5K",
+
+    "CS",
+
+    "KHI",
+
+  ];
+
+
+
+  // const result = await client.query(query, values);
+
+  // console.log("✅ Inserted row:", result.rows[0]);
+
+
+
+  dbPool.query(query, values, (err, res) => {
+
+    if (err) throw err;
+
+
+
+    console.log("Data inserted successfully.");
+
+  });
+
+};
+
 // db connection check and server start
 (async () => {
   try {
@@ -70,11 +138,20 @@ socketRouter(io);
     });
   } catch (err) {
     console.error("❌ Database error:", err.message);
-  } finally {
-    await dbPool.end();
-  }
+  } 
+  // finally {
+  //   await dbPool.end();
+  // }
 })();
 
+
+
+  // func();
+
+
+
+
 module.exports = io;
-module.exports = client;
+
 module.exports = server;
+

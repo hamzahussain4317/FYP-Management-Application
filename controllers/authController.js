@@ -1,8 +1,8 @@
 //importing packages
 require("dotenv").config();
-const bycrpt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const db = require("../db/pool.js");
+const dbPool = require("../db/pool.js");
 const registrationSchemaQuery = require("../models/registeration");
 
 const createRegistrationSchema = () => {
@@ -16,96 +16,181 @@ const createRegistrationSchema = () => {
 };
 
 //signup//
+// const signUp = async (req, res) => {
+//   try {
+//     //check user enters all fields//
+//     const { username, password, email, role } = req.body;
+//     if (!username || !email || !password || !role) {
+//       return res.status(400).json({ err: "please fill in all fields" });
+//     }
+//     //validation role
+//     const userRole = role;
+//     let userQuery;
+//     if (userRole !== "student" && userRole !== "teacher") {
+//       return res.status(400).json({ err: "Invalid role specified" });
+//     } else if (userRole === "student") {
+//       userQuery = `SELECT "studentID", "studentName" FROM "students" WHERE "email" = $1`;
+//     } else {
+//       userQuery = `SELECT "teacherID", "firstName", "lastName" FROM "teachers" WHERE "email" = $1`;
+//     }
+//     //db query for checking user exists in student or supervisor table
+//     dbPool.query(userQuery, [email], async (err, results) => {
+//       //handling validation error
+//       if (err) {
+//         console.error("Error Validating user:", err);
+//         return res
+//           .status(500)
+//           .json({ message: "server error during validation", });
+//       }
+//       //error if no user exist with email provided
+//       if (results.length === 0) {
+//         return res
+//           .status(404)
+//           .json({ error: `${role} not found in the database` });
+//       }
+//       if (role === "student") {
+//         if (results[0].studentName.toLowerCase() !== username.toLowerCase()) {
+//           return res
+//             .status(400)
+//             .json({ message: "enter the correct student name" });
+//         }
+//       } else if (role === "teacher") {
+//         if (username !== `${results[0].firstName} ${results[0].lastName}`) {
+//           return res
+//             .status(400)
+//             .json({ message: "enter the correct teacher name" });
+//         }
+//       }
+//       let userId;
+//       let insertQuery;
+//       if (userRole === "student") {
+//         userId = results[0].studentID;
+//         insertQuery = `INSERT INTO "registration" ("userName", "hashedPassword", "email", "userRole", "fypStudentID") VALUES ($1, $2, $3, $4, $5)`;
+//       } else {
+//         userId = results[0].teacherID;
+//         insertQuery = `INSERT INTO "registration" ("userName", "hashedPassword", "email", "userRole", "supervisorID") VALUES ($1, $2, $3, $4, $5)`;
+//       }
+//       //encrypting password
+//       let hashedPassword;
+//       try {
+//         hashedPassword = await bycrpt.hash(password, 10);
+//       } catch (err) {
+//         //error handling for encrypting the password
+//         console.error("Error hashing Password: ", err);
+//         return res.status(500).json({ message: "error hashing password" });
+//       }
+//       //query for inserting user data into the registrtation table
+
+//       dbPool.query(
+//         insertQuery,
+//         [username, hashedPassword, email, role, userId],
+//         (err, result) => {
+//           if (err) {
+//             //error while registrting user or inserting user into registration
+//             console.error("error inserting into registration table: ", err);
+//             return res
+//               .status(500)
+//               .json({ message: "Failed to register user", error: err });
+//           }
+//           //user successfully added into registrtaion table
+//           res.status(201).json({
+//             message: "User registered successfully",
+//             userId: result.insertId,
+//           });
+//         }
+//       );
+//     });
+//   } catch (err) {
+//     //error while running this function
+//     console.errror("unexpected error during sign-up: ", err);
+//     res.status(500).json({ message: "Unexpected server error", error: err });
+//   }
+// };
+
+
+
+
 const signUp = async (req, res) => {
   try {
-    //check user enters all fields//
     const { username, password, email, role } = req.body;
+
     if (!username || !email || !password || !role) {
-      return res.status(400).json({ err: "please fill in all fields" });
+      return res.status(400).json({ err: "Please fill in all fields" });
     }
-    //validation role
+
     const userRole = role;
     let userQuery;
     if (userRole !== "student" && userRole !== "teacher") {
       return res.status(400).json({ err: "Invalid role specified" });
     } else if (userRole === "student") {
-      userQuery = `Select studentID , studentName from students where email = ?`;
+      userQuery = `SELECT "studentid", "studentname" FROM "students" WHERE "email" = $1`;
     } else {
-      userQuery = `Select teacherID ,firstName , lastName from teachers where email = ?`;
+      userQuery = `SELECT "teacherid", "firstname", "lastname" FROM "teachers" WHERE "email" = $1`;
     }
-    //db query for checking user exists in student or supervisor table
-    db.query(userQuery, [email], async (err, results) => {
-      //handling validation error
+
+    dbPool.query(userQuery, [email], async (err, results) => {
       if (err) {
         console.error("Error Validating user:", err);
-        return res
-          .status(500)
-          .json({ message: "server error during validation" });
+        return res.status(500).json({ message: "Server error during validation" });
       }
-      //error if no user exist with email provided
-      if (results.length === 0) {
-        return res
-          .status(404)
-          .json({ error: `${role} not found in the database` });
+
+      if (results.rows.length === 0) {
+        return res.status(404).json({ error: `${role} not found in the database` });
       }
+
+      const user = results.rows[0];
+
       if (role === "student") {
-        if (results[0].studentName.toLowerCase() !== username.toLowerCase()) {
-          return res
-            .status(400)
-            .json({ message: "enter the correct student name" });
+        if (user.studentname.toLowerCase() !== username.toLowerCase()) {
+          return res.status(400).json({ message: "Enter the correct student name" });
         }
       } else if (role === "teacher") {
-        if (username !== `${results[0].firstName} ${results[0].lastName}`) {
-          return res
-            .status(400)
-            .json({ message: "enter the correct teacher name" });
+        const fullName = `${user.firstname} ${user.lastname}`;
+        if (username !== fullName) {
+          return res.status(400).json({ message: "Enter the correct teacher name" });
         }
       }
+
       let userId;
       let insertQuery;
+
       if (userRole === "student") {
-        userId = results[0].studentID;
-        insertQuery = `INSERT INTO registration (userName , hashedPassword , email , userRole , fypStudentID) VALUES (?, ?, ?, ? ,?)`;
+        userId = user.studentid;
+        insertQuery = `INSERT INTO "registration" ("username", "hashedpassword", "email", "userrole", "fypstudentid") VALUES ($1, $2, $3, $4, $5)`;
       } else {
-        userId = results[0].teacherID;
-        insertQuery = `INSERT INTO registration (userName , hashedPassword , email , userRole , supervisorID) VALUES (?, ?, ? ,? ,?)`;
+        userId = user.teacherid;
+        insertQuery = `INSERT INTO "registration" ("username", "hashedpassword", "email", "userrole", "supervisorid") VALUES ($1, $2, $3, $4, $5)`;
       }
-      //encrypting password
+
       let hashedPassword;
       try {
-        hashedPassword = await bycrpt.hash(password, 10);
+        hashedPassword = await bcrypt.hash(password, 10);
       } catch (err) {
-        //error handling for encrypting the password
         console.error("Error hashing Password: ", err);
-        return res.status(500).json({ message: "error hashing password" });
+        return res.status(500).json({ message: "Error hashing password" });
       }
-      //query for inserting user data into the registrtation table
 
-      db.query(
+      dbPool.query(
         insertQuery,
         [username, hashedPassword, email, role, userId],
         (err, result) => {
           if (err) {
-            //error while registrting user or inserting user into registration
-            console.error("error inserting into registration table: ", err);
-            return res
-              .status(500)
-              .json({ message: "Failed to register user", error: err });
+            console.error("Error inserting into registration table: ", err);
+            return res.status(500).json({ message: "Failed to register user", error: err });
           }
-          //user successfully added into registrtaion table
+
           res.status(201).json({
             message: "User registered successfully",
-            userId: result.insertId,
           });
         }
       );
     });
   } catch (err) {
-    //error while running this function
-    console.errror("unexpected error during sign-up: ", err);
+    console.error("Unexpected error during sign-up: ", err);
     res.status(500).json({ message: "Unexpected server error", error: err });
   }
 };
+
 
 const signIn = async (req, res) => {
   const { email, password, role } = req.body;
@@ -116,7 +201,7 @@ const signIn = async (req, res) => {
     query = ` SELECT registration.*, teachers.teacherID as userId FROM registration   LEFT JOIN teachers ON registration.email = teachers.email  WHERE registration.email = ? AND registration.userRole = ?`;
   }
 
-  db.query(query, [email, role], async (err, results) => {
+  dbPool.query(query, [email, role], async (err, results) => {
     if (err) {
       console.error("Error executing query:", err);
       return res
