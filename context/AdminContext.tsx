@@ -1,5 +1,6 @@
 import { useContext, createContext } from "react";
 import { useState } from "react";
+import DUMMY_STUDENTS from "@/dummydata/students";
 
 const AdminContext = createContext<any>(undefined);
 
@@ -11,17 +12,49 @@ export default function AdminContextProvider({
   const [baseUrl, setBaseUrl] = useState<string>(
     "http://localhost:3001/admin/"
   );
+  const [students, setStudents] = useState<any[]>([]);
+  const [total, setTotal] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [filteredGroups, setFilteredGroups] = useState<GroupDetails[]>([]);
-  const [group,setGroup] = useState<GroupDetails>();
+  const [group, setGroup] = useState<GroupDetails>();
   const [filterBy, setFilterBy] = useState<groupFilterBy>({
     byGroupName: true,
     byProjectName: false,
     byStudentRoll: false,
   });
 
+  // dummy functionalities
+  const fecthDummmyStudents = async (page = 1, pageSize = 10) => {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize;
+    const dummyStudents = DUMMY_STUDENTS.slice(from, to);
+    setStudents(dummyStudents);
+    setIsLoading(true);
+  };
+
   //   Handle Functionalities
+  const fetchStudents = async (page: number, pageSize: number) => {
+    const response = await fetch(
+      `http://localhost:5000/students?page=${page}&pageSize=${pageSize}`
+    );
+
+    const data = await response.json();
+    const { students, count } = data;
+    if (!response.ok) {
+      setError("Error fetching students");
+      return;
+    }
+    if (students.length === 0) {
+      setError("No students found");
+      return;
+    }
+    setStudents(students);
+    setTotal(count);
+    setIsLoading(false);
+    setError("");
+  };
+
   const fetchAllGroupDetails = async () => {
     //api
     try {
@@ -62,10 +95,17 @@ export default function AdminContextProvider({
       });
 
       if (response.ok) {
-        const responseResult =  await response.json();
-        const {groupDetails} = responseResult;
+        const responseResult = await response.json();
+        const { groupDetails } = responseResult;
         console.log(groupDetails);
-        const { groupId, groupName, projectStatus, projectId, projectName, supervisorName } = groupDetails[0];
+        const {
+          groupId,
+          groupName,
+          projectStatus,
+          projectId,
+          projectName,
+          supervisorName,
+        } = groupDetails[0];
         const students = groupDetails.map((item) => ({
           studentRoll: item.studentRoll,
           name: item.studentName,
@@ -73,16 +113,16 @@ export default function AdminContextProvider({
           finalEvaluation: item.finalEvaluation,
         }));
 
-        return{
+        return {
           groupId,
           groupName,
           status: projectStatus,
           projectId,
           projectName,
-          supervisorId: null, 
+          supervisorId: null,
           supervisorName,
-          students
-        }
+          students,
+        };
       } else if (response.status === 404) {
         setError(`No group with ID: ${groupId} exist`);
       }
@@ -128,6 +168,8 @@ export default function AdminContextProvider({
         filterBy,
         error,
         isLoading,
+        fetchStudents,
+        fecthDummmyStudents,
         fetchAllGroupDetails,
         findByGroupId,
         handleSearch,

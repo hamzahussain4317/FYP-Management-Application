@@ -1,5 +1,5 @@
 "use client";
-import "../globals.css";
+import "@/styles/styles.css";
 
 import NavBar from "@/Components/NavBar";
 import SideBar from "@/Components/SideBar";
@@ -35,7 +35,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <div className="layout">
         <NavBar profileDetails={profileDetails} id={id} />
         <SideBar itemDetails={itemDetails} />
-        <main className="content">{children}</main>
+        <main className="">{children}</main>
         <MessageHub />
       </div>
     </AdminContextProvider>

@@ -15,7 +15,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ededed; /* Fix the double hash (##) */
+    --background: #ededed;
     --foreground: #171717;
     --wrapper-bg: white;
     --card-bg: #f9f9f9;
@@ -27,6 +27,10 @@ body {
   background: var(--background);
   font-family: var(--font-montserrat); /* Use Montserrat for the body */
   overflow-x: hidden; /* Prevent horizontal scroll caused by scaling */
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 h1 {
@@ -51,6 +55,9 @@ p {
   border-radius: 10px; /* Rounded corners */
 }
 
+.admin-layout {
+  @apply backdrop-blur-md bg-white/20 p-4 rounded-xl shadow-md;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
