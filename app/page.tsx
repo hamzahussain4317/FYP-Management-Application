@@ -1,10 +1,12 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HelpCircle, Menu, ChevronDown } from "lucide-react"; // Import ChevronDown for scroll indicator
 
 export default function Home() {
+  const router = useRouter();
   const [showLogo, setShowLogo] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -21,6 +23,10 @@ export default function Home() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleButton = (role: string) => {
+    router.push(`/user-login?role=${role}`);
   };
 
   return (
@@ -149,10 +155,16 @@ export default function Home() {
           designed for students and supervisors.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-6">
-          <button className="bg-dark-background px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition">
+          <button
+            className="bg-dark-background px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
+            onClick={() => handleButton("student")}
+          >
             Get Started as Student
           </button>
-          <button className="bg-white/20 px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition">
+          <button
+            className="bg-white/20 px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
+            onClick={() => handleButton("teacher")}
+          >
             Get Started as Supervisor
           </button>
         </div>

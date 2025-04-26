@@ -6,7 +6,7 @@ export default function AdminSignin() {
   return (
     <section className="signUp">
       <h1>Admin Login</h1>
-      <SignUp user={user} />
+      <SignUp role={user} />
     </section>
   );
 }

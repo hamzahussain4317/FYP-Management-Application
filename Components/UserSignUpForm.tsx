@@ -15,8 +15,10 @@ interface UserSignUpData {
   role: "student" | "teacher";
 }
 
-export default function UserSignUpForm() {
-  const router = useRouter();
+type SignUpProps = {
+  role: string;
+};
+export default function UserSignUpForm({ role }: SignUpProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
@@ -145,6 +147,7 @@ export default function UserSignUpForm() {
                 id="student"
                 name="role"
                 value="student"
+                defaultChecked={role === "student" ? true : false}
               />
               <label htmlFor="student">Student</label>
             </div>
@@ -155,6 +158,7 @@ export default function UserSignUpForm() {
                 id="teacher"
                 name="role"
                 value="teacher"
+                defaultChecked={role === "teacher" ? true : false}
               />
               <label htmlFor="teacher">Teacher</label>
             </div>
@@ -167,12 +171,6 @@ export default function UserSignUpForm() {
           </button>
         </div>
         {errorMessage && <div className="errors">{errorMessage}</div>}
-        <p className="accExist">
-          Already have an account?{" "}
-          <span>
-            <Link href="/login">Login</Link>
-          </span>
-        </p>
       </form>
     </div>
   );

@@ -12,16 +12,17 @@ interface UserLogin {
   password: string;
   role: "student" | "teacher";
 }
+type LogInProps = {
+  user_role: string;
+};
 
-
-
-export default function LoginForm() {
+export default function LoginForm({ user_role }: LogInProps) {
   const { setUserId } = useAppWrapper();
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  
+
   const {
     register,
     handleSubmit,
@@ -32,9 +33,9 @@ export default function LoginForm() {
     resolver: zodResolver(UserLoginSchema),
   });
 
-  useEffect(()=>{
-        sessionStorage.removeItem("userId");
-  },[])
+  useEffect(() => {
+    sessionStorage.removeItem("userId");
+  }, []);
 
   const submitLogInForm = async (data: UserLogin) => {
     try {
@@ -52,14 +53,12 @@ export default function LoginForm() {
       if (response.ok) {
         const responseData = await response.json();
         setUserId(responseData.userId);
-        sessionStorage.setItem("userId",responseData.userId);
-        if(data.role==="student"){
+        sessionStorage.setItem("userId", responseData.userId);
+        if (data.role === "student") {
           router.push("/Home");
-        }
-        else if(data.role==="teacher"){
+        } else if (data.role === "teacher") {
           router.push("/profile");
         }
-        
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else if (response.status === 401) {
@@ -73,19 +72,17 @@ export default function LoginForm() {
       });
       console.log(error);
       setLoginError(error.message);
-    
     }
   };
 
   const onSubmit = async (data: UserLogin) => {
     setIsLoading(true);
-    console.log(data);
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(data);
     setIsLoading(false);
     reset();
     submitLogInForm(data);
   };
+
   return (
     <div className="loginform">
       <form className="form">
@@ -97,7 +94,7 @@ export default function LoginForm() {
           <input
             {...register("email")}
             type="email"
-            placeholder="enter your mail"
+            placeholder="Enter your mail"
             className="email"
           />
           {errors.email && <div className="errors">{errors.email.message}</div>}
@@ -129,6 +126,7 @@ export default function LoginForm() {
                 id="student"
                 name="role"
                 value="student"
+                defaultChecked={user_role === "student" ? true : false}
               />
               <label htmlFor="student">Student</label>
             </div>
@@ -138,9 +136,10 @@ export default function LoginForm() {
                 type="radio"
                 id="teacher"
                 name="role"
-                value="teacher"
+                value="Supervisor"
+                defaultChecked={user_role === "student" ? false : true}
               />
-              <label htmlFor="teacher">Teacher</label>
+              <label htmlFor="teacher">Supervisor</label>
             </div>
           </div>
           {errors.role && <div className="errors">{errors.role.message}</div>}
@@ -150,9 +149,9 @@ export default function LoginForm() {
             {isLoading ? "Loading..." : "Log In"}
           </button>
         </div>
-        {loginError && <div className="errors">{loginError}</div> }
+        {loginError && <div className="errors">{loginError}</div>}
         <p className="accExist">
-          Donot have an Account?{" "}
+          Do not have an Account?{" "}
           <span>
             <Link href="/signup">visit admin</Link>
           </span>

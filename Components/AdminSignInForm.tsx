@@ -19,9 +19,6 @@ export default function SignUpForm() {
   const {
     register,
     handleSubmit,
-    // setError,
-    // setValue,
-    // getValues,
     formState: { errors },
     reset,
   } = useForm<AdminSignInData>({
@@ -40,7 +37,7 @@ export default function SignUpForm() {
       reset();
       setErrorMessage("");
       // sessionStorage.setItem(adminId, "admin001");
-      router.push("/addUser");
+      router.replace("/addUser");
     } else {
       setErrorMessage("Invalid email, password, or username");
       console.log("Incorrect");

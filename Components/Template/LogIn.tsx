@@ -1,6 +1,7 @@
 import LoginForm from "../../Components/LogInForm";
 import Image from "next/image";
-export default function login() {
+
+export default function login(user_role: string) {
   return (
     <div className="formImg">
       <div className="logInImageDiv">
@@ -14,7 +15,7 @@ export default function login() {
           quality={100}
         ></Image>
       </div>
-      <LoginForm />
+      <LoginForm user_role={user_role} />
     </div>
   );
 }

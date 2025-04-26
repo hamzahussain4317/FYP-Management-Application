@@ -1,6 +1,4 @@
 "use client";
-import "@/styles/styles.css";
-
 import NavBar from "@/Components/NavBar";
 import SideBar from "@/Components/SideBar";
 import MessageHub from "@/Components/MessageHub";
@@ -13,11 +11,16 @@ const itemDetails: sideBarItems[] = [
     itemName: "FYP Groups",
     itemIcon: "fa-people-group",
   },
-  // {
-  //   itemRoute: "supervisors",
-  //   itemName: "Supervisors",
-  //   itemIcon: "fa-chart-simple",
-  // },
+  {
+    itemRoute: "students",
+    itemName: "Students",
+    itemIcon: "fa-user-graduate",
+  },
+  {
+    itemRoute: "supervisors",
+    itemName: "Supervisors",
+    itemIcon: "fa-chart-simple",
+  },
 ];
 
 const profileDetails: navItems = {
