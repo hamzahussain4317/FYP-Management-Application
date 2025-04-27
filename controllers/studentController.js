@@ -82,27 +82,31 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
 const getProfile = async (req, res) => {
   const { stdID } = req.params;
 
-  const query = `SELECT * FROM fypstudent f JOIN students s ON f.fypStudentID = s.studentID WHERE f.fypStudentID = ?;
-  select f.groupID, p.* , pg.* , t.email , CONCAT(t.firstName, ' ', t.lastName) AS fullName from fypStudent f join projectGroup pg on f.groupID = pg.groupID join project p on pg.projectID=p.projectID join supervisor s on pg.supervisorID=s.supervisorID join teachers t on t.teacherID = s.supervisorID where f.fypStudentID=?;`;
-  db.query(query, [stdID, stdID], async (err, result) => {
-    if (err) {
-      console.error("Error executing query: ", err);
-      return res
-        .status(500)
-        .json({ message: "Database query execution failed" });
-    }
-    if (result.length === 0) {
+  try {
+    const query1 = `SELECT * FROM "fypstudent" f JOIN "students" s ON f."fypstudentid" = s."studentid" WHERE f."fypstudentid" = $1`;
+    const query2 = `SELECT f."groupid", p.*, pg.*, t."email", CONCAT(t."firstname", ' ', t."lastname") AS "fullName" FROM "fypstudent" f JOIN "projectgroup" pg ON f."groupid" = pg."groupid" JOIN "project" p ON pg."projectid" = p."projectid" JOIN "supervisor" s ON pg."supervisorid" = s."supervisorid" JOIN "teachers" t ON t."teacherid" = s."supervisorid" WHERE f."fypstudentid" = $1;`;
+
+    const studentResults = await dbPool.query(query1, [stdID]);
+    const groupProjectResults = await dbPool.query(query2, [stdID]);
+
+    if (studentResults.length === 0) {
       return res.status(404).json({ message: "Student not found" });
     }
-
-    if (result[0][0]?.profilePic) {
-      result[0][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
-        result[0][0].profilePic
+    console.log("myresult", studentResults.rows[0]);
+    if (studentResults.rows[0]?.profilepic) {
+      studentResults.rows[0].profilepic = `data:image/jpeg;base64,${Buffer.from(
+        studentResults.rows[0].profilepic
       ).toString("base64")}`;
     }
 
-    return res.status(200).json({ student: result });
-  });
+    return res.status(200).json({
+      student: studentResults.rows[0],
+      groupProjectInfo: groupProjectResults.rows,
+    });
+  } catch (err) {
+    console.error("Error executing query: ", err);
+    return res.status(500).json({ message: "Database query execution failed" });
+  }
 };
 
 const assignGroup = async (req, res) => {

@@ -107,9 +107,6 @@ const createRegistrationSchema = () => {
 //   }
 // };
 
-
-
-
 const signUp = async (req, res) => {
   try {
     const { username, password, email, role } = req.body;
@@ -131,23 +128,31 @@ const signUp = async (req, res) => {
     dbPool.query(userQuery, [email], async (err, results) => {
       if (err) {
         console.error("Error Validating user:", err);
-        return res.status(500).json({ message: "Server error during validation" });
+        return res
+          .status(500)
+          .json({ message: "Server error during validation" });
       }
 
       if (results.rows.length === 0) {
-        return res.status(404).json({ error: `${role} not found in the database` });
+        return res
+          .status(404)
+          .json({ error: `${role} not found in the database` });
       }
 
       const user = results.rows[0];
 
       if (role === "student") {
         if (user.studentname.toLowerCase() !== username.toLowerCase()) {
-          return res.status(400).json({ message: "Enter the correct student name" });
+          return res
+            .status(400)
+            .json({ message: "Enter the correct student name" });
         }
       } else if (role === "teacher") {
         const fullName = `${user.firstname} ${user.lastname}`;
         if (username !== fullName) {
-          return res.status(400).json({ message: "Enter the correct teacher name" });
+          return res
+            .status(400)
+            .json({ message: "Enter the correct teacher name" });
         }
       }
 
@@ -170,13 +175,16 @@ const signUp = async (req, res) => {
         return res.status(500).json({ message: "Error hashing password" });
       }
 
+
       dbPool.query(
         insertQuery,
         [username, hashedPassword, email, role, userId],
         (err, result) => {
           if (err) {
             console.error("Error inserting into registration table: ", err);
-            return res.status(500).json({ message: "Failed to register user", error: err });
+            return res
+              .status(500)
+              .json({ message: "Failed to register user", error: err });
           }
 
           res.status(201).json({
@@ -191,14 +199,13 @@ const signUp = async (req, res) => {
   }
 };
 
-
 const signIn = async (req, res) => {
   const { email, password, role } = req.body;
   let query;
   if (role === "student") {
-    query = ` SELECT registration.*, students.studentID as userId  FROM registration LEFT JOIN students ON registration.email = students.email  WHERE registration.email = ? AND registration.userRole = ?;`;
+    query = ` SELECT registration.*, students."studentid" as userId  FROM "registration" LEFT JOIN "students" ON registration."email" = students."email"  WHERE registration."email" = $1 AND registration."userrole" = $2;`;
   } else if (role === "teacher") {
-    query = ` SELECT registration.*, teachers.teacherID as userId FROM registration   LEFT JOIN teachers ON registration.email = teachers.email  WHERE registration.email = ? AND registration.userRole = ?`;
+    query = ` SELECT registration.*, teachers."teacherid" as userId FROM "registration"   LEFT JOIN "teachers" ON registration."email" = teachers."email"  WHERE registration."email" = $1 AND registration."userrole" = $2`;
   }
 
   dbPool.query(query, [email, role], async (err, results) => {
@@ -209,8 +216,9 @@ const signIn = async (req, res) => {
         .json({ message: "Database query execution failed" });
     }
 
-    const user = results[0];
-
+    const user = results.rows[0];
+    user.hashedpassword = user.hashedpassword.trim();
+    console.log("our user: ", user);
     if (!user) {
       return res
         .status(401)
@@ -218,12 +226,13 @@ const signIn = async (req, res) => {
     }
 
     let isMatch;
-
+    console.log(user.hashedpassword,"hello")
     try {
-      isMatch = await bycrpt.compare(password, user.hashedPassword);
+      isMatch = await bcrypt.compare(password, user.hashedpassword);
     } catch (err) {
       console.log(err);
     }
+    console.log("isMatch: ", isMatch);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect password" });
@@ -232,14 +241,14 @@ const signIn = async (req, res) => {
     //JWT generation
     const SECRET_KEY = process.env.SECRET_KEY;
     const token = jwt.sign(
-      { userId: user.id, role: user.userRole },
+      { userId: user.userid, role: user.userrole },
       SECRET_KEY,
       {
         expiresIn: "1h",
       }
     );
 
-    const userId = user.userId;
+    const userId = user.userid;
     res.status(201).json({ message: "Logged in successfully", token, userId });
   });
 };
