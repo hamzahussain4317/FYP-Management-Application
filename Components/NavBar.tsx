@@ -29,17 +29,8 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
   } = profileDetails;
 
   return (
-    <nav className="navbar">
+    <nav className="navbar bg-light-surface dark:bg-dark-surface shadow-soft">
       <div className="flex justify-around items-center text-2xl font-bold p-4 h-full">
-        <Image
-          className="logo-image"
-          src={"/logo_darkbg.png"}
-          alt={""}
-          priority={false}
-          width={250}
-          height={250}
-          quality={100}
-        ></Image>
         {dashboardName}
       </div>
       <ul className="nav-links">

@@ -1,6 +1,6 @@
 import { useContext, createContext } from "react";
 import { useState } from "react";
-import DUMMY_STUDENTS from "@/dummydata/students";
+import dummy_students from "@/dummydata/students";
 
 const AdminContext = createContext<any>(undefined);
 
@@ -25,12 +25,18 @@ export default function AdminContextProvider({
   });
 
   // dummy functionalities
-  const fecthDummmyStudents = async (page = 1, pageSize = 10) => {
+  const fetchDummyStudents = async (page = 1, pageSize = 10) => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    const dummyStudents = DUMMY_STUDENTS.slice(from, to);
-    setStudents(dummyStudents);
     setIsLoading(true);
+    setTimeout(() => {
+      const dummyStudents = dummy_students.slice(from, to);
+      setStudents(dummyStudents);
+      setTotal(dummyStudents.length);
+      setError("");
+      setIsLoading(false);
+    }, 1000);
+    console.log(students, total);
   };
 
   //   Handle Functionalities
@@ -163,13 +169,15 @@ export default function AdminContextProvider({
   return (
     <AdminContext.Provider
       value={{
+        students,
         group,
         filteredGroups,
         filterBy,
         error,
         isLoading,
+        setIsLoading,
         fetchStudents,
-        fecthDummmyStudents,
+        fetchDummyStudents,
         fetchAllGroupDetails,
         findByGroupId,
         handleSearch,

@@ -37,7 +37,7 @@ export default function SignUpForm() {
       reset();
       setErrorMessage("");
       // sessionStorage.setItem(adminId, "admin001");
-      router.replace("/addUser");
+      router.replace("/students");
     } else {
       setErrorMessage("Invalid email, password, or username");
       console.log("Incorrect");

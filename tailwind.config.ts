@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-
+import { PluginAPI } from "tailwindcss/types/config";
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -51,7 +51,25 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addComponents }: PluginAPI) {
+      addComponents({
+        ".global-text-size": {
+          fontSize: "0.75rem",
+          "@screen sm": { fontSize: "0.875rem" },
+          "@screen md": { fontSize: "1rem" },
+          "@screen lg": { fontSize: "1.125rem" },
+          "@screen xl": { fontSize: "1.25rem" },
+        },
+        ".global-bg": {
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
+        },
+        ".global-margin": {
+          margin: "1rem",
+        },
+      });
+    },
+  ],
 };
 
 export default config;

@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-cover bg-center bg-dark-background scroll-smooth">
+    <div className="relative min-h-screen bg-cover bg-center bg-dark-background scroll-smooth global-text-size">
       {/* Blackout screen and logo animation */}
       {showLogo && (
         <div className="fixed inset-0 bg-dark-background z-50 flex items-center justify-center">

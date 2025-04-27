@@ -5,7 +5,6 @@ import MessageHub from "@/Components/MessageHub";
 import AdminContextProvider from "@/context/AdminContext";
 
 const itemDetails: sideBarItems[] = [
-  { itemRoute: "addUser", itemName: "Add User", itemIcon: "fa-user" },
   {
     itemRoute: "groups",
     itemName: "FYP Groups",
@@ -35,7 +34,7 @@ const id: string = "123";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <AdminContextProvider>
-      <div className="layout">
+      <div className="layout ">
         <NavBar profileDetails={profileDetails} id={id} />
         <SideBar itemDetails={itemDetails} />
         <main className="">{children}</main>

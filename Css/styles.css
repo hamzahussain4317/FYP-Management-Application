@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -171,14 +170,6 @@ i {
   margin-bottom: 1rem;
 }
 
-.blue-regular-button {
-  @apply rounded-xl border-[2px] border-gray-500 hover:border-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg hover:shadow-blue-200;
-}
-
-.orange-regular-button {
-  @apply rounded-xl border-[2px] border-gray-500 hover:border-[#f0a500] transition-all duration-200 hover:scale-110 hover:shadow-lg hover:shadow-blue-200;
-}
-
 /* Student DashBoard */
 
 .wrapper {
@@ -193,7 +184,7 @@ i {
 .layout {
   display: grid;
   grid-template-rows: 12% 88%;
-  grid-template-columns: 21% 79%;
+  grid-template-columns: 22% 78%;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -202,7 +193,8 @@ i {
 /* navbar */
 .navbar {
   grid-row: 1;
-  grid-column: span 2;
+  grid-column: 2;
+  max-height: 6rem;
   background-color: #222831;
   color: #fff;
   display: flex;
@@ -210,11 +202,6 @@ i {
   justify-content: space-between;
   font-size: 1.125rem;
   z-index: 900;
-}
-
-.navbar .logo {
-  font-size: 24px;
-  font-weight: bold;
 }
 
 .navbar .nav-links {
@@ -304,7 +291,7 @@ ul {
 
 /* sidebar */
 .sidebar {
-  grid-row: 2;
+  grid-row: 1 / span 2;
   grid-column: 1;
   background-color: #222831;
   color: #333;
@@ -815,7 +802,10 @@ ul {
 @media (min-width: 640px) {
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 18% 82%;
+  }
 }
 
 @media (max-width: 786px) {

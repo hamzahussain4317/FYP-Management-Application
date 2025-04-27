@@ -76,3 +76,7 @@ type Notifications = {
   createdAt: Date;
   isRead: boolean;
 };
+
+type RegisterationProps = {
+  props: { role: string; username: string; email: string; password: string };
+};
