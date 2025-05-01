@@ -53,7 +53,7 @@ export default function Home() {
         {/* Sign In Button and Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-3">
           <Link href="/admin-login">
-            <button className="bg-white text-black px-4 py-2 rounded-full shadow-md hover:bg-gray-200 transition">
+            <button className="px-4 py-2 rounded-full shadow-md  transition bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border hover:bg-light-primary dark:hover:bg-dark-primary">
               LogIn
             </button>
           </Link>
@@ -97,7 +97,7 @@ export default function Home() {
         {/* Sign In Button (md and up) */}
         <div className="hidden md:block">
           <Link href="/admin-login">
-            <button className="bg-white text-black px-6 py-4 rounded-full shadow-md hover:bg-gray-200 transition">
+            <button className="p-4 w-[8rem] rounded-full shadow-md  transition bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border hover:bg-light-primary dark:hover:bg-dark-primary">
               LogIn
             </button>
           </Link>
@@ -156,13 +156,13 @@ export default function Home() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-6">
           <button
-            className="bg-dark-background px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
+            className="bg-light-primary dark:bg-dark-primary text-light-text hover:bg-light-primary-hover dark:hover:bg-dark-primary-hover px-6 py-3 rounded-lg border border-white transition"
             onClick={() => handleButton("student")}
           >
             Get Started as Student
           </button>
           <button
-            className="bg-white/20 px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition"
+            className="bg-light-primary dark:bg-dark-primary text-light-text hover:bg-light-primary-hover dark:hover:bg-dark-primary-hover px-6 py-3 rounded-lg border border-white  transition"
             onClick={() => handleButton("teacher")}
           >
             Get Started as Supervisor
@@ -187,7 +187,7 @@ export default function Home() {
             management process, making it easier for students and supervisors to
             collaborate and succeed.
           </p>
-          <button className="bg-dark-background px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition">
+          <button className="bg-light-primary dark:bg-dark-primary text-light-text hover:bg-light-primary-hover dark:hover:bg-dark-primary-hover px-6 py-3 rounded-lg border border-white transition">
             Learn More
           </button>
         </div>
@@ -200,7 +200,7 @@ export default function Home() {
           <p className="text-lg max-w-xl text-center mb-6">
             Have questions or feedback? Reach out to us anytime!
           </p>
-          <button className="bg-dark-background px-6 py-3 rounded-lg border border-white hover:bg-white/30 transition">
+          <button className="bg-light-primary dark:bg-dark-primary text-light-text hover:bg-light-primary-hover dark:hover:bg-dark-primary-hover px-6 py-3 rounded-lg border border-white transition">
             Get in Touch
           </button>
         </div>

@@ -9,7 +9,6 @@
 }
 
 .admin-layout {
-  @apply backdrop-blur-md bg-white/20 p-4 rounded-xl shadow-md;
   display: grid;
   grid-template-rows: 12% 88%;
   grid-template-columns: 21% 79%;
@@ -174,7 +173,17 @@ i {
 
 .wrapper {
   min-height: 100%;
-  background-color: var(--wrapper-bg);
+  background-color: white;
+  background-color: linear-gradient(
+    to bottom right,
+    var(--dark-background),
+    var(--dark-background) / 200
+  );
+
+  background-color: var(--dark-background);
+  background-color: var(--light-surface);
+  /* 
+  bg-light-surface dark:bg-dark-background */
   padding: 10px;
   border-radius: 2%;
   overflow-y: auto;

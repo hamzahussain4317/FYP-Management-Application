@@ -1,6 +1,10 @@
 import { useContext, createContext } from "react";
 import { useState } from "react";
-import dummy_students from "@/dummydata/students";
+import {
+  dummy_groups,
+  dummy_students,
+  dummy_supervisors,
+} from "@/dummydata/admin_data";
 
 const AdminContext = createContext<any>(undefined);
 
@@ -12,12 +16,15 @@ export default function AdminContextProvider({
   const [baseUrl, setBaseUrl] = useState<string>(
     "http://localhost:3001/admin/"
   );
+
+  // Task : Define types in admin.d.ts for all states
   const [students, setStudents] = useState<any[]>([]);
+  const [supervisors, setSupervisors] = useState<any[]>([]);
+  const [groups, setGroups] = useState<any>();
   const [total, setTotal] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [filteredGroups, setFilteredGroups] = useState<GroupDetails[]>([]);
-  const [group, setGroup] = useState<GroupDetails>();
   const [filterBy, setFilterBy] = useState<groupFilterBy>({
     byGroupName: true,
     byProjectName: false,
@@ -30,13 +37,33 @@ export default function AdminContextProvider({
     const to = from + pageSize;
     setIsLoading(true);
     setTimeout(() => {
+      setTotal(dummy_students.length);
       const dummyStudents = dummy_students.slice(from, to);
       setStudents(dummyStudents);
-      setTotal(dummyStudents.length);
       setError("");
       setIsLoading(false);
     }, 1000);
-    console.log(students, total);
+  };
+  const fetchDummySupervisors = async (page = 1, pageSize = 10) => {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize;
+    setIsLoading(true);
+    setTimeout(() => {
+      setTotal(dummy_supervisors.length);
+      const dummySupervisors = dummy_supervisors.slice(from, to);
+      setSupervisors(dummySupervisors);
+      setError("");
+      setIsLoading(false);
+    }, 1000);
+  };
+  const fetchDummyGroups = async () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setTotal(dummy_groups.length);
+      setGroups(dummy_groups);
+      setError("");
+      setIsLoading(false);
+    }, 1000);
   };
 
   //   Handle Functionalities
@@ -169,15 +196,19 @@ export default function AdminContextProvider({
   return (
     <AdminContext.Provider
       value={{
+        supervisors,
         students,
-        group,
+        groups,
         filteredGroups,
         filterBy,
         error,
         isLoading,
+        total,
         setIsLoading,
         fetchStudents,
         fetchDummyStudents,
+        fetchDummySupervisors,
+        fetchDummyGroups,
         fetchAllGroupDetails,
         findByGroupId,
         handleSearch,

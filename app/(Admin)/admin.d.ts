@@ -9,6 +9,16 @@ type GroupDetails = {
   students: FYPStudent[];
 };
 
+type StudentList = {
+  id: string;
+  name: string;
+  email: string;
+  rollNumber: string;
+  groupId: number;
+  groupName: string;
+  supervisorId: number;
+  supervisorName: string;
+};
 type FYPStudent = {
   studentRoll: string;
   name: string;
@@ -17,6 +27,18 @@ type FYPStudent = {
 };
 
 interface groupFilterBy {
+  byGroupName: boolean;
+  byProjectName: boolean;
+  byStudentRoll: boolean;
+}
+
+interface studentsFilterBy {
+  byStudentRoll: boolean;
+  byStudentName: boolean;
+}
+
+interface supervisorFilterBy {
+  bySupervisorName: boolean;
   byGroupName: boolean;
   byProjectName: boolean;
   byStudentRoll: boolean;

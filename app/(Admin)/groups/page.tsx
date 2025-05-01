@@ -1,33 +1,58 @@
 "use client";
 import { useAdminContext } from "@/context/AdminContext";
 import GroupList from "../Components/GroupList";
-import SearchGroup from "../Components/SearchGroup";
+import SearchBar from "@/Components/SearchBar";
+import CardSkeleton from "@/app/(Admin)/Components/CardSkeleton";
 import { useEffect } from "react";
 
 export default function FYPGroups() {
   const {
-    filteredGroups,
-    error,
-    isLoading,
-    fetchAllGroupDetails,
+    fetchDummyGroups,
+    groups,
     handleSearch,
     handleFilterBy,
+    error,
+    isLoading,
   } = useAdminContext();
   useEffect(() => {
-    fetchAllGroupDetails();
+    fetchDummyGroups();
   }, []);
+
+  const groupFilterBy: groupFilterBy = {
+    byGroupName: true,
+    byProjectName: false,
+    byStudentRoll: false,
+  };
+
   return (
     <section className="wrapper">
-      <SearchGroup onFilterBy={handleFilterBy} onSearch={handleSearch} />
+      <div className="w-full flex items-center justify-between p-2 mb-6 space-x-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text">
+          FYP Groups List
+        </h1>
+        <SearchBar
+          onFilterBy={handleFilterBy}
+          onSearch={handleSearch}
+          filters={groupFilterBy}
+        />
+      </div>
+
       <div
         className={`container mx-auto p-4 ${
           error.length ? "flex h-[500px] w-full" : ""
         } items-center justify-center`}
       >
         <ul className="flex flex-col justify-center space-y-6 w-full">
-          {isLoading && !error && <p>Loading Groups List...</p>}
-          {!error.length && filteredGroups.length ? (
-            filteredGroups.map((group: GroupDetails, index: number) => {
+          {isLoading && (
+            <div className="w-full rounded-lg p-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center text-light-text dark:text-dark-text">
+                Loading Groups...
+              </h1>
+              <CardSkeleton length={10} />
+            </div>
+          )}
+          {!error.length && groups?.length ? (
+            groups.map((group, index: number) => {
               return (
                 <li
                   key={index}
