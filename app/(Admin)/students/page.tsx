@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAdminContext } from "@/context/AdminContext";
-import ListSkeleton from "@/Components/ListSkeleton";
+import ListSkeleton from "../Components/ListSkeleton";
 import SearchBar from "@/Components/SearchBar";
 
 export default function Students() {
@@ -49,14 +49,7 @@ export default function Students() {
       )}
 
       {/* Loading Skeleton */}
-      {isLoading && (
-        <div className="w-full bg-light-surface dark:bg-dark-surface shadow-soft rounded-lg p-6">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center text-light-text dark:text-dark-text">
-            Loading Students...
-          </h1>
-          <ListSkeleton length={pageSize} />
-        </div>
-      )}
+      {isLoading && <ListSkeleton length={pageSize} list="Students" />}
 
       {/* No Students Found */}
       {!isLoading && students.length === 0 && (

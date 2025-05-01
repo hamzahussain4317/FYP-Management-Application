@@ -163,7 +163,7 @@ export default function SchedulePage() {
           </div>
         </div>
         {/* Sample Table */}
-        {sampleShow && (
+        {!csvRooms.length && sampleShow && (
           <div className="col-span-2 mt-4 p-4 bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-md">
             <h2 className="text-lg font-bold mb-2 text-light-text dark:text-dark-text">
               Sample CSV Format

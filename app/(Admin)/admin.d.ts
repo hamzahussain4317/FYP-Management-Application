@@ -1,24 +1,34 @@
-type GroupDetails = {
-  groupId: number;
-  groupName: string;
-  status: string;
-  projectId: Integer;
-  projectName: string;
-  supervisorId: Integer;
-  supervisorName: string;
-  students: FYPStudent[];
+type GroupList = {
+  id: number;
+  name: string;
+  projectName: string | null;
+  studentsCount: number;
+  supervisorId: number | null;
+  supervisorName: string | null;
+  completionRate: number | 0;
+  status: "Inactive" | "Active";
+};
+
+type SupervisorList = {
+  id: number;
+  name: string;
+  email: string;
+  isRegistered: boolean;
+  groupsHandled: number;
 };
 
 type StudentList = {
-  id: string;
+  id: number;
   name: string;
   email: string;
   rollNumber: string;
-  groupId: number;
-  groupName: string;
-  supervisorId: number;
-  supervisorName: string;
+  groupId: number | null;
+  groupName: string | null;
+  supervisorId: number | null;
+  supervisorName: string | null;
+  isRegistered: boolean;
 };
+
 type FYPStudent = {
   studentRoll: string;
   name: string;
@@ -41,7 +51,6 @@ interface supervisorFilterBy {
   bySupervisorName: boolean;
   byGroupName: boolean;
   byProjectName: boolean;
-  byStudentRoll: boolean;
 }
 
 interface RoomAvailability {
@@ -58,3 +67,14 @@ interface SchedulerFormData {
   rooms: string[];
   evaluationType: string;
 }
+
+type GroupDetails = {
+  groupId: number;
+  groupName: string;
+  status: string;
+  projectId: Integer;
+  projectName: string;
+  supervisorId: Integer;
+  supervisorName: string;
+  students: FYPStudent[];
+};

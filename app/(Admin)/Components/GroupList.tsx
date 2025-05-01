@@ -1,44 +1,40 @@
 "use client";
 import Link from "next/link";
 interface Props {
-  group: GroupDetails;
+  group: GroupList;
 }
 
 const GroupList = ({ group }: Props) => {
   // const handleEditGroup = (groupId: number) => {};
   return (
-    // <>
-    <Link
-      href={`groups/editgroup/${group.groupId}`}
-      className="border-blue-500 hover:border-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg"
-      // onClick={() => handleEditGroup(group.groupID)}
-    >
-      <div className="grid grid-cols-2 gap-4 text-lg">
-        <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500 text-lg">
-            Group ID
-          </h4>
-          <p className="text-base font-bold text-gray-700">{group.groupId}</p>
+    <>
+      <Link
+        href={`groups/editgroup/${group.id}`}
+        className="border-blue-500 hover:border-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg"
+        // onClick={() => handleEditGroup(group.groupID)}
+      >
+        <div className="h-[10rem] dark:bg-dark-primary-hover rounded-lg">
+          <h1 className="font-bold dark:text-dark-text text-light-text">
+            {group.name}
+          </h1>
         </div>
-        <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500">Group Name</h4>
-          <p className="text-base font-bold text-gray-700">{group.groupName}</p>
-        </div>
+      </Link>
+
+      <div className="p-2 grid grid-cols-2 md:grid-cols-1 gap-4 text-lg  [&_*]:flex [&_*]:items-center [&_*]:justify-start [&_*]:space-x-2">
+        <div className="col-span-1 "></div>
 
         <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500">Project Name</h4>
-          <p className="text-base font-semibold text-gray-700">
+          <h4 className=" font-medium text-gray-500">Project Name:</h4>
+          <p className="text-base font-bold dark:text-dark-text text-light-text">
             {group.projectName}
           </p>
         </div>
 
         <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500">Status</h4>
+          <h4 className=" font-medium text-gray-500">Status</h4>
           <p
-            className={`text-base font-semibold ${
-              group.status === "Completed"
-                ? "text-green-600"
-                : "text-yellow-600"
+            className={`text-base font-bold  ${
+              group.status === "Active" ? "text-green-600" : "text-yellow-600"
             }`}
           >
             {group.status}
@@ -46,23 +42,20 @@ const GroupList = ({ group }: Props) => {
         </div>
 
         <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500">Supervisor Name</h4>
-          <p className="text-base font-semibold text-gray-700">
+          <h4 className="font-medium text-gray-500">Supervisor Name: </h4>
+          <p className="text-base font-bold dark:text-dark-text text-light-text">
             {group.supervisorName}
           </p>
         </div>
 
         <div className="col-span-1">
-          <h4 className="text-sm font-medium text-gray-500">
-            Number of Students
-          </h4>
-          <p className="text-base font-semibold text-gray-700">
-            {group.students.length}
+          <h4 className="font-medium text-gray-500">Number of Students: </h4>
+          <p className="text-base font-bold dark:text-dark-text text-light-text">
+            {group.studentsCount} Students
           </p>
         </div>
       </div>
-    </Link>
-    // </>
+    </>
   );
 };
 

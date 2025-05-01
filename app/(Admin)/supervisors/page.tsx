@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAdminContext } from "@/context/AdminContext";
-import ListSkeleton from "@/Components/ListSkeleton";
+import ListSkeleton from "../Components/ListSkeleton";
 import SearchBar from "@/Components/SearchBar";
 
 export default function Supervisors() {
@@ -29,13 +29,12 @@ export default function Supervisors() {
     bySupervisorName: true,
     byGroupName: false,
     byProjectName: false,
-    byStudentRoll: false,
   };
   return (
     <div className="wrapper mx-auto p-4 h-full flex flex-col justify-between items-center global-text-size">
       <div className="w-full flex items-center justify-between p-2 mb-6 space-x-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text">
-          Students List
+          Supervisors List
         </h1>
         <SearchBar
           onFilterBy={handleFilterBy}
@@ -51,16 +50,9 @@ export default function Supervisors() {
       )}
 
       {/* Loading Skeleton */}
-      {isLoading && (
-        <div className="w-full bg-light-surface dark:bg-dark-surface shadow-soft rounded-lg p-6">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center text-light-text dark:text-dark-text">
-            Loading Students...
-          </h1>
-          <ListSkeleton length={pageSize} />
-        </div>
-      )}
+      {isLoading && <ListSkeleton length={pageSize} list="Supervisors" />}
 
-      {/* No Students Found */}
+      {/* No Studenxts Found */}
       {!isLoading && supervisors.length === 0 && (
         <div className="text-gray-500 text-center my-10 animate-fade-in">
           No students found.
@@ -72,7 +64,7 @@ export default function Supervisors() {
         <div className="w-full bg-light-surface dark:bg-dark-surface shadow-soft rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <p className="font-bold global-text-size dark:text-dark-muted text-center">
-              Total Students: {total}
+              Total Supervisors: {total}
             </p>
             <div className="flex items-center space-x-4">
               <select
@@ -108,7 +100,7 @@ export default function Supervisors() {
             <thead>
               <tr className="bg-gray-100 dark:bg-dark-surface h-[4rem] text-left">
                 <th className="w-[3rem] px-2"> {/* Checkbox */}</th>
-                <th className="w-[7rem] px-4 text-dark-primary">
+                <th className="min-w-[7rem] md:min-w-[7rem] px-4 text-dark-primary">
                   Supervisor Name
                 </th>
                 <th className="max-w-[200px] px-4 text-dark-primary">Email</th>
@@ -119,9 +111,9 @@ export default function Supervisors() {
               </tr>
             </thead>
             <tbody>
-              {supervisors.map((s) => (
+              {supervisors.map((s: SupervisorList) => (
                 <tr
-                  key={s.id}
+                  key={s?.id}
                   className="border-t border-light-border dark:border-dark-border h-[4.5rem] hover:bg-gray-50 dark:hover:bg-dark-muted transition"
                 >
                   <td className="px-2 text-center">
@@ -140,12 +132,12 @@ export default function Supervisors() {
                       }}
                     />
                   </td>
-                  <td className="px-4 font-mono font-bold">{s.rollNumber}</td>
-                  <td className="px-4 truncate font-bold">
-                    {s.name.split(" ").slice(0, 2).join(" ")}
+                  <td className="px-4 truncate font-bold ">
+                    {s?.name.split(" ").slice(0, 2).join(" ")}
                   </td>
+                  <td className="px-4 truncate font-bold">{s?.email}</td>
                   <td className="px-4 truncate font-bold">
-                    {s.groupName.split(" ").slice(0, 2).join(" ")}
+                    {s?.groupsHandled}
                   </td>
                   <td className="px-4 space-x-2">
                     <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow transition">

@@ -18,14 +18,14 @@ export default function FYPGroups() {
     fetchDummyGroups();
   }, []);
 
-  const groupFilterBy: groupFilterBy = {
+  const filters: groupFilterBy = {
     byGroupName: true,
     byProjectName: false,
     byStudentRoll: false,
   };
 
   return (
-    <section className="wrapper">
+    <section className="wrapper mx-auto p-4 h-full flex flex-col justify-between items-center global-text-size">
       <div className="w-full flex items-center justify-between p-2 mb-6 space-x-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text">
           FYP Groups List
@@ -33,44 +33,33 @@ export default function FYPGroups() {
         <SearchBar
           onFilterBy={handleFilterBy}
           onSearch={handleSearch}
-          filters={groupFilterBy}
+          filters={filters}
         />
       </div>
-
-      <div
-        className={`container mx-auto p-4 ${
-          error.length ? "flex h-[500px] w-full" : ""
-        } items-center justify-center`}
-      >
-        <ul className="flex flex-col justify-center space-y-6 w-full">
-          {isLoading && (
-            <div className="w-full rounded-lg p-6">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center text-light-text dark:text-dark-text">
-                Loading Groups...
-              </h1>
-              <CardSkeleton length={10} />
-            </div>
-          )}
-          {!error.length && groups?.length ? (
-            groups.map((group, index: number) => {
-              return (
-                <li
-                  key={index}
-                  className={`hover:bg-gray-100 ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-gray-150"
-                  } rounded-lg p-2 hover:border-green-400  hover:scale-95 transition-all duration-300 border-2`}
-                >
-                  <GroupList group={group} />
-                </li>
-              );
-            })
-          ) : (
-            <div className="text-center text-red-500 font-bold">
-              {error}. . .
-            </div>
-          )}
-        </ul>
-      </div>
+      {isLoading && (
+        <div className="w-full rounded-lg p-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center text-light-text dark:text-dark-text">
+            Loading Groups...
+          </h1>
+          <CardSkeleton length={10} />
+        </div>
+      )}
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full p-4 overflow-y-auto">
+        {!error.length && groups?.length ? (
+          groups.map((group: GroupList, index: number) => {
+            return (
+              <li
+                key={index}
+                className={`rounded-lg dark:hover:border-dark-primary hover:scale-105 transition-all duration-300 border-1 bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-md bg-light-background dark:bg-dark-background h-auto`}
+              >
+                <GroupList group={group} />
+              </li>
+            );
+          })
+        ) : (
+          <div className="text-center text-red-500 font-bold">{error}. . .</div>
+        )}
+      </ul>
     </section>
   );
 }
