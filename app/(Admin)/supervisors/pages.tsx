@@ -4,7 +4,7 @@ import { useAdminContext } from "@/context/AdminContext";
 import ListSkeleton from "@/Components/ListSkeleton";
 import SearchBar from "@/Components/SearchBar";
 
-export default function Students() {
+export default function Supervisors() {
   const {
     fetchDummySupervisors,
     supervisors,
@@ -32,7 +32,7 @@ export default function Students() {
     byStudentRoll: false,
   };
   return (
-    <div className="wrapper bg-light-surface dark:bg-dark-background mx-auto p-4 h-full flex flex-col justify-between items-center global-text-size">
+    <div className="wrapper mx-auto p-4 h-full flex flex-col justify-between items-center global-text-size">
       <div className="w-full flex items-center justify-between p-2 mb-6 space-x-4">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text">
           Students List

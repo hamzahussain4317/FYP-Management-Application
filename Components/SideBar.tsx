@@ -37,7 +37,7 @@ export default function SideBar({ itemDetails }: SideBarProps) {
               href={`/${item.itemRoute}`}
               className={`${
                 isActive(`/${item.itemRoute}`) ? "active" : ""
-              } flex justify-start items-center space-x-3`}
+              } flex justify-start items-center space-x-3 global-text-size rounded-lg p-2 transition duration-300 ease-in-out`}
             >
               <div className="flex justify-center w-[4rem] h-10">
                 <i

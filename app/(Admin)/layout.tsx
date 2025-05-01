@@ -18,7 +18,12 @@ const itemDetails: sideBarItems[] = [
   {
     itemRoute: "supervisors",
     itemName: "Supervisors",
-    itemIcon: "fa-chart-simple",
+    itemIcon: "fa-user-tie",
+  },
+  {
+    itemRoute: "evaluation-schedule",
+    itemName: "Auto Scheduler",
+    itemIcon: "fa-calendar-check",
   },
 ];
 

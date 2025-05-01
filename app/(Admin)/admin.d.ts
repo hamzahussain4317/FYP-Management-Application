@@ -43,3 +43,18 @@ interface supervisorFilterBy {
   byProjectName: boolean;
   byStudentRoll: boolean;
 }
+
+interface RoomAvailability {
+  room: string;
+  availability: Record<string, number>;
+}
+
+interface SchedulerFormData {
+  startDate: string;
+  endDate: string;
+  timeSlots: string[];
+  csvRooms: RoomAvailability[];
+  slotDuration: number;
+  rooms: string[];
+  evaluationType: string;
+}

@@ -174,16 +174,8 @@ i {
 .wrapper {
   min-height: 100%;
   background-color: white;
-  background-color: linear-gradient(
-    to bottom right,
-    var(--dark-background),
-    var(--dark-background) / 200
-  );
-
   background-color: var(--dark-background);
   background-color: var(--light-surface);
-  /* 
-  bg-light-surface dark:bg-dark-background */
   padding: 10px;
   border-radius: 2%;
   overflow-y: auto;
