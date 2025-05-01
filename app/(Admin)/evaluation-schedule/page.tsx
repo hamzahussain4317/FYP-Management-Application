@@ -139,7 +139,7 @@ export default function SchedulePage() {
             className="border p-2 rounded-md w-full "
           />
         </div>
-        <div className="col-span-1 ">
+        <div className="col-span-1">
           <label className="block text-dark-primary mb-2">
             Upload Room Availability CSV
           </label>

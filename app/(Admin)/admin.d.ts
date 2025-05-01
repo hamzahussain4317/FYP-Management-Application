@@ -1,6 +1,7 @@
 type GroupList = {
   id: number;
   name: string;
+  projectId: number | null;
   projectName: string | null;
   studentsCount: number;
   supervisorId: number | null;
@@ -27,13 +28,6 @@ type StudentList = {
   supervisorId: number | null;
   supervisorName: string | null;
   isRegistered: boolean;
-};
-
-type FYPStudent = {
-  studentRoll: string;
-  name: string;
-  midEvaluation: number;
-  finalEvaluation: number;
 };
 
 interface groupFilterBy {
@@ -68,13 +62,22 @@ interface SchedulerFormData {
   evaluationType: string;
 }
 
+type FYPStudent = {
+  id: number;
+  email: string;
+  studentRoll: string;
+  name: string;
+  midEvaluation: number;
+  finalEvaluation: number;
+};
 type GroupDetails = {
-  groupId: number;
-  groupName: string;
+  id: number;
+  name: string;
   status: string;
   projectId: Integer;
   projectName: string;
   supervisorId: Integer;
   supervisorName: string;
+  completion: number;
   students: FYPStudent[];
 };

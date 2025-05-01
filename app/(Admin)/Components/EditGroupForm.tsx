@@ -2,98 +2,101 @@
 import React from "react";
 import EditStudentMarks from "./EditStudentMarks";
 
-const EditGroupForm = ({ group }: { group: GroupDetails[] }) => {
+const EditGroupForm = ({ group }: { group: GroupDetails }) => {
+  if (!group) {
+    return <p>No group data available</p>;
+  }
   return (
-    <div className="bg-white shadow-md rounded-lg w-full max-w-5xl p-6 space-y-6">
-      <h2 className="text-2xl font-bold text-center text-gray-700">
+    <div className="h-full w-full p-4 rounded-md shadow-md p-6 md:p-2 space-y-6 overflow-y-auto">
+      <h1 className=" font-bold text-center text-light-text dark:text-dark-text">
         Group Details
-      </h2>
+      </h1>
 
-      <form className="space-y-6">
-        {/* Group ID */}
-        <div>
-          <label
-            htmlFor="groupID"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Group ID
-          </label>
-          <input
-            type="text"
-            id="groupID"
-            value={group.groupId}
-            readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
-          />
+      <form className="space-y-6 [&_*]:global-text-size">
+        <div className="h-full w-full bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border p-4 rounded-md md:grid-cols-2 grid gap-4">
+          <div>
+            <label htmlFor="groupID" className="block text-dark-primary mb-2">
+              Group ID
+            </label>
+            <input
+              type="text"
+              id="groupID"
+              value={group.id}
+              readOnly
+              className="block p-3 w-full rounded-md cursor-not-allowed focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="groupName" className="block text-dark-primary mb-2">
+              Group Name
+            </label>
+            <input
+              type="text"
+              id="groupName"
+              value={group.name}
+              readOnly
+              className="block p-3 w-full rounded-md cursor-not-allowed focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="supervisorName"
+              className="block text-dark-primary mb-2"
+            >
+              Supervisor Name
+            </label>
+            <input
+              type="text"
+              id="supervisorName"
+              value={group.supervisorName}
+              readOnly
+              className="block p-3 w-full rounded-md cursor-not-allowed focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-dark-primary mb-2"
+            >
+              Project Name
+            </label>
+            <input
+              type="text"
+              id="projectName"
+              value={group.projectName}
+              readOnly
+              className="block p-3 w-full rounded-md cursor-not-allowed focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-dark-primary mb-2"
+            >
+              Progress{" "}
+            </label>
+            <div className="mt-4 w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-dark-primary transition-all duration-300 "
+                style={{ width: `${group.completion}%` }}
+              ></div>
+            </div>
+          </div>
+          <div>
+            <label htmlFor="status" className="block text-dark-primary mb-2">
+              Status
+            </label>
+            <div>
+              {group.status === "Active" ? (
+                <span className="text-green-500 font-semibold ">Active</span>
+              ) : (
+                <span className="text-red-500 font-semibold ">Inactive</span>
+              )}
+            </div>
+          </div>
         </div>
-
-        {/* Group Name */}
-        <div>
-          <label
-            htmlFor="groupName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Group Name
-          </label>
-          <input
-            type="text"
-            id="groupName"
-            value={group.groupName}
-            readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
-          />
-        </div>
-
-        {/* Status */}
-        <div>
-          <label
-            htmlFor="status"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Status
-          </label>
-          <input
-            type="text"
-            id="status"
-            value={group.status}
-            readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="projectName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Project Name
-          </label>
-          <input
-            type="text"
-            id="projectName"
-            value={group.projectName}
-            readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="supervisorName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Supervisor Name
-          </label>
-          <input
-            type="text"
-            id="supervisorName"
-            value={group.supervisorName}
-            readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed"
-          />
-        </div>
-        <div className="flex flex-col justify-center items-center space-y-4">
-          {group.students.map((student, index) => {
+        <div className="h-full w-full bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border p-4 rounded-md md:grid-cols-2 grid gap-4">
+          {group?.students?.map((student, index) => {
             return (
               <div
                 key={index}

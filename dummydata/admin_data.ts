@@ -48,6 +48,7 @@ const dummy_groups: GroupList[] = Array.from({ length: 30 }, (_, i) => {
   return {
     id: i + 1,
     name: `Group ${i + 1}`,
+    projectId: i + 1,
     projectName: `Project ${i + 1}`,
     supervisorId: supervisor ? supervisor.id : null,
     supervisorName: supervisor ? supervisor.name : null,
@@ -57,4 +58,27 @@ const dummy_groups: GroupList[] = Array.from({ length: 30 }, (_, i) => {
   };
 });
 
-export { dummy_students, dummy_supervisors, dummy_groups };
+const dummy_group_details: GroupDetails[] = dummy_groups.map((group) => {
+  const studentsInGroup = dummy_students.filter(
+    (student) => student.groupId === group.id
+  );
+  return {
+    id: group.id,
+    name: group.name,
+    projectId: group.projectId,
+    projectName: group.projectName,
+    supervisorId: group.supervisorId,
+    supervisorName: group.supervisorName,
+    status: group.status,
+    completion: group.completionRate,
+    students: studentsInGroup.map((student) => ({
+      studentRoll: student.rollNumber,
+      midEvaluation: Math.random() * 30,
+      finalEvaluation: Math.random() * 70,
+      id: student.id,
+      name: student.name,
+      email: student.email,
+    })),
+  };
+});
+export { dummy_students, dummy_supervisors, dummy_groups, dummy_group_details };

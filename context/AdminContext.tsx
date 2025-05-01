@@ -4,6 +4,7 @@ import {
   dummy_groups,
   dummy_students,
   dummy_supervisors,
+  dummy_group_details,
 } from "@/dummydata/admin_data";
 
 const AdminContext = createContext<any>(undefined);
@@ -18,13 +19,12 @@ export default function AdminContextProvider({
   );
 
   // Task : Define types in admin.d.ts for all states
-  const [students, setStudents] = useState<any[]>([]);
-  const [supervisors, setSupervisors] = useState<any[]>([]);
-  const [groups, setGroups] = useState<any>();
+  const [students, setStudents] = useState<StudentList[]>([]);
+  const [supervisors, setSupervisors] = useState<SupervisorList[]>([]);
+  const [groups, setGroups] = useState<GroupList[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  const [filteredGroups, setFilteredGroups] = useState<GroupDetails[]>([]);
   const [filterBy, setFilterBy] = useState<groupFilterBy>({
     byGroupName: true,
     byProjectName: false,
@@ -88,35 +88,59 @@ export default function AdminContextProvider({
     setError("");
   };
 
-  const fetchAllGroupDetails = async () => {
-    //api
-    try {
-      const response = await fetch(`${baseUrl}/getAllGroups`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const responseResults = await response.json();
-        const { groupDetails = [] } = responseResults;
-        setFilteredGroups(groupDetails);
-      } else if (response.status === 500) {
-        setError("Some Internale server Error");
-      } else if (response.status === 404) {
-        setError("Groups Not Found");
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
-        console.log(error);
-      } else {
-        console.log("Unknown error:", error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  const findDummyGroupById = (
+    groupId: number
+  ): Promise<GroupDetails | null> => {
+    return new Promise((resolve) => {
+      console.log(groupId);
+      setIsLoading(true);
+      setError("");
+      setTimeout(() => {
+        const details = dummy_group_details.find(
+          (group) => group.id === groupId
+        ) as GroupDetails | undefined;
+
+        setIsLoading(false);
+
+        if (!details) {
+          setError(`No group with ID: ${groupId} exists`);
+          resolve(null);
+        } else {
+          resolve(details);
+        }
+      }, 1000);
+    });
   };
+
+  // const fetchAllGroupDetails = async () => {
+  //   //api
+  //   try {
+  //     const response = await fetch(`${baseUrl}/getAllGroups`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     if (response.ok) {
+  //       const responseResults = await response.json();
+  //       const { groupDetails = [] } = responseResults;
+  //       setFilteredGroups(groupDetails);
+  //     } else if (response.status === 500) {
+  //       setError("Some Internale server Error");
+  //     } else if (response.status === 404) {
+  //       setError("Groups Not Found");
+  //     }
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error) {
+  //       setError(error.message);
+  //       console.log(error);
+  //     } else {
+  //       console.log("Unknown error:", error);
+  //     }
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const findByGroupId = async (groupId: number) => {
     console.log(groupId);
     try {
@@ -168,27 +192,27 @@ export default function AdminContextProvider({
     }
   };
 
-  const handleSearch = (searchText: string) => {
-    let filtered = filteredGroups;
+  // const handleSearch = (searchText: string) => {
+  //   let filtered = filteredGroups;
 
-    if (filterBy?.byGroupName)
-      filtered = filteredGroups.filter((group) =>
-        group.groupName.toLowerCase().includes(searchText.toLowerCase())
-      );
-    else if (filterBy?.byProjectName)
-      filtered = filteredGroups.filter((group) =>
-        group.projectName.toLowerCase().includes(searchText.toLowerCase())
-      );
-    else if (filterBy?.byStudentRoll)
-      filtered = filteredGroups.filter((group) =>
-        group.students.forEach((student) =>
-          student.studentRoll.toLowerCase().includes(searchText.toLowerCase())
-            ? true
-            : false
-        )
-      );
-    setFilteredGroups(filtered);
-  };
+  //   if (filterBy?.byGroupName)
+  //     filtered = filteredGroups.filter((group) =>
+  //       group.groupName.toLowerCase().includes(searchText.toLowerCase())
+  //     );
+  //   else if (filterBy?.byProjectName)
+  //     filtered = filteredGroups.filter((group) =>
+  //       group.projectName.toLowerCase().includes(searchText.toLowerCase())
+  //     );
+  //   else if (filterBy?.byStudentRoll)
+  //     filtered = filteredGroups.filter((group) =>
+  //       group.students.forEach((student) =>
+  //         student.studentRoll.toLowerCase().includes(searchText.toLowerCase())
+  //           ? true
+  //           : false
+  //       )
+  //     );
+  //   setFilteredGroups(filtered);
+  // };
   const handleFilterBy = (filterBy: groupFilterBy) => {
     setFilterBy(filterBy);
   };
@@ -199,7 +223,6 @@ export default function AdminContextProvider({
         supervisors,
         students,
         groups,
-        filteredGroups,
         filterBy,
         error,
         isLoading,
@@ -209,9 +232,10 @@ export default function AdminContextProvider({
         fetchDummyStudents,
         fetchDummySupervisors,
         fetchDummyGroups,
-        fetchAllGroupDetails,
+        findDummyGroupById,
+        // fetchAllGroupDetails,
         findByGroupId,
-        handleSearch,
+        // handleSearch,
         handleFilterBy,
       }}
     >
