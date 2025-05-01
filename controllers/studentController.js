@@ -88,8 +88,10 @@ const getProfile = async (req, res) => {
 
     const studentResults = await dbPool.query(query1, [stdID]);
     const groupProjectResults = await dbPool.query(query2, [stdID]);
-
-    if (studentResults.length === 0) {
+    if (
+      studentResults.rows.length === 0 &&
+      groupProjectResults.rows.length === 0
+    ) {
       return res.status(404).json({ message: "Student not found" });
     }
     console.log("myresult", studentResults.rows[0]);
@@ -110,7 +112,7 @@ const getProfile = async (req, res) => {
 };
 
 const assignGroup = async (req, res) => {
-  const { emails, groupName } = req.body;
+  const { emails, p_groupname } = req.body;
 
   if (!emails || emails.length !== 3) {
     return res
@@ -118,123 +120,143 @@ const assignGroup = async (req, res) => {
       .json({ message: "Exactly three emails are required." });
   }
 
-  db.getConnection((err, connection) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "Database connection failed", error: err.message });
+  const client = await dbPool.connect();
+  try {
+    await client.query("BEGIN");
+    const query = `SELECT * FROM checkandcreategroup($1, $2, $3, $4)`;
+    const values = [...emails, p_groupname];
+
+    const result = await client.query(query, values);
+    const groupCreated = result.rows[0].checkandcreategroup;
+    if (groupCreated === true) {
+      await client.query("COMMIT");
+      return res.status(200).json({ message: "Group assigned successfully." });
+    } else if (groupCreated === false) {
+      return res.status(200).json({
+        message:
+          "Student Does not exist or Some of the student have already belongs to specific group.",
+      });
+    } else {
+      throw new Error("Group could not be created. Check input conditions.");
     }
-
-    connection.beginTransaction(async (err) => {
-      if (err) {
-        connection.release();
-        return res
-          .status(500)
-          .json({ message: "Transaction start failed", error: err.message });
-      }
-
-      try {
-        // Call the stored procedure
-        const procedureCall = `SET @groupCreated = NULL;
-        CALL CheckAndCreateGroup(?, ?, ? , ? , @groupCreated);`;
-        await connection.promise().query(procedureCall, [...emails, groupName]);
-
-        // Retrieve the output parameter
-        const [result] = await connection
-          .promise()
-          .query("SELECT @groupCreated AS groupCreated");
-
-        const groupCreated = result[0]?.groupCreated;
-
-        if (groupCreated) {
-          await connection.promise().commit();
-          connection.release();
-          return res
-            .status(200)
-            .json({ message: "Group assigned successfully." });
-        } else {
-          throw new Error(
-            "Group could not be created. Check input conditions."
-          );
-        }
-      } catch (error) {
-        // Rollback transaction on error
-        await connection.promise().rollback();
-        connection.release();
-        return res
-          .status(500)
-          .json({ message: "Error assigning group", error: error.message });
-      }
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error executing query: ", error);
+    return res.status(500).json({
+      message: "Database query execution failed",
+      error: error.message,
     });
-  });
+  } finally {
+    client.release();
+  }
 };
 
 const getGroupDetails = async (req, res) => {
   const { stdID } = req.params;
-  const groupDetailsQuery = `select * from students where studentID IN (select fypStudentID from fypStudent where groupID IN(select groupID from fypStudent where fypStudentID=?));
-  select f.isLeader,t.* from fypStudent f join projectgroup pg on f.groupID=pg.groupID join supervisor s on pg.supervisorID = s.supervisorID join teachers t on s.supervisorID=t.teacherID where f.fypStudentID=?;  `;
-  db.query(groupDetailsQuery, [stdID, stdID], async (err, result) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "database query execution failed" });
-    }
-    if (result.length === 0) {
+  try {
+    const query1 = `select * from students where studentid IN (select fypstudentid from fypStudent where groupid IN(select groupid from fypStudent where fypstudentid=$1))`;
+    const query2 = `select f.isleader,t.* from fypStudent f left join projectgroup pg on f.groupid=pg.groupid left join supervisor s on pg.supervisorid = s.supervisorid left join teachers t on s.supervisorid=t.teacherid where f.fypstudentid=$1; `;
+
+    const groupStudents = await dbPool.query(query1, [stdID]);
+    const isLeadrAndSupervisor = await dbPool.query(query2, [stdID]);
+
+    if (
+      groupStudents.rows.length === 0 &&
+      isLeadrAndSupervisor.rows.length === 0
+    ) {
       return res
         .status(404)
         .json({ message: "Student does not have any group" });
     }
-
-    result[0].map((item, index) => {
-      if (result[0][index]?.profilePic) {
-        result[0][index].profilePic = `data:image/jpeg;base64,${Buffer.from(
-          result[0][index].profilePic
+    groupStudents.rows.map((item, index) => {
+      if (item?.profilepic) {
+        item.profilepic = `data:image/jpeg;base64,${Buffer.from(
+          item.profilepic
         ).toString("base64")}`;
       }
     });
-    if (result[1][0]?.profilePic) {
-      result[1][0].profilePic = `data:image/jpeg;base64,${Buffer.from(
-        result[1][0].profilePic
-      ).toString("base64")}`;
-    }
 
-    return res.status(200).json({ student: result });
-  });
+    return res.status(200).json({
+      groupStudents: groupStudents.rows,
+      isLeadrAndSupervisor: isLeadrAndSupervisor.rows,
+    });
+  } catch (err) {
+    console.error("Error executing query: ", err);
+    return res.status(500).json({ message: "Database query execution failed" });
+  }
 };
+// CREATE OR REPLACE VIEW SupervisorList AS
+// SELECT
+// t.email,
+// t.profilePic,
+// s.supervisorID,
+// CONCAT ( t.firstName,' ' , t.lastName) as supervisorName,
+// t.departmentName as departmentName,
+// s.specializedDomain,
+// pg.groupsCount as groupsCount,
+// s.cgpaCriteria
+// FROM
+// supervisor s
+// JOIN
+// teachers t
+// ON t.teacherID = s.supervisorID
+// LEFT JOIN
+// (SELECT COUNT(groupID) as groupsCount,supervisorID from projectGroup GROUP BY supervisorID) pg
+// ON pg.supervisorID = s.supervisorID
+// LEFT JOIN
+// (SELECT supervisorID,AVG(ratings) as ratings FROM supervisorRatings
+// GROUP BY supervisorID) r
+// ON r.supervisorID = s.supervisorID;
 
 const getSupervisorList = async (req, res) => {
-  const createViewQuery = `CREATE OR REPLACE VIEW SupervisorList AS
-        SELECT 
-          t.email,
-          t.profilePic,
-          s.supervisorID,
-          CONCAT ( t.firstName,' ' , t.lastName) as supervisorName,
-          t.departmentName as departmentName,
-          s.specializedDomain,
-          pg.groupsCount as groupsCount,
-          s.cgpaCriteria
-        FROM 
-          supervisor s
-        JOIN 
-          teachers t 
-        ON t.teacherID = s.supervisorID
-        LEFT JOIN 
-          (SELECT COUNT(groupID) as groupsCount,supervisorID from projectGroup GROUP BY supervisorID) pg
-        ON pg.supervisorID = s.supervisorID
-        LEFT JOIN 
-          (SELECT supervisorID,AVG(ratings) as ratings FROM supervisorRatings
-          GROUP BY supervisorID) r
-        ON r.supervisorID = s.supervisorID;`;
+  const createViewQuery = `CREATE OR REPLACE VIEW supervisor_list AS
+SELECT 
+  t.email,
+  t.profilepic,
+  s.supervisorid,
+  CONCAT(t.firstname, ' ', t.lastname) AS supervisorname,
+  t.departmentname AS departmentname,
+  s.specializeddomain,
+  pg.groupscount AS groupscount,
+  s.cgpacriteria,
+  r.ratings AS ratings
+FROM 
+  supervisor s
+JOIN 
+  teachers t 
+ON 
+  t.teacherid = s.supervisorid
+LEFT JOIN 
+  (
+    SELECT 
+      supervisorid, 
+      COUNT(groupid) AS groupscount 
+    FROM 
+      projectgroup 
+    GROUP BY 
+      supervisorid
+  ) pg ON pg.supervisorid = s.supervisorid
+LEFT JOIN 
+  (
+    SELECT 
+      supervisorid, 
+      AVG(ratings) AS ratings 
+    FROM 
+      supervisorratings 
+    GROUP BY 
+      supervisorid
+  ) r ON r.supervisorid = s.supervisorid;
+`;
 
-  db.query(createViewQuery, (err, results) => {
+  dbPool.query(createViewQuery, (err, results) => {
     if (err) {
       res
         .status(500)
         .json({ error: err, message: "Error while creating view" });
     }
     console.log(results);
-    const retrievalQuery = "SELECT * from supervisorList";
-    db.query(retrievalQuery, (err, results) => {
+    const retrievalQuery = "SELECT * from supervisor_list";
+    dbPool.query(retrievalQuery, (err, results) => {
       if (err) {
         res.status(500).json({
           error: err,
@@ -242,18 +264,19 @@ const getSupervisorList = async (req, res) => {
         });
       }
 
-      if (results.length === 0) {
+      if (results.rows.length === 0) {
         res.status(404).json({ message: "No supervisor Registered Yet!" });
       }
-      results.map((item, index) => {
-        if (results[index]?.profilePic) {
-          results[index].profilePic = `data:image/jpeg;base64,${Buffer.from(
-            results[index].profilePic
+      results.rows.map((item, index) => {
+        if (item?.profilepic) {
+          item.profilepic = `data:image/jpeg;base64,${Buffer.from(
+            item.profilepic
           ).toString("base64")}`;
         }
       });
+      console.log("supervisorList", results.rows);
 
-      res.status(200).json({ supervisorList: results });
+      res.status(200).json({ supervisorList: results.rows });
     });
   });
 };
@@ -300,11 +323,11 @@ const createProposal = async (req, res) => {
     try {
       // Fetch teacherIDs for the provided emails
       const emailQuery = `
-        SELECT teacherID 
+        SELECT teacherid
         FROM teachers
-        WHERE email IN (?)
+        WHERE email IN ANY($1)
       `;
-      const [teachers] = await db
+      const [teachers] = await dbPool
         .promise()
         .query(emailQuery, [supervisorEmails]);
       console.log("teachers:", teachers);
