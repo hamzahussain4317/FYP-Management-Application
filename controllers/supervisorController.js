@@ -56,88 +56,91 @@ const addSupervisor = async (req, res) => {
 const getProfile = async (req, res) => {
   const { supervisorID } = req.params;
 
-  const getSupervisorDetails = `SELECT * FROM supervisor s JOIN teachers t ON t.teacherID = s.supervisorID where supervisorID = ?`;
-  db.query(getSupervisorDetails, [supervisorID], async (err, result) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "Error! DataBase query execution failed" });
-    }
+  const getSupervisorDetails = `SELECT * FROM supervisor s JOIN teachers t ON t.teacherid = s.supervisorid where supervisorid = $1`;
+  try {
+    const results = await dbPool.query(getSupervisorDetails, [supervisorID]);
 
-    if (result.length === 0) {
+    if (results.rows.length === 0) {
       return res
         .status(404)
         .json({ message: "Supervisor is not registered yet!" });
     }
 
-    if (result[0].profilePic) {
-      result[0].profilePic = `data:image/jpeg;base64,${Buffer.from(
-        result[0].profilePic
+    if (results.rows[0]?.profilepic) {
+      results.rows[0].profilepic = `data:image/jpeg;base64,${Buffer.from(
+        results.rows[0].profilepic
       ).toString("base64")}`;
     }
-    return res.status(200).json({ supervisor: result[0] });
-  });
+    return res.status(200).json({ supervisor: results.rows[0] });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Error! DataBase query execution failed" });
+  }
 };
 
 // controller for Supervisor group Details
 const getSupervisingGroups = async (req, res) => {
   const { supervisorID } = req.params;
 
-  const getGroupDetails = `
-    SELECT 
-      g.groupID,
-      g.groupName,
-      p.projectName,
-      p.status as projectStatus,
-      p.startDate as projectStartDate,
-      s.studentRoll 
-    FROM 
-      projectGroup g
-    JOIN 
-      fypStudent f ON f.groupID = g.groupID
-    JOIN 
-      Students s ON s.studentID = f.fypStudentID
-    JOIN 
-      project p ON p.projectID = g.projectID
-    WHERE 
-      g.supervisorID = ?`;
-
-  db.query(getGroupDetails, [supervisorID], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database query failed." });
+  const getGroupDetails = `SELECT 
+  g.groupid,
+  g.groupname,
+  p.projectname,
+  p.status AS projectstatus,
+  p.startdate AS projectstartdate,
+  s.studentroll
+FROM 
+  projectgroup g
+JOIN 
+  fypstudent f ON f.groupid = g.groupid
+JOIN 
+  students s ON s.studentid = f.fypstudentid
+JOIN 
+  project p ON p.projectid = g.projectid
+WHERE 
+  g.supervisorid = $1;`;
+  
+  try{
+    const results= await dbPool.query(getGroupDetails, [supervisorID]);
+    console.log("results: ", results.rows);
+    const groupMap = {};
+    if (results.rows.length === 0) {
+      return res.status(404).json({ message: "No groups found for this supervisor" });
     }
 
-    const groupMap = {};
-
-    results.forEach((record) => {
+    results.rows.forEach((record) => {
       const {
-        groupID,
-        groupName,
-        projectName,
-        projectStatus,
-        projectStartDate,
-        studentRoll,
+        groupid,
+        groupname,
+        projectname,
+        projectstatus,
+        projectstartdate,
+        studentroll,
       } = record;
 
-      if (!groupMap[groupID]) {
-        groupMap[groupID] = {
-          groupID,
-          groupName,
-          projectName,
-          projectStatus,
-          projectStartDate,
+      if (!groupMap[groupid]) {
+        groupMap[groupid] = {
+          groupid,
+          groupname,
+          projectname,
+          projectstatus,
+          projectstartdate,
           students: [],
         };
       }
 
-      groupMap[groupID].students.push(studentRoll);
+      groupMap[groupid].students.push(studentroll);
     });
 
     const groupDetails = Object.values(groupMap);
 
     res.status(200).json({ groupDetails });
-  });
+  }
+  catch(err){
+    console.error(err);
+    return res.status(500).json({ error: "Database query failed." });
+  }
 };
 
 const updateProposal = async (req, res) => {
@@ -151,8 +154,11 @@ const updateProposal = async (req, res) => {
 
   try {
     console.log("groupID: ", groupID);
-    const results =await dbPool.query(updateProposalQuery, [groupID, supervisorID]);
-    console.log("results: ",results);
+    const results = await dbPool.query(updateProposalQuery, [
+      groupID,
+      supervisorID,
+    ]);
+    console.log("results: ", results);
     if (results.rowCount === 0) {
       return res
         .status(404)
@@ -193,21 +199,20 @@ const getProposalRequests = async (req, res) => {
   const { supervisorID } = req.params;
 
   const getProposalQuery = `SELECT 
-    p.groupID,
-    p.supervisorID,
-    p.projectName,
-    g.groupName,
-    p.projectDomain,
-    p.projectDescription,
-    p.projectFile,
-    p.proposalStatus
+    p.groupid,
+    p.supervisorid,
+    p.projectname,
+    g.groupname,
+    p.projectdomain,
+    p.projectdescription,
+    p.projectfile,
+    p.proposalstatus
     FROM Proposal p
-    JOIN ProjectGroup g ON p.groupID = g.groupID
-    WHERE p.supervisorID = ?`;
+    JOIN ProjectGroup g ON p.groupid = g.groupid
+    WHERE p.supervisorid = ?`;
 
   try {
-    const [resultRows] = await db
-      .promise()
+    const [resultRows] = await dbPool
       .query(getProposalQuery, [supervisorID]);
 
     // Assuming the backend URL is stored in an environment variable
