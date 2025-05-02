@@ -60,7 +60,6 @@ app.use("/admin", admin);
 socketRouter(io);
 
 const func = async () => {
-
   const query = `
 
     INSERT INTO students (
@@ -88,7 +87,6 @@ const func = async () => {
   `;
 
   const values = [
-
     "22K-4327",
 
     "Hamza Hussain",
@@ -104,27 +102,17 @@ const func = async () => {
     "CS",
 
     "KHI",
-
   ];
-
-
 
   // const result = await client.query(query, values);
 
   // console.log("✅ Inserted row:", result.rows[0]);
 
-
-
   dbPool.query(query, values, (err, res) => {
-
     if (err) throw err;
 
-
-
     console.log("Data inserted successfully.");
-
   });
-
 };
 
 // db connection check and server start
@@ -138,20 +126,14 @@ const func = async () => {
     });
   } catch (err) {
     console.error("❌ Database error:", err.message);
-  } 
+  }
   // finally {
   //   await dbPool.end();
   // }
 })();
 
-
-
-  // func();
-
-
-
+// func();
 
 module.exports = io;
 
 module.exports = server;
-
