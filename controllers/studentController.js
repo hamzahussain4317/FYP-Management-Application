@@ -308,6 +308,7 @@ const createProposal = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
     supervisorEmails = [supervisorEmails];
+    console.log("supervisorEmails:", supervisorEmails);
     if (!Array.isArray(supervisorEmails) || supervisorEmails.length === 0) {
       return res.status(400).json({
         message: "Supervisor emails must be an array with at least one email.",
@@ -321,55 +322,57 @@ const createProposal = async (req, res) => {
     const projectFilePath = req.file.path; // Path of the uploaded file
 
     try {
-      // Fetch teacherIDs for the provided emails
+      // Flatten the array of supervisor emails: the array is nested inside another array so we need to flatten it thats why we use .flat() to make it just an array from array of array [[]]->[]
+      const flatSupervisorEmails = supervisorEmails.flat();
+      //now we need to create dynamic placeholders for the supervisorEmails bcz we dont know how many emails of supervisor comes from the frontend so we use map function inside which the first paramter _ is used to ignore the item which in this case is email and the second paramter is index so we create $1 $2 and we join this using , using join function
+      const placeholders = flatSupervisorEmails
+        .map((_, index) => `$${index + 1}`)
+        .join(", ");
       const emailQuery = `
         SELECT teacherid
         FROM teachers
-        WHERE email IN ANY($1)
-      `;
-      const [teachers] = await dbPool
-        .promise()
-        .query(emailQuery, [supervisorEmails]);
-      console.log("teachers:", teachers);
+        WHERE email IN (${placeholders})`;
+      const teachers = await dbPool.query(emailQuery, flatSupervisorEmails);
+      console.log("teachers:", teachers.rows);
 
-      if (teachers.length === 0) {
+      if (teachers.rows.length === 0) {
         return res.status(404).json({
           message: "No matching supervisors found for the provided emails.",
         });
       }
-      const groupQuery = `SELECT groupID FROM projectGroup WHERE groupName = ?`;
-      const [groupResult] = await db.promise().query(groupQuery, [groupName]);
-
-      if (groupResult.length === 0) {
+      const groupQuery = `SELECT groupid FROM projectGroup WHERE groupname = $1`;
+      console.log("groupName: ", groupName);
+      const groupResult = await dbPool.query(groupQuery, [groupName]);
+      console.log("grouResults: ", groupResult.rows[0]);
+      if (groupResult.rows.length === 0) {
         return res.status(404).json({ message: "Group not found." });
       }
 
-      const groupID = groupResult[0].groupID;
+      const groupID = groupResult.rows[0].groupid;
       // Create proposals for each supervisor
       const proposalQuery = `
         INSERT INTO proposal 
-        (projectName, projectDomain, projectDescription, groupID, supervisorID, projectFile)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (projectname, projectdomain, projectdescription, groupid, supervisorid, projectfile)
+        VALUES ($1, $2, $3, $4, $5, $6)
       `;
+      console.log("projectFile: ", projectFilePath);
 
-      const insertPromises = teachers.map((teacher) =>
-        db
-          .promise()
-          .query(proposalQuery, [
-            projectName,
-            projectDomain,
-            projectDescription,
-            groupID,
-            teacher.teacherID,
-            projectFilePath,
-          ])
+      const insertPromises = teachers.rows.map((teacher) =>
+        dbPool.query(proposalQuery, [
+          projectName,
+          projectDomain,
+          projectDescription,
+          groupID,
+          teacher.teacherid,
+          projectFilePath,
+        ])
       );
 
       await Promise.all(insertPromises);
-
+      teachers.rows.map((teacher) => console.log(teacher.email));
       return res.status(201).json({
         message: "Proposals uploaded successfully.",
-        supervisors: teachers.map((teacher) => teacher.email),
+        supervisors: supervisorEmails,
       });
     } catch (error) {
       console.error("Database error: ", error);
@@ -399,27 +402,28 @@ const assignTask = async (req, res) => {
 
   try {
     const formattedDeadline = formatMySQLDateTime(taskDeadline);
-
+    console.log("formattedDeadline", formattedDeadline);
     const currentDate = new Date();
+    console.log("currentDate", currentDate);
     if (new Date(formattedDeadline) <= currentDate) {
       return res
         .status(400)
         .json({ message: "taskDeadline must be in the future" });
     }
 
-    const [groupOneResult] = await db
-      .promise()
-      .query("SELECT groupID FROM fypStudent WHERE fypStudentID = ?", [stdID]);
-    const groupIdOne = groupOneResult[0]?.groupID;
+    const groupOneResult = await dbPool.query(
+      "SELECT groupid FROM fypStudent WHERE fypstudentid = $1",
+      [stdID]
+    );
+    const groupIdOne = groupOneResult.rows[0]?.groupid;
+    console.log("groupIDOne: ", groupIdOne);
 
-    const [groupTwoResult] = await db
-      .promise()
-      .query(
-        "SELECT f.groupID FROM students s JOIN fypStudent f ON s.studentID = f.fypStudentID WHERE s.email = ?",
-        [stdMail]
-      );
-    const groupIdTwo = groupTwoResult[0]?.groupID;
-
+    const groupTwoResult = await dbPool.query(
+      "SELECT f.groupid FROM students s JOIN fypStudent f ON s.studentid = f.fypstudentid WHERE s.email = $1",
+      [stdMail]
+    );
+    const groupIdTwo = groupTwoResult.rows[0]?.groupid;
+    console.log("groupIDTwo: ", groupIdTwo);
     // Check if students are in the same group
     if (groupIdOne !== groupIdTwo) {
       return res
@@ -428,27 +432,25 @@ const assignTask = async (req, res) => {
     }
 
     // Fetch student ID from email
-    const [memberResult] = await db
-      .promise()
-      .query("SELECT studentID FROM students WHERE email = ?", [stdMail]);
-    const memberID = memberResult[0]?.studentID;
-
+    const memberResult = await dbPool.query(
+      "SELECT studentid FROM students WHERE email = $1",
+      [stdMail]
+    );
+    const memberID = memberResult.rows[0]?.studentid;
+    console.log("memberID: ", memberID);
     // Fetch project ID from the group
-    const [projectResult] = await db
-      .promise()
-      .query(
-        "SELECT p.projectID FROM fypStudent f JOIN projectGroup p ON f.groupID = p.groupID WHERE f.fypStudentID = ?",
-        [stdID]
-      );
-    const projectID = projectResult[0]?.projectID;
-
+    const projectResult = await dbPool.query(
+      "SELECT p.projectid FROM fypStudent f JOIN projectGroup p ON f.groupid = p.groupid WHERE f.fypstudentid = $1",
+      [stdID]
+    );
+    const projectID = projectResult.rows[0]?.projectid;
+    console.log("projectID: ", projectID);
     // Insert task into the tasks table
     const insertTaskQuery = `
-      INSERT INTO tasks (projectID, fypStudentID, taskName, taskDescription, taskDeadline)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO tasks (projectid, fypstudentid, taskname, taskdescription, taskdeadline)
+      VALUES ($1, $2, $3, $4, $5)
     `;
-    await db
-      .promise()
+    await dbPool
       .query(insertTaskQuery, [
         projectID,
         memberID,
@@ -472,12 +474,12 @@ const viewTask = async (req, res) => {
   try {
     const taskQuery = `
       SELECT * FROM tasks
-      WHERE fypStudentID = ?
+      WHERE fypstudentid = $1
     `;
 
-    const [tasks] = await db.promise().query(taskQuery, [stdID]);
+    const tasks = await dbPool.query(taskQuery, [stdID]);
 
-    if (tasks.length === 0) {
+    if (tasks.rows.length === 0) {
       return res.status(200).json({
         status: "success",
         message: "No tasks assigned to the student",
@@ -488,7 +490,7 @@ const viewTask = async (req, res) => {
     return res.status(200).json({
       status: "success",
       message: "Tasks retrieved successfully",
-      tasks,
+      tasks: tasks.rows,
     });
   } catch (error) {
     console.error("Database error: ", error);
@@ -511,10 +513,10 @@ const updateTask = async (req, res) => {
   }
 
   try {
-    const updateTask = `update tasks set taskStatus = 1 where fypStudentID=? and taskName=?`;
-    const [update] = await db.promise().query(updateTask, [stdID, taskName]);
+    const updateTask = `update tasks set taskstatus = true where fypstudentid=$1 and taskname=$2`;
+    const update= await dbPool.query(updateTask, [stdID, taskName]);
 
-    if (update.affectedRows === 0) {
+    if (update.rowCount === 0) {
       return res.status(404).json({
         status: "error",
         message: "No tasks found for the provided student ID",
@@ -524,7 +526,7 @@ const updateTask = async (req, res) => {
     return res.status(200).json({
       status: "success",
       message: "Tasks updated successfully",
-      update,
+      updateCount:update.rowCount,
     });
   } catch (err) {
     console.error("Database error: ", err);
@@ -542,20 +544,19 @@ const projectOversight = async (req, res) => {
     return res.status(400).json({ message: "studentID is required" });
   }
   try {
-    const [retrieveProjectID] = await db
-      .promise()
-      .query("SELECT projectID FROM tasks WHERE fypStudentID = ?", [stdID]);
-    const projectID = retrieveProjectID[0]?.projectID;
+    const retrieveProjectID = await dbPool
+      .query("select p.projectid from fypStudent f join projectgroup pg on f.groupid=pg.groupid join project p on p.projectid=pg.projectid where fypstudentid=$1", [stdID]);
+    const projectID = retrieveProjectID.rows[0]?.projectid;
+    console.log("projectID", projectID);
     if (!projectID) {
       return res
         .status(404)
         .json({ message: "No project found for this student" });
     }
-    const [tasks] = await db
-      .promise()
-      .query("SELECT * FROM tasks WHERE projectID = ?", [projectID]);
+    const tasks = await dbPool
+      .query("SELECT * FROM tasks WHERE projectid = $1", [projectID]);
 
-    if (tasks.length === 0) {
+    if (tasks.rows.length === 0) {
       return res
         .status(404)
         .json({ message: "No tasks found for this project" });
@@ -563,7 +564,7 @@ const projectOversight = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Tasks fetched successfully", tasks });
+      .json({ message: "Tasks fetched successfully", tasks:tasks.rows });
   } catch (error) {
     console.error("Database error:", error);
     return res

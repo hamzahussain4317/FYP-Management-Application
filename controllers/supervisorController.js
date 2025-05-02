@@ -28,22 +28,24 @@ const addSupervisor = async (req, res) => {
     const imagePath = req.file.path;
     try {
       query = `insert into teachers (firstname, lastname , departmentname, email , dateofbirth ,contactno, profilepic) values ($1,$2,$3,$4,$5,$6,$7)`;
-      values=[firstName, lastName, departmentName, email, dob, contactNo, imagePath];
-      dbPool.query(
-        query,
-        values,
-        async (err, result) => {
-          if (err) {
-            return res.status(500).json({
-              message: "database query execution failed",
-              error: err.message,
-            });
-          }
-          return res
-            .status(200)
-            .json({ message: "teacher Successfully added" });
+      values = [
+        firstName,
+        lastName,
+        departmentName,
+        email,
+        dob,
+        contactNo,
+        imagePath,
+      ];
+      dbPool.query(query, values, async (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            message: "database query execution failed",
+            error: err.message,
+          });
         }
-      );
+        return res.status(200).json({ message: "teacher Successfully added" });
+      });
     } catch (err) {
       return res.status(500).json({ message: "error assigning student" });
     }
@@ -145,26 +147,40 @@ const updateProposal = async (req, res) => {
     return res.status(400).json({ message: "proposalID is required" });
   }
 
-  const updateProposalQuery = `UPDATE Proposal SET proposalStatus = 1 WHERE groupID = ? and supervisorID=?`;
+  const updateProposalQuery = `UPDATE Proposal SET proposalstatus = true WHERE groupid = $1 and supervisorid=$2`;
 
   try {
-    db.query(updateProposalQuery, [groupID, supervisorID], (err, result) => {
-      if (err) {
-        console.error("Database query failed:", err);
-        return res.status(500).json({
-          message: "Database query execution failed",
-          error: err.message,
-        });
-      }
+    console.log("groupID: ", groupID);
+    const results =await dbPool.query(updateProposalQuery, [groupID, supervisorID]);
+    console.log("results: ",results);
+    if (results.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Proposal not found or already updated" });
+    }
+    res.status(200).json({ message: "Proposal updated successfully" });
 
-      if (result.affectedRows === 0) {
-        return res
-          .status(404)
-          .json({ message: "Proposal not found or already updated" });
-      }
+    // dbPool.query(
+    //   updateProposalQuery,
+    //   [groupID, supervisorID],
+    //   (err, result) => {
+    //     if (err) {
+    //       console.error("Database query failed:", err);
+    //       return res.status(500).json({
+    //         message: "Database query execution failed",
+    //         error: err.message,
+    //       });
+    //     }
 
-      res.status(200).json({ message: "Proposal updated successfully" });
-    });
+    //     if (result.affectedRows === 0) {
+    //       return res
+    //         .status(404)
+    //         .json({ message: "Proposal not found or already updated" });
+    //     }
+
+    //     res.status(200).json({ message: "Proposal updated successfully" });
+    //   }
+    // );
   } catch (error) {
     console.error("Error updating proposal:", error);
     res
