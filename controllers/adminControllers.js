@@ -1,76 +1,73 @@
 const db = require("../db/pool.js");
-// const {
-//   getUnregisteredUsersByRole,
-//   getUsersByIds,
-//   markUsersAsRegistered,
-//   createLoginCredentials,
-// } = require("../services/adminServices.cjs");
 const { sendPasswordEmail } = require("../utils/email.cjs");
 const { generateRandomPassword } = require("../utils/passwordGenerator.cjs");
 
 const registerUser = async (req, res) => {
-  const router = express.Router();
-  const bcrypt = require("bcryptjs");
+  const { registration_scenario, role, user_ids } = req.body;
 
-  router.post("/register-users", async (req, res) => {
-    const { registration_scenario, role, user_ids } = req.body;
+  let usersToRegister = [];
 
-    let usersToRegister = [];
+  const table = role === "student" ? "students" : "supervisors";
+  if (registration_scenario === "ALL") {
+    const query = `SELECT * FROM ${table} WHERE isRegistered = false`;
+    usersToRegister = await db.query(query);
+  } else if (registration_scenario === "SELECTED") {
+    const query = `SELECT * FROM ${table} WHERE isRegistered = false and id IN (${user_ids.join(
+      ", "
+    )})`;
+    usersToRegister = await db.query(query);
+  }
 
-    const table = role === "student" ? "students" : "supervisors";
-    if (registration_scenario === "ALL") {
-      const query = `SELECT * FROM ${table} WHERE isRegistered = false`;
-      usersToRegister = await db.query(query);
-    } else if (registration_scenario === "SELECTED") {
-      const query = `SELECT * FROM ${table} WHERE isRegistered = false and id IN (${user_ids.join(
-        ", "
-      )})`;
-      usersToRegister = await db.query(query);
-    }
+  if (usersToRegister.length === 0) {
+    return res.status(200).json({
+      message: "No users to register | Already Registered",
+      usersToRegister: usersToRegister,
+    });
+  }
 
-    for (const user of usersToRegister) {
-      const plainPassword = generateRandomPassword();
+  for (const user of usersToRegister) {
+    const plainPassword = generateRandomPassword();
+    console.log(plainPassword);
+    try {
+      const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+      //TODO: registeration table name verification
+      const registrationQuery = `INSERT INTO registeration (email, password, role) VALUES (?, ?, ?)`;
       try {
-        const hashedPassword = await bcrypt.hash(plainPassword, 10);
-
-        //TODO: registeration table name verification
-        const registrationQuery = `INSERT INTO registeration (email, password, role) VALUES (?, ?, ?)`;
-        try {
-          await db.query(registrationQuery, [user.email, hashedPassword, role]);
-        } catch (error) {
-          console.error("Error inserting into registeration table:", error);
-          return res.status(500).json({
-            message: "Error inserting into registeration table",
-            error: error.message,
-          });
-        }
-
-        try {
-          await sendPasswordEmail({
-            email: user.email,
-            password: plainPassword,
-            role,
-          });
-        } catch (error) {
-          console.error("Error sending email:", error);
-          return res.status(500).json({
-            message: "Error sending email",
-            error: error.message,
-          });
-        }
+        await db.query(registrationQuery, [user.email, hashedPassword, role]);
       } catch (error) {
-        console.error("Error hashing password:", error);
+        console.error("Error inserting into registeration table:", error);
         return res.status(500).json({
-          message: "Error hashing password",
+          message: "Error inserting into registeration table",
           error: error.message,
         });
       }
-    }
 
-    return res
-      .status(200)
-      .json({ message: "Users registered and notified via email" });
-  });
+      try {
+        await sendPasswordEmail({
+          email: user.email,
+          password: plainPassword,
+          role,
+        });
+      } catch (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).json({
+          message: "Error sending email",
+          error: error.message,
+        });
+      }
+    } catch (error) {
+      console.error("Error hashing password:", error);
+      return res.status(500).json({
+        message: "Error hashing password",
+        error: error.message,
+      });
+    }
+  }
+
+  return res
+    .status(200)
+    .json({ message: "Users registered and notified via email" });
 };
 const getAllGroupsDetails = async (req, res) => {
   const getAllGroupsQuery = `Select pg.groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as superisorName,p.status,s.studentRoll from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId`;

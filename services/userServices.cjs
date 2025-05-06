@@ -1,5 +1,5 @@
-// db.js
-
+//IMPORTANT: a sample for microservices implementation,still in progress
+const db = require("../db"); // Assuming you have a db module to interact with your database
 async function getUnregisteredUsersByRole(role) {
   if (role === "student") {
     return await db.students.findMany({ where: { isRegistered: false } });

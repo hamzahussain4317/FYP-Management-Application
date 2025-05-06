@@ -5,7 +5,7 @@ const router = express.Router();
 
 const adminControllers = require("../controllers/adminControllers.js");
 
-router.post("/register", isAdmin, adminControllers.registerUser);
+router.post("/register", adminControllers.registerUser);
 router.get("/getAllGroups", adminControllers.getAllGroupsDetails);
 router.get("/getAllStudents", adminControllers.getAllGroupsDetails);
 router.get("/getAllSupervisors", adminControllers.getAllGroupsDetails);
