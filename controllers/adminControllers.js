@@ -1,4 +1,5 @@
-const db = require("../db/pool.js");
+const dbPool = require("../db/pool.js");
+const bcrypt = require("bcrypt");
 const { sendPasswordEmail } = require("../utils/email.cjs");
 const { generateRandomPassword } = require("../utils/passwordGenerator.cjs");
 
@@ -6,35 +7,42 @@ const registerUser = async (req, res) => {
   const { registration_scenario, role, user_ids } = req.body;
 
   let usersToRegister = [];
+  console.log(user_ids);
 
   const table = role === "student" ? "students" : "supervisors";
   if (registration_scenario === "ALL") {
-    const query = `SELECT * FROM ${table} WHERE isRegistered = false`;
-    usersToRegister = await db.query(query);
+    const query = `SELECT * FROM ${table} WHERE isRegister = false`;
+    usersToRegister = await dbPool.query(query);
   } else if (registration_scenario === "SELECTED") {
-    const query = `SELECT * FROM ${table} WHERE isRegistered = false and id IN (${user_ids.join(
+    const query = `SELECT * FROM ${table} WHERE isRegister = false and studentid IN (${user_ids.join(
       ", "
     )})`;
-    usersToRegister = await db.query(query);
+    usersToRegister = await dbPool.query(query);
   }
+  console.log("HELLO", usersToRegister.rows);
 
-  if (usersToRegister.length === 0) {
+  if (usersToRegister.rows.length === 0) {
     return res.status(200).json({
       message: "No users to register | Already Registered",
-      usersToRegister: usersToRegister,
+      usersToRegister: usersToRegister.rows,
     });
   }
 
-  for (const user of usersToRegister) {
+  for (const user of usersToRegister.rows) {
     const plainPassword = generateRandomPassword();
     console.log(plainPassword);
     try {
       const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
       //TODO: registeration table name verification
-      const registrationQuery = `INSERT INTO registeration (email, password, role) VALUES (?, ?, ?)`;
+      const registrationQuery = `INSERT INTO registration (username,email, hashedpassword, userrole,) VALUES ($1,$2,$3,$4)`;
       try {
-        await db.query(registrationQuery, [user.email, hashedPassword, role]);
+        await dbPool.query(registrationQuery, [
+          user.studentname,
+          user.email,
+          hashedPassword,
+          role,
+        ]);
       } catch (error) {
         console.error("Error inserting into registeration table:", error);
         return res.status(500).json({
@@ -72,7 +80,7 @@ const registerUser = async (req, res) => {
 const getAllGroupsDetails = async (req, res) => {
   const getAllGroupsQuery = `Select pg.groupId,pg.groupName,p.projectId,p.projectName,t.firstName || ' ' || t.lastName as superisorName,p.status,s.studentRoll from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId`;
   try {
-    const [response] = await db.promise().execute(getAllGroupsQuery);
+    const [response] = await dbPool.promise().execute(getAllGroupsQuery);
 
     //Structuring the response of the query for frontend
     const results = Object.values(
@@ -104,7 +112,9 @@ const getGroupById = async (req, res) => {
   const { groupID } = req.params;
   const getGroupByIdQuery = `Select pg.groupId as groupId,pg.groupName,p.projectId,p.projectName,CONCAT(t.firstName , ' ' , t.lastName) as supervisorName,p.status as projectStatus ,s.studentId as studentId ,s.studentRoll as studentRoll,s.studentName,f.midEvaluation as midEvaluation,f.finalEvaluation as finalEvaluation from ProjectGroup pg JOIN Project p On p.projectId = pg.projectId JOIN teachers t ON t.teacherId = pg.supervisorId JOIN fypstudent f ON  f.groupId= pg.groupId JOIN students s ON s.studentId = f.fypStudentId where pg.groupId = ? `;
   try {
-    let [response] = await db.promise().execute(getGroupByIdQuery, [groupID]);
+    let [response] = await dbPool
+      .promise()
+      .execute(getGroupByIdQuery, [groupID]);
 
     if (response.length === 0) {
       return res.status(404).json({ message: "No such group exist" });
@@ -127,7 +137,7 @@ const patchGroupById = async (req, res) => {
 
     const query = `CALL UpdateStudentMarks(?)`;
 
-    const [response] = db.promise().execute(query, studentJSON);
+    const [response] = dbPool.promise().execute(query, studentJSON);
 
     res
       .status(200)
@@ -141,7 +151,7 @@ const deleteGroupById = async (req, res) => {
   const deleteQuery = `DELETE FROM ProjectGroup where groupID=?`;
 
   try {
-    const [response] = await db.promise().execute(deleteQuery, groupID);
+    const [response] = await dbPool.promise().execute(deleteQuery, groupID);
 
     res.status(200).json({ Message: "Deleted Successfully!" });
   } catch (err) {

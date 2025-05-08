@@ -175,7 +175,6 @@ const signUp = async (req, res) => {
         return res.status(500).json({ message: "Error hashing password" });
       }
 
-
       dbPool.query(
         insertQuery,
         [username, hashedPassword, email, role, userId],
@@ -226,13 +225,12 @@ const signIn = async (req, res) => {
     }
 
     let isMatch;
-    console.log(user.hashedpassword,"hello")
+    console.log(user.hashedpassword, "hello");
     try {
       isMatch = await bcrypt.compare(password, user.hashedpassword);
     } catch (err) {
       console.log(err);
     }
-    console.log("isMatch: ", isMatch);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect password" });
@@ -257,7 +255,7 @@ const adminSignIn = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    res.status(400).json({ err: "please fill in all fields" });
+    res.status(400).json({ err: "Please fill in all fields" });
   }
 
   const adminName = process.env.ADMIN_NAME || "admin";
@@ -278,7 +276,7 @@ const adminSignIn = async (req, res) => {
   });
   res
     .status(201)
-    .json({ message: "Logged in successfully", token, role: "admin" });
+    .json({ message: "Admin Logged in successfully", token, role: "admin" });
 };
 //exporting module functions
 module.exports = {
