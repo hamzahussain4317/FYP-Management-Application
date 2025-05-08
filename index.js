@@ -3,7 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const http = require("http");
 const cors = require("cors");
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 
 const dbPool = require("./db/pool.js");
 const { isValidToken } = require("./middlewares/validations.js");
@@ -18,11 +18,11 @@ const { socketRouter } = require("./routes/socket.js");
 const app = express();
 //Creating Server
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
 
 //middlewares for http-requests using express app
 app.use(
@@ -57,7 +57,7 @@ app.use("/admin", admin);
 // });
 
 //socket route handler
-socketRouter(io);
+// socketRouter(io);
 
 const func = async () => {
   const query = `
@@ -120,7 +120,7 @@ const func = async () => {
   try {
     const client = await dbPool.connect();
     console.log("Database connected successfully!");
-    const PORT = 5000 | process.env.SOCKET_PORT;
+    const PORT = 3001 | process.env.SOCKET_PORT;
     server.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
@@ -134,6 +134,6 @@ const func = async () => {
 
 // func();
 
-module.exports = io;
+// module.exports = io;
 
 module.exports = server;

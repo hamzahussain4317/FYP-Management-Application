@@ -227,6 +227,7 @@ const signIn = async (req, res) => {
 
     let isMatch;
     console.log(user.hashedpassword,"hello")
+    console.log(password)
     try {
       isMatch = await bcrypt.compare(password, user.hashedpassword);
     } catch (err) {
