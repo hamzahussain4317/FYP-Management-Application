@@ -7,36 +7,36 @@ const defaultStudentDetails: ApiResponse = {
   student: [
     [
       {
-        fypStudentID: 0,
-        groupID: 0,
-        midEvaluation: null,
-        finalEvaluation: null,
-        isLeader: 0,
-        studentID: 0,
-        studentRoll: "",
-        studentName: "",
+        fypstudentid: 0,
+        groupid: 0,
+        midevaluation: null,
+        finalevaluation: null,
+        isleader: 0,
+        studentid: 0,
+        studentroll: "",
+        studentname: "",
         email: "",
-        dateOfBirth: "",
-        profilePic: "",
-        departmentName: "",
+        dateofbirth: "",
+        profilepic: "",
+        departmentname: "",
       },
     ],
     [
       {
-        groupID: 0,
-        projectID: 0,
+        groupid: 0,
+        projectid: 0,
         description: "",
-        projectName: "",
-        startDate: "",
+        projectname: "",
+        startdate: "",
         status: "",
-        createdAt: "",
-        updatedAt: "",
-        leaderID: 0,
-        supervisorID: 0,
-        groupName: "",
+        createdat: "",
+        updatedat: "",
+        leaderid: 0,
+        supervisorid: 0,
+        groupname: "",
         created_at: "",
         updated_at: "",
-        fullName: "",
+        fullname: "",
         email: "",
       },
     ],
@@ -55,6 +55,7 @@ export default function StudentDashboard() {
     sessionStorage.removeItem("isLeader");
     sessionStorage.removeItem("projectID");
     const storedUserId = sessionStorage.getItem("userId");
+    console.log("userID: ",storedUserId)
     if (storedUserId) {
       socket.emit("register", storedUserId);
       getProfile(Number(storedUserId));
@@ -74,22 +75,30 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
+        console.log(responseData)
+        console.log("student info",responseData.student.studentname)
+        console.log("groupproject info",responseData.groupProjectInfo[0].projectname)
+        console.log(studentDetails.student)
         setStudentDetails(responseData);
         setHomeDetails(responseData);
-        setUserName(responseData.student[0][0].studentName);
-        setProfilePic(responseData.student[0][0].profilePic);
+        setUserName(responseData.student.studentname);
+        setProfilePic(responseData.student.profilepic);
+        
         sessionStorage.setItem(
           "groupID",
-          responseData.student[0][0].groupID.toString()
+          responseData.student.groupid.toString()
         );
         sessionStorage.setItem(
           "isLeader",
-          responseData.student[0][0].isLeader.toString()
+          responseData.student.isleader.toString()
         );
         sessionStorage.setItem(
           "projectID",
-          responseData.student[1][0]?.projectID.toString()
+          responseData.student?.projectid.toString()
         );
+        console.log(sessionStorage.getItem("groupID"));
+        console.log(sessionStorage.getItem("isLeader"));
+        console.log(sessionStorage.getItem("projectID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
@@ -111,15 +120,15 @@ export default function StudentDashboard() {
         <div className="info-body">
           <h3>
             <span>Roll No:</span>
-            {studentDetails.student[0][0].studentRoll}
+            {/* {studentDetails.student.studentroll} */}
           </h3>
           <h3>
             <span>Batch:</span>
-            {`Fall ${studentDetails.student[0][0].studentRoll.substring(0, 2)}`}
+            {/* {`Fall ${studentDetails.student.studentroll.substring(0, 2)}`} */}
           </h3>
           <h3>
             <span>Department:</span>
-            {studentDetails.student[0][0].departmentName}
+            {/* {studentDetails.student.departmentname} */}
           </h3>
           <h3>
             <span>Section:</span>
@@ -131,11 +140,11 @@ export default function StudentDashboard() {
           </h3>
           <h3>
             <span>Email:</span>
-            {studentDetails.student[0][0].email}
+            {/* {studentDetails.student.email} */}
           </h3>
         </div>
       </div>
-      {studentDetails.student[1][0]?.projectID !== undefined ? (
+      {/* {studentDetails.student[1][0]?.projectID !== undefined ? ( */}
         <>
           <div className="info">
             <div className="info-head">
@@ -145,19 +154,19 @@ export default function StudentDashboard() {
             <div className="info-body">
               <h3>
                 <span>Project Name:</span>
-                {studentDetails.student[1][0].projectName}
+                {/* {studentDetails.student[1][0].projectName} */}
               </h3>
               <h3>
                 <span>Start Date:</span>
-                {studentDetails.student[1][0].startDate}
+                {/* {studentDetails.student[1][0].startDate} */}
               </h3>
               <h3>
                 <span>Status:</span>
-                {studentDetails.student[1][0].status}
+                {/* {studentDetails.student[1][0].status} */}
               </h3>
               <h3>
                 <span>Project Description:</span>
-                {studentDetails.student[1][0].description}
+                {/* {studentDetails.student[1][0].description} */}
               </h3>
             </div>
           </div>
@@ -168,15 +177,15 @@ export default function StudentDashboard() {
             </div>
             <div className="info-body">
               <h3>
-                <span>Group ID:</span> {studentDetails.student[1][0].groupID}
+                {/* <span>Group ID:</span> {studentDetails.student[1][0].groupID} */}
               </h3>
               <h3>
                 <span>Group Name:</span>
-                {studentDetails.student[1][0].groupName}
+                {/* {studentDetails.student[1][0].groupName} */}
               </h3>
               <h3>
                 <span>Supervisor Name:</span>
-                {studentDetails.student[1][0].fullName}
+                {/* {studentDetails.student[1][0].fullName} */}
               </h3>
               <h3>
                 <span>Supervisor Email:</span>
@@ -185,9 +194,9 @@ export default function StudentDashboard() {
             </div>
           </div>
         </>
-      ) : (
+      {/* ) : ( */}
         <div>No project Started Yet</div>
-      )}
+      {/* )} */}
       <div className="info">
         <div
           className="info-head"
