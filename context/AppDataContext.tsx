@@ -10,8 +10,10 @@ export default function AppWrapper({
 }: {
   children: React.ReactNode;
 }) {
+  const [baseUrl, setBaseUrl] = useState<string>("http://localhost:3001/");
   const [userId, setUserId] = useState<number>();
   const [userName, setUserName] = useState<string>();
+  const [userRole, setUserRole] = useState<string>();
   const [profilePic, setProfilePic] = useState<string>();
   const [socketState, setSocketState] = useState<any>(undefined);
   const [theme, setTheme] = useState<Theme>("light");
@@ -36,10 +38,13 @@ export default function AppWrapper({
   return (
     <AppDataContext.Provider
       value={{
+        baseUrl,
         theme,
         setTheme,
         userId,
         setUserId,
+        userRole,
+        setUserRole,
         userName,
         setUserName,
         profilePic,

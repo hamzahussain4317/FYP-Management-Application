@@ -1,11 +1,11 @@
 "use client";
+import Cookies from "js-cookie";
 import { AdminSignInSchema } from "../Schemas/AdminSignUpData";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { adminValidation } from "@/AdminValidation/adminvalidation";
 import { useState } from "react";
-
 import { useRouter } from "next/navigation";
+import { useAppWrapper } from "@/context/AppDataContext";
 
 interface AdminSignInData {
   name: string;
@@ -16,6 +16,8 @@ export default function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { baseUrl, setUserName, setUserRole } = useAppWrapper();
   const {
     register,
     handleSubmit,
@@ -25,22 +27,39 @@ export default function SignUpForm() {
     resolver: zodResolver(AdminSignInSchema),
   });
   const onSubmit = async (data: AdminSignInData) => {
-    if (
-      data.name.toLowerCase() === adminValidation.name.toLowerCase() &&
-      data.email.toLowerCase() === adminValidation.email.toLowerCase() &&
-      data.password.toLowerCase() === adminValidation.password.toLowerCase()
-    ) {
-      setIsLoading(true);
-      console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
       setIsLoading(false);
-      reset();
-      setErrorMessage("");
-      // sessionStorage.setItem(adminId, "admin001");
-      router.replace("/students");
-    } else {
-      setErrorMessage("Invalid email, password, or username");
-      console.log("Incorrect");
+      const response = await fetch(`${baseUrl}auth/adminsignin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: data.name,
+          password: data.password,
+          email: data.email,
+        }),
+      });
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        setErrorMessage(responseData?.message);
+      } else {
+        const userrole = responseData.role;
+        const token = responseData.token;
+        setUserName(data.name);
+        setUserRole(userrole);
+        Cookies.set("role", userrole, { path: "/", expires: 1 });
+        Cookies.set("token", token, { path: "/", expires: 1 });
+        setIsLoading(false);
+        reset();
+        setErrorMessage("");
+        router.push("/admin/groups");
+      }
+    } catch (error: any) {
+      setErrorMessage(
+        error?.message || "Something went wrong. Please Try Again"
+      );
     }
   };
   return (

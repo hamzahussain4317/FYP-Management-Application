@@ -2,7 +2,7 @@
 import { useAdminContext } from "@/context/AdminContext";
 import GroupList from "../Components/GroupList";
 import SearchBar from "@/Components/SearchBar";
-import CardSkeleton from "@/app/(Admin)/Components/CardSkeleton";
+import CardSkeleton from "@/app/admin/Components/CardSkeleton";
 import { useEffect } from "react";
 
 export default function FYPGroups() {

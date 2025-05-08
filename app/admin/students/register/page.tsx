@@ -1,4 +1,4 @@
-import SignUp from "@/Components/Template/SignUp";
+import SignUp from "@/Components/Template/AdminSignIn";
 import React from "react";
 
 const register = ({ props }: RegisterationProps) => {

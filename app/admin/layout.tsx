@@ -6,22 +6,22 @@ import AdminContextProvider from "@/context/AdminContext";
 
 const itemDetails: sideBarItems[] = [
   {
-    itemRoute: "groups",
+    itemRoute: "admin/groups",
     itemName: "FYP Groups",
     itemIcon: "fa-people-group",
   },
   {
-    itemRoute: "students",
+    itemRoute: "admin/students",
     itemName: "Students",
     itemIcon: "fa-user-graduate",
   },
   {
-    itemRoute: "supervisors",
+    itemRoute: "admin/supervisors",
     itemName: "Supervisors",
     itemIcon: "fa-user-tie",
   },
   {
-    itemRoute: "evaluation-schedule",
+    itemRoute: "admin/evaluation-schedule",
     itemName: "Auto Scheduler",
     itemIcon: "fa-calendar-check",
   },
