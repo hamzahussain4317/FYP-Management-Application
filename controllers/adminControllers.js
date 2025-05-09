@@ -6,36 +6,46 @@ const { generateRandomPassword } = require("../utils/passwordGenerator.cjs");
 const registerUser = async (req, res) => {
   const { registration_scenario, role, user_ids } = req.body;
 
-  let usersToRegister = [];
-  console.log(user_ids);
-
+  let usersToRegister;
   const table = role === "student" ? "students" : "supervisors";
-  if (registration_scenario === "ALL") {
-    const query = `SELECT * FROM ${table} WHERE isRegister = false`;
-    usersToRegister = await dbPool.query(query);
-  } else if (registration_scenario === "SELECTED") {
-    const query = `SELECT * FROM ${table} WHERE isRegister = false and studentid IN (${user_ids.join(
-      ", "
-    )})`;
-    usersToRegister = await dbPool.query(query);
-  }
-  console.log("HELLO", usersToRegister.rows);
 
-  if (usersToRegister.rows.length === 0) {
+  users = await dbPool.query(
+    `SELECT * FROM ${table} WHERE isregister = false and studentid IN (53)`
+  );
+
+  let query = "";
+  if (registration_scenario === "ALL") {
+    query = `SELECT * FROM ${table} WHERE isregister = false`;
+  } else if (registration_scenario === "SELECTED" && Array.isArray(user_ids)) {
+    const placeholders = user_ids.map((_, idx) => `$${idx + 1}`).join(", ");
+    query = `SELECT * FROM ${table} WHERE isregister = false and studentid IN ($1)`;
+  } else {
+    return res.status(200).json({
+      message: "No Users Selected | Unusual registration_scenario",
+      usersToRegister: [],
+    });
+  }
+
+  usersToRegister = await dbPool.query(query, user_ids);
+
+  if (
+    !usersToRegister ||
+    !Array.isArray(usersToRegister.rows) ||
+    usersToRegister.rows.length === 0
+  ) {
+    console.log("No users to register | Already Registered");
     return res.status(200).json({
       message: "No users to register | Already Registered",
-      usersToRegister: usersToRegister.rows,
+      usersToRegister: [],
     });
   }
 
   for (const user of usersToRegister.rows) {
     const plainPassword = generateRandomPassword();
-    console.log(plainPassword);
     try {
       const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
-      //TODO: registeration table name verification
-      const registrationQuery = `INSERT INTO registration (username,email, hashedpassword, userrole,) VALUES ($1,$2,$3,$4)`;
+      const registrationQuery = `INSERT INTO registration (username,email, hashedpassword, userrole) VALUES ($1,$2,$3,$4)`;
       try {
         await dbPool.query(registrationQuery, [
           user.studentname,
