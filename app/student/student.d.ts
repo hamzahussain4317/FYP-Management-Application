@@ -1,33 +1,33 @@
 interface StudentHome {
-  fypStudentID: number;
-  groupID: number;
-  midEvaluation: number | null;
-  finalEvaluation: number | null;
-  isLeader: number;
-  studentID: number;
-  studentRoll: string;
-  studentName: string;
+  fypstudentid: number;
+  groupid: number;
+  midevaluation: number | null;
+  finalevaluation: number | null;
+  isleader: number;
+  studentid: number;
+  studentroll: string;
+  studentname: string;
   email: string;
-  dateOfBirth: string;
-  profilePic: string;
-  departmentName: string;
+  dateofbirth: string;
+  profilepic: string;
+  departmentname: string;
 }
 
 interface ProjectGroup {
-  groupID: number;
-  projectID: number;
+  groupid: number;
+  projectid: number;
   description: string;
-  projectName: string;
-  startDate: string;
+  projectname: string;
+  startdate: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
-  leaderID: number;
-  supervisorID: number;
-  groupName: string;
+  createdat: string;
+  updatedat: string;
+  leaderid: number;
+  supervisorid: number;
+  groupname: string;
   created_at: string;
   updated_at: string;
-  fullName: string;
+  fullname: string;
   email: string;
 }
 

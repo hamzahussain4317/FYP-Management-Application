@@ -7,36 +7,36 @@ const defaultStudentDetails: ApiResponse = {
   student: [
     [
       {
-        fypStudentID: 0,
-        groupID: 0,
-        midEvaluation: null,
-        finalEvaluation: null,
-        isLeader: 0,
-        studentID: 0,
-        studentRoll: "",
-        studentName: "",
+        fypstudentid: 0,
+        groupid: 0,
+        midevaluation: null,
+        finalevaluation: null,
+        isleader: 0,
+        studentid: 0,
+        studentroll: "",
+        studentname: "",
         email: "",
-        dateOfBirth: "",
-        profilePic: "",
-        departmentName: "",
+        dateofbirth: "",
+        profilepic: "",
+        departmentname: "",
       },
     ],
     [
       {
-        groupID: 0,
-        projectID: 0,
+        groupid: 0,
+        projectid: 0,
         description: "",
-        projectName: "",
-        startDate: "",
+        projectname: "",
+        startdate: "",
         status: "",
-        createdAt: "",
-        updatedAt: "",
-        leaderID: 0,
-        supervisorID: 0,
-        groupName: "",
+        createdat: "",
+        updatedat: "",
+        leaderid: 0,
+        supervisorid: 0,
+        groupname: "",
         created_at: "",
         updated_at: "",
-        fullName: "",
+        fullname: "",
         email: "",
       },
     ],
@@ -55,6 +55,7 @@ export default function StudentDashboard() {
     sessionStorage.removeItem("isLeader");
     sessionStorage.removeItem("projectID");
     const storedUserId = sessionStorage.getItem("userId");
+    console.log("userID: ",storedUserId)
     if (storedUserId) {
       socket.emit("register", storedUserId);
       getProfile(Number(storedUserId));
@@ -74,22 +75,30 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
+        console.log(responseData)
+        console.log("student info",responseData.student.studentname)
+        console.log("groupproject info",responseData.groupProjectInfo[0].projectname)
+        console.log(studentDetails.student)
         setStudentDetails(responseData);
         setHomeDetails(responseData);
-        setUserName(responseData.student[0][0].studentName);
-        setProfilePic(responseData.student[0][0].profilePic);
+        setUserName(responseData.student.studentname);
+        setProfilePic(responseData.student.profilepic);
+        
         sessionStorage.setItem(
           "groupID",
-          responseData.student[0][0].groupID.toString()
+          responseData.student.groupid.toString()
         );
         sessionStorage.setItem(
           "isLeader",
-          responseData.student[0][0].isLeader.toString()
+          responseData.student.isleader.toString()
         );
         sessionStorage.setItem(
           "projectID",
-          responseData.student[1][0]?.projectID.toString()
+          responseData.student?.projectid.toString()
         );
+        console.log(sessionStorage.getItem("groupID"));
+        console.log(sessionStorage.getItem("isLeader"));
+        console.log(sessionStorage.getItem("projectID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
@@ -111,10 +120,12 @@ export default function StudentDashboard() {
         <div className="info-body">
           <h3>
             <span>Roll No:</span>
+            {/* {studentDetails.student.studentroll} */}
             {/* {studentDetails.student[0][0].studentRoll} */}
           </h3>
           <h3>
             <span>Batch:</span>
+            {/* {`Fall ${studentDetails.student.studentroll.substring(0, 2)}`} */}
             {/* {`Fall ${studentDetails.student[0][0].studentRoll.substring(0, 2)}`} */}
           </h3>
           <h3>
@@ -131,6 +142,7 @@ export default function StudentDashboard() {
           </h3>
           <h3>
             <span>Email:</span>
+            {/* {studentDetails.student.email} */}
             {/* {studentDetails.student[0][0].email} */}
           </h3>
         </div>
@@ -188,6 +200,59 @@ export default function StudentDashboard() {
       {/* ) : ( */}
       {/* <div>No project Started Yet</div>
       )} */}
+      {/* {studentDetails.student[1][0]?.projectID !== undefined ? ( */}
+        <>
+          <div className="info">
+            <div className="info-head">
+              <i className="fa-solid fa-person"></i>
+              <h3>Project Details</h3>
+            </div>
+            <div className="info-body">
+              <h3>
+                <span>Project Name:</span>
+                {/* {studentDetails.student[1][0].projectName} */}
+              </h3>
+              <h3>
+                <span>Start Date:</span>
+                {/* {studentDetails.student[1][0].startDate} */}
+              </h3>
+              <h3>
+                <span>Status:</span>
+                {/* {studentDetails.student[1][0].status} */}
+              </h3>
+              <h3>
+                <span>Project Description:</span>
+                {/* {studentDetails.student[1][0].description} */}
+              </h3>
+            </div>
+          </div>
+          <div className="info">
+            <div className="info-head">
+              <i className="fa-solid fa-phone"></i>
+              <h3>Group and Supervisor information</h3>
+            </div>
+            <div className="info-body">
+              <h3>
+                {/* <span>Group ID:</span> {studentDetails.student[1][0].groupID} */}
+              </h3>
+              <h3>
+                <span>Group Name:</span>
+                {/* {studentDetails.student[1][0].groupName} */}
+              </h3>
+              <h3>
+                <span>Supervisor Name:</span>
+                {/* {studentDetails.student[1][0].fullName} */}
+              </h3>
+              <h3>
+                <span>Supervisor Email:</span>
+                {studentDetails.student[1][0].email}
+              </h3>
+            </div>
+          </div>
+        </>
+      {/* ) : ( */}
+        <div>No project Started Yet</div>
+      {/* )} */}
       <div className="info">
         <div
           className="info-head"

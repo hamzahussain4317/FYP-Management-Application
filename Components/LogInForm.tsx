@@ -51,6 +51,7 @@ export default function LoginForm({ user_role }: LogInProps) {
       });
       if (response.ok) {
         const responseData = await response.json();
+        console.log("responseData: ",responseData);
         setUserId(responseData.userId);
         sessionStorage.setItem("userId", responseData.userId);
         if (data.role === "student") {
@@ -75,6 +76,7 @@ export default function LoginForm({ user_role }: LogInProps) {
   };
 
   const onSubmit = async (data: UserLogin) => {
+    console.log("signIn data: ",data);
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
