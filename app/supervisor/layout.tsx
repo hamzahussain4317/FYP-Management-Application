@@ -9,14 +9,18 @@ import SideBar from "@/Components/SideBar";
 import SupervisorContextProvider from "@/context/SupervisorContext";
 
 const itemDetails: sideBarItems[] = [
-  { itemRoute: "profile", itemName: "Profile", itemIcon: "fa-user-tie" },
   {
-    itemRoute: "manage-groups",
+    itemRoute: "supervisor/profile",
+    itemName: "Profile",
+    itemIcon: "fa-user-tie",
+  },
+  {
+    itemRoute: "supervisor/manage-groups",
     itemName: "My Supervised Groups",
     itemIcon: "fa-people-group",
   },
   {
-    itemRoute: "proposal-requests",
+    itemRoute: "supervisor/proposal-requests",
     itemName: "Proposals Request",
     itemIcon: "fa-file",
   },

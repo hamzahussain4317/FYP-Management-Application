@@ -14,9 +14,7 @@ export default function AdminContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [baseUrl, setBaseUrl] = useState<string>(
-    "http://localhost:3001/admin/"
-  );
+  const [baseUrl, setBaseUrl] = useState<string>("http://localhost:3001/admin");
 
   // Task : Define types in admin.d.ts for all states
   const [students, setStudents] = useState<StudentList[]>([]);
@@ -220,6 +218,7 @@ export default function AdminContextProvider({
   return (
     <AdminContext.Provider
       value={{
+        baseUrl,
         supervisors,
         students,
         groups,

@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import { useAdminContext } from "@/context/AdminContext";
 import ListSkeleton from "../Components/ListSkeleton";
-import SearchBar from "@/Components/SearchBar";
+import SearchBar from "../Components/SearchBar";
+import { RollerCoaster } from "lucide-react";
 
 export default function Students() {
   const {
+    baseUrl,
     fetchDummyStudents,
     students,
     total,
@@ -24,15 +26,34 @@ export default function Students() {
     fetchDummyStudents(currentPage, pageSize);
   }, [currentPage, pageSize]);
 
+  const register = async () => {
+    const response = await fetch(`${baseUrl}/registerUsers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Mock body
+      body: JSON.stringify({
+        registration_scenario: selectAll ? "ALL" : "SELECTED",
+        role: "student",
+        user_ids: [53],
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+  };
   const totalPages = Math.ceil(total / pageSize);
   const filters: studentsFilterBy = {
     byStudentRoll: true,
     byStudentName: false,
   };
+
   return (
     <div className="wrapper mx-auto p-4 h-full flex flex-col justify-between items-center global-text-size">
       <div className="w-full flex items-center justify-between p-2 mb-6 space-x-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-light-text dark:text-dark-text flex-grow">
           Students List
         </h1>
         <SearchBar
@@ -84,14 +105,17 @@ export default function Students() {
                 <option value={"All"}>All</option>
                 <option value={"Selected Only"}>Selected Only</option>
               </select>
-              <button>
-                <span className="mr-2 px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-md hover:bg-light-primary dark:hover:bg-dark-primary disabled:opacity-50 transition-colors">
+              <div>
+                <button className="mr-2 px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-md hover:bg-light-primary dark:hover:bg-dark-primary disabled:opacity-50 transition-colors">
                   Delete
-                </span>
-                <span className="mr-2 px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-md hover:bg-light-primary dark:hover:bg-dark-primary disabled:opacity-50 transition-colors">
+                </button>
+                <button
+                  onClick={register}
+                  className="mr-2 px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text border border-light-border dark:border-dark-border rounded-md hover:bg-light-primary dark:hover:bg-dark-primary disabled:opacity-50 transition-colors"
+                >
                   Register
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           </div>
           {/* Students Table */}

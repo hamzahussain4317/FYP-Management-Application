@@ -28,9 +28,9 @@ export default function SideBar({ itemDetails }: SideBarProps) {
         router.push("/admin-login");
         // TODO: set route for the student login
       } else if (role === "student") {
-        router.push("/login");
+        router.push("/user-login?user_role=student");
       } else {
-        router.push("/login");
+        router.push("/user-login?user_role=teacher");
       }
     }, 1000);
   };

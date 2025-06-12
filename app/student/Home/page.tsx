@@ -111,15 +111,15 @@ export default function StudentDashboard() {
         <div className="info-body">
           <h3>
             <span>Roll No:</span>
-            {studentDetails.student[0][0].studentRoll}
+            {/* {studentDetails.student[0][0].studentRoll} */}
           </h3>
           <h3>
             <span>Batch:</span>
-            {`Fall ${studentDetails.student[0][0].studentRoll.substring(0, 2)}`}
+            {/* {`Fall ${studentDetails.student[0][0].studentRoll.substring(0, 2)}`} */}
           </h3>
           <h3>
             <span>Department:</span>
-            {studentDetails.student[0][0].departmentName}
+            {/* {studentDetails.student[0][0].departmentName} */}
           </h3>
           <h3>
             <span>Section:</span>
@@ -131,63 +131,63 @@ export default function StudentDashboard() {
           </h3>
           <h3>
             <span>Email:</span>
-            {studentDetails.student[0][0].email}
+            {/* {studentDetails.student[0][0].email} */}
           </h3>
         </div>
       </div>
-      {studentDetails.student[1][0]?.projectID !== undefined ? (
-        <>
-          <div className="info">
-            <div className="info-head">
-              <i className="fa-solid fa-person"></i>
-              <h3>Project Details</h3>
-            </div>
-            <div className="info-body">
-              <h3>
-                <span>Project Name:</span>
-                {studentDetails.student[1][0].projectName}
-              </h3>
-              <h3>
-                <span>Start Date:</span>
-                {studentDetails.student[1][0].startDate}
-              </h3>
-              <h3>
-                <span>Status:</span>
-                {studentDetails.student[1][0].status}
-              </h3>
-              <h3>
-                <span>Project Description:</span>
-                {studentDetails.student[1][0].description}
-              </h3>
-            </div>
+      {/* {studentDetails.student[1][0]?.projectID !== undefined ? ( */}
+      <>
+        <div className="info">
+          <div className="info-head">
+            <i className="fa-solid fa-person"></i>
+            <h3>Project Details</h3>
           </div>
-          <div className="info">
-            <div className="info-head">
-              <i className="fa-solid fa-phone"></i>
-              <h3>Group and Supervisor information</h3>
-            </div>
-            <div className="info-body">
-              <h3>
-                <span>Group ID:</span> {studentDetails.student[1][0].groupID}
-              </h3>
-              <h3>
-                <span>Group Name:</span>
-                {studentDetails.student[1][0].groupName}
-              </h3>
-              <h3>
-                <span>Supervisor Name:</span>
-                {studentDetails.student[1][0].fullName}
-              </h3>
-              <h3>
-                <span>Supervisor Email:</span>
-                {studentDetails.student[1][0].email}
-              </h3>
-            </div>
+          <div className="info-body">
+            <h3>
+              <span>Project Name:</span>
+              {/* {studentDetails.student[1][0].projectName} */}
+            </h3>
+            <h3>
+              <span>Start Date:</span>
+              {/* {studentDetails.student[1][0].startDate} */}
+            </h3>
+            <h3>
+              <span>Status:</span>
+              {/* {studentDetails.student[1][0].status} */}
+            </h3>
+            <h3>
+              <span>Project Description:</span>
+              {/* {studentDetails.student[1][0].description} */}
+            </h3>
           </div>
-        </>
-      ) : (
-        <div>No project Started Yet</div>
-      )}
+        </div>
+        <div className="info">
+          <div className="info-head">
+            <i className="fa-solid fa-phone"></i>
+            <h3>Group and Supervisor information</h3>
+          </div>
+          <div className="info-body">
+            <h3>
+              {/* <span>Group ID:</span> {studentDetails.student[1][0].groupID} */}
+            </h3>
+            <h3>
+              <span>Group Name:</span>
+              {/* {studentDetails.student[1][0].groupName} */}
+            </h3>
+            <h3>
+              <span>Supervisor Name:</span>
+              {/* {studentDetails.student[1][0].fullName} */}
+            </h3>
+            <h3>
+              <span>Supervisor Email:</span>
+              {/* {studentDetails.student[1][0].email} */}
+            </h3>
+          </div>
+        </div>
+      </>
+      {/* ) : ( */}
+      {/* <div>No project Started Yet</div>
+      )} */}
       <div className="info">
         <div
           className="info-head"
@@ -202,15 +202,15 @@ export default function StudentDashboard() {
         <div id="marks-body" className="marks-info info-body">
           <h3>
             <span>Mid Evaluation Marks:</span>{" "}
-            {studentDetails.student[0][0].midEvaluation === null
+            {/* {studentDetails.student[0][0].midEvaluation === null
               ? "-"
-              : studentDetails.student[0][0].midEvaluation}
+              : studentDetails.student[0][0].midEvaluation} */}
           </h3>
           <h3>
             <span>Final Evaluation Marks:</span>{" "}
-            {studentDetails.student[0][0].finalEvaluation === null
+            {/* {studentDetails.student[0][0].finalEvaluation === null
               ? "-"
-              : studentDetails.student[0][0].finalEvaluation}
+              : studentDetails.student[0][0].finalEvaluation} */}
           </h3>
         </div>
       </div>{" "}

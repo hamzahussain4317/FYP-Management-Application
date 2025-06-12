@@ -8,13 +8,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/unauthorized", request.url));
   }
 
-  if (path.startsWith("/student") && role !== "student") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
+  // if (path.startsWith("/student") && role !== "student") {
+  //   return NextResponse.redirect(new URL("/unauthorized", request.url));
+  // }
 
-  if (path.startsWith("/supervisor") && role !== "supervisor") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
-  }
+  // if (path.startsWith("/supervisor") && role !== "supervisor") {
+  //   return NextResponse.redirect(new URL("/unauthorized", request.url));
+  // }
 
   return NextResponse.next();
 }

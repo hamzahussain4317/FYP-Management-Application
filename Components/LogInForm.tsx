@@ -22,7 +22,6 @@ export default function LoginForm({ user_role }: LogInProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState(null);
-
   const {
     register,
     handleSubmit,
@@ -55,9 +54,9 @@ export default function LoginForm({ user_role }: LogInProps) {
         setUserId(responseData.userId);
         sessionStorage.setItem("userId", responseData.userId);
         if (data.role === "student") {
-          router.push("/Home");
+          router.push("/student/Home");
         } else if (data.role === "teacher") {
-          router.push("/profile");
+          router.push("/supervisor/profile");
         }
       } else if (response.status === 500) {
         throw new Error("User already exist");
@@ -136,8 +135,8 @@ export default function LoginForm({ user_role }: LogInProps) {
                 type="radio"
                 id="teacher"
                 name="role"
-                value="Supervisor"
-                defaultChecked={user_role === "student" ? false : true}
+                value="teacher"
+                defaultChecked={user_role === "teacher" ? true : false}
               />
               <label htmlFor="teacher">Supervisor</label>
             </div>
@@ -153,7 +152,7 @@ export default function LoginForm({ user_role }: LogInProps) {
         <p className="accExist">
           Do not have an Account?{" "}
           <span>
-            <Link href="/signup">visit admin</Link>
+            <Link href="/admin-login">visit admin</Link>
           </span>
         </p>
       </form>

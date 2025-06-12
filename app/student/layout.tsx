@@ -8,21 +8,25 @@ import MessageHub from "@/Components/MessageHub";
 import StudentContextProvider from "@/context/StudentContext";
 
 const itemDetails: sideBarItems[] = [
-  { itemRoute: "Home", itemName: "Home", itemIcon: "fa-house" },
-  { itemRoute: "group", itemName: "Group", itemIcon: "fa-people-group" },
+  { itemRoute: "student/Home", itemName: "Home", itemIcon: "fa-house" },
   {
-    itemRoute: "project-oversight",
+    itemRoute: "student/group",
+    itemName: "Group",
+    itemIcon: "fa-people-group",
+  },
+  {
+    itemRoute: "student/project-oversight",
     itemName: "Project Oversight",
     itemIcon: "fa-chart-simple",
   },
-  { itemRoute: "proposals", itemName: "Proposal", itemIcon: "fa-file" },
+  { itemRoute: "student/proposals", itemName: "Proposal", itemIcon: "fa-file" },
   {
-    itemRoute: "Supervisors",
+    itemRoute: "student/Supervisors",
     itemName: "Supervisor List",
     itemIcon: "fa-list",
   },
   {
-    itemRoute: "manage-fyp",
+    itemRoute: "student/manage-fyp",
     itemName: "Task Monitoring",
     itemIcon: "fa-tasks",
   },
@@ -32,7 +36,7 @@ const isLeader = 0;
 {
   isLeader
     ? itemDetails.push({
-        itemRoute: "assignTask",
+        itemRoute: "student/assignTask",
         itemName: "Assign Task",
         itemIcon: "fa-clipboard",
       })

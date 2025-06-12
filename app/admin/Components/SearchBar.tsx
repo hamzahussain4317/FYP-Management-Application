@@ -1,4 +1,5 @@
 import { useAdminContext } from "@/context/AdminContext";
+import { useState, useEffect } from "react";
 import React from "react";
 
 export interface SearchBarProps {
@@ -9,38 +10,29 @@ export interface SearchBarProps {
   filters?: groupFilterBy | studentsFilterBy | supervisorFilterBy | null;
 }
 const SearchBar = ({ onFilterBy, onSearch, filters }: SearchBarProps) => {
-  const { filter, searchText, setFilter, setSearchText } = useAdminContext();
+  const [filter, setFilter] = useState<
+    groupFilterBy | studentsFilterBy | supervisorFilterBy | null
+  >(filters || null);
+  const [searchText, setSearchText] = useState<string>("");
 
-  setFilter(filters);
-  setSearchText(searchText);
+  const getSelectedValue = () => {
+    if (filter && "byGroupName" in filter) {
+      return filter.byGroupName ? "byGroupName" : "byProjectName";
+    } else if (filter && "byStudentRoll" in filter) {
+      return "byStudentRoll";
+    } else {
+      return "";
+    }
+  };
 
   return (
-    <div className={`w-full flex-grow flex justify-center items-center p-4 `}>
-      <div className={`${filters ? "" : "flex-grow"}`}>
-        <input
-          type="text"
-          className="p-2 border rounded-l-md w-full"
-          placeholder="Search groups.."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <button
-          className="px-4 py-2 text-black bg-dark-primary rounded-r-md md:min-w-[5rem]"
-          onClick={() => onSearch(searchText)}
-        >
-          Search
-        </button>
-      </div>
+    <div
+      className={`w-full flex-grow flex justify-end items-center p-4 space-x-2 `}
+    >
       {filters && (
         <select
           className="p-2 border rounded-md "
-          value={
-            filter.byGroupName
-              ? "byGroupName"
-              : filter.byProjectName
-              ? "byProjectName"
-              : "byStudentRoll"
-          }
+          value={getSelectedValue()}
           onChange={(e) =>
             onFilterBy(
               e.target.value === "byGroupName"
@@ -68,6 +60,25 @@ const SearchBar = ({ onFilterBy, onSearch, filters }: SearchBarProps) => {
           <option value="byStudentRoll">StudentRoll</option>
         </select>
       )}
+      <div
+        className={`${
+          filters ? "" : "flex-grow"
+        } flex justify-beytween items-center `}
+      >
+        <input
+          type="text"
+          className="p-2 border rounded-l-md w-full"
+          placeholder="Search groups.."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <button
+          className=" w-auto px-4 py-2 text-black bg-dark-primary rounded-r-md md:min-w-[6rem] "
+          onClick={() => onSearch(searchText)}
+        >
+          Search
+        </button>
+      </div>
     </div>
   );
 };
