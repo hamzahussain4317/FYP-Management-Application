@@ -30,5 +30,14 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamzahussain4317/FYP-Management-Application.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/hamzahussain4317/FYP-Management-Application/issues"
+  },
+  "homepage": "https://github.com/hamzahussain4317/FYP-Management-Application#readme"
 }

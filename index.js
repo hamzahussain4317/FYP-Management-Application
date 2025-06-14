@@ -125,7 +125,7 @@ const func = async () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
-    console.error("❌ Database error:", err.message);
+    console.error("❌ Database error:", err.message);   
   }
   // finally {
   //   await dbPool.end();

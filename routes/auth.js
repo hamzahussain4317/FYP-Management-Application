@@ -9,3 +9,4 @@ router.post("/signin", authControllers.signIn);
 router.post("/adminsignin", authControllers.adminSignIn);
 
 module.exports = router;
+  
