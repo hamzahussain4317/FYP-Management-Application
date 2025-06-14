@@ -11,6 +11,8 @@ interface StudentHome {
   dateofbirth: string;
   profilepic: string;
   departmentname: string;
+  section:string;
+  campus:string;
 }
 
 interface ProjectGroup {
@@ -29,10 +31,14 @@ interface ProjectGroup {
   updated_at: string;
   fullname: string;
   email: string;
+  midevaluation:string;
+  finalevaluation;
 }
 
 interface ApiResponse {
-  student: [StudentHome[], ProjectGroup[]]; // Two arrays, one for student data, another for project and group data
+  // student: [StudentHome[], ProjectGroup[]]; // Two arrays, one for student data, another for project and group data
+      student:StudentHome;
+      groupProjectInfo:ProjectGroup[];
 }
 
 interface group {
