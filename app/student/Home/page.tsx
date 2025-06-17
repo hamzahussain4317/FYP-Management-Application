@@ -55,7 +55,6 @@ export default function StudentDashboard() {
     sessionStorage.removeItem("isLeader");
     sessionStorage.removeItem("projectID");
     const storedUserId = sessionStorage.getItem("userId");
-    console.log("userID: ", storedUserId)
     if (storedUserId) {
       socket.emit("register", storedUserId);
       getProfile(Number(storedUserId));
@@ -75,10 +74,6 @@ export default function StudentDashboard() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData)
-        console.log("student info", responseData.student.studentname)
-        console.log("groupproject info", responseData.groupProjectInfo[0].projectname)
-        // console.log(studentDetails.student)
         setStudentDetails(responseData);
         setHomeDetails(responseData);
         setUserName(responseData.student.studentname);
@@ -96,9 +91,6 @@ export default function StudentDashboard() {
           "projectID",
           responseData.student?.projectid.toString()
         );
-        // console.log(sessionStorage.getItem("groupID"));
-        // console.log(sessionStorage.getItem("isLeader"));
-        // console.log(sessionStorage.getItem("projectID"));
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
@@ -121,17 +113,17 @@ export default function StudentDashboard() {
           <h3>
             <span>Roll No:</span>
             {studentDetails.student.studentroll}
-            {/* {studentDetails.student[0][0].studentRoll} */}
+            
           </h3>
           <h3>
             <span>Batch:</span>
             {`Fall ${studentDetails.student.studentroll.substring(0, 2)}`}
-            {/* {`Fall ${studentDetails.student[0][0].studentRoll.substring(0, 2)}`} */}
+           
           </h3>
           <h3>
             <span>Department:</span>
             {studentDetails.student.departmentname}
-            {/* {studentDetails.student[0][0].departmentName} */}
+           
           </h3>
           <h3>
             <span>Section:</span>
@@ -144,7 +136,7 @@ export default function StudentDashboard() {
           <h3>
             <span>Email:</span>
             {studentDetails.student.email}
-            {/* {studentDetails.student[0][0].email} */}
+            
           </h3>
         </div>
       </div>
@@ -199,7 +191,8 @@ export default function StudentDashboard() {
           </div>
         </>
       ) : (
-        <div>No project Started Yet</div>
+        // <div>No project Started Yet</div>
+        <h1 className="text-center m-8">No Project Started Yet!</h1>
       )}
       <div className="info">
         <div

@@ -47,7 +47,7 @@ const CreateGroup = () => {
       if (response.ok) {
         const responseData = await response.json();
         console.log(responseData);
-        router.push("/Home");
+        router.push("/student/Home");
       } else if (response.status === 400) {
         throw new Error("exactly three emails required");
       } else if (response.status === 500) {

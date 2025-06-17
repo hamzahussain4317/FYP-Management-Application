@@ -13,6 +13,8 @@ interface StudentHome {
   departmentname: string;
   section:string;
   campus:string;
+   midevaluation:string;
+  finalevaluation:string;
 }
 
 interface ProjectGroup {
@@ -29,10 +31,9 @@ interface ProjectGroup {
   groupname: string;
   created_at: string;
   updated_at: string;
-  fullname: string;
+  fullName: string;
   email: string;
-  midevaluation:string;
-  finalevaluation;
+ 
 }
 
 interface ApiResponse {
@@ -41,34 +42,39 @@ interface ApiResponse {
       groupProjectInfo:ProjectGroup[];
 }
 
-interface group {
-  studentID: number;
-  studentRoll: string;
-  studentName: string;
+interface groupStudents {
+  studentid: number;
+  studentroll: string;
+  studentname: string;
   email: string;
-  dateOfBirth: string;
-  profilePic: string;
-  departmentName: string;
+  dateofbirth: string;
+  profilepic: string;
+  departmentname: string;
   section: string | null;
   batch: string | null;
   campus: string | null;
+  isregister: boolean;
 }
 
-interface supervisor {
-  teacherID: number;
-  firstName: string;
-  lastName: string;
+interface isLeaderAndSupervisor {
+  isleader: boolean;
+  teacherid: number;
+  firstname: string;
+  lastname: string;
   email: string;
-  dateOfBirth: string;
-  profilePic: string;
-  departmentName: string;
-  contactNo: string | null;
+  dateofbirth: string;
+  profilepic: string;
+  departmentname: string;
+  contactno: string | null;
   designation: string | null;
   qualification: string | null;
+  isregister: boolean;
 }
 
 interface groupDetails {
-  student: [group[], supervisor[]];
+  // student: [group[], supervisor[]];
+  groupStudents:groupStudents[];
+  isLeaderAndSupervisor:isLeaderAndSupervisor[];
 }
 
 interface Supervisor {

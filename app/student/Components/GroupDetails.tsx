@@ -4,34 +4,34 @@ interface GroupDetailsProps {
 }
 
 const GroupDetails = ({ groupDetails }: GroupDetailsProps) => {
-  const validStudents = groupDetails.student[0].filter(
-    (student: group) => student.studentID && student.studentName
+  const validStudents = groupDetails.groupStudents.filter(
+    (student: groupStudents) => student.studentid && student.studentname
   );
   return (
     <>
       <h1 className="group-heading">Group Details</h1>
       <div className="group-details">
-        {validStudents.map((student: group, index:number) => (
-          <div key={student.studentID} className="card relative">
+        {validStudents.map((student: groupStudents, index:number) => (
+          <div key={student.studentid} className="card relative">
             <h2 className="heading-blue">Student {index + 1}</h2>
             <div className="card-grid">
               <p>
-                <strong>Name:</strong> {student.studentName}
+                <strong>Name:</strong> {student.studentname}
               </p>
               <p>
-                <strong>ID:</strong> {student.studentRoll}
+                <strong>ID:</strong> {student.studentroll}
               </p>
               <p>
-                <strong>Domain:</strong> {student.departmentName}
+                <strong>Domain:</strong> {student.departmentname}
               </p>
               <p>
-                <strong>Department:</strong> {student.departmentName}
+                <strong>Department:</strong> {student.departmentname}
               </p>
               <p>
                 <strong>Section:</strong> {student.section}
               </p>
               <p>
-                <strong>Degree:</strong> {student.departmentName}
+                <strong>Degree:</strong> {student.departmentname}
               </p>
             </div>
             <button className="absolute top-0 right-0 rounded-full border-2 ">
@@ -46,19 +46,19 @@ const GroupDetails = ({ groupDetails }: GroupDetailsProps) => {
           <div className="card-grid">
             <p>
               <strong>Supervisor ID: </strong>
-              {(groupDetails.student[1][0]?.teacherID===undefined)?"-":groupDetails.student[1][0].teacherID}
+              {(groupDetails.isLeadrAndSupervisor[0]?.teacherid===undefined)?"-":groupDetails.isLeadrAndSupervisor[0].teacherid}
             </p>
             <p>
               <strong>Supervisor Name: </strong>
-              {(groupDetails.student[1][0]?.firstName===undefined || groupDetails.student[1][0]?.lastName===undefined)?"-":`${groupDetails.student[1][0].firstName} ${groupDetails.student[1][0].lastName}`}
+              {(groupDetails.isLeadrAndSupervisor[0]?.firstname===undefined || groupDetails.isLeadrAndSupervisor[0]?.lastname===undefined)?"-":`${groupDetails.isLeadrAndSupervisor[0].firstname} ${groupDetails.isLeadrAndSupervisor[0].lastname}`}
             </p>
             <p>
               <strong>Supervisor Email: </strong>
-              {(groupDetails.student[1][0]?.email===undefined)?"-":groupDetails.student[1][0].email}
+              {(groupDetails.isLeadrAndSupervisor[0]?.email===undefined)?"-":groupDetails.isLeadrAndSupervisor[0].email}
             </p>
             <p>
               <strong>Supervisor Domain: </strong>
-              {(groupDetails.student[1][0]?.departmentName===undefined)?"-":groupDetails.student[1][0].departmentName}
+              {(groupDetails.isLeadrAndSupervisor[0]?.departmentname===undefined)?"-":groupDetails.isLeadrAndSupervisor[0].departmentname}
             </p>
           </div>
           <button className="absolute top-0 right-0 rounded-full border-2">
