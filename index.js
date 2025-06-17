@@ -25,6 +25,7 @@ const server = http.createServer(app);
 // });
 
 //middlewares for http-requests using express app
+app.use('/uploads',express.static('uploads'));
 app.use(
   cors({
     origin: "*",

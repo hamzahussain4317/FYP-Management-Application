@@ -140,6 +140,7 @@ const signUp = async (req, res) => {
       }
 
       const user = results.rows[0];
+      console.log(user, "user from db");
 
       if (role === "student") {
         if (user.studentname.toLowerCase() !== username.toLowerCase()) {
@@ -215,17 +216,16 @@ const signIn = async (req, res) => {
         .json({ message: "Database query execution failed" });
     }
 
-    const user = results.rows[0];
-    user.hashedpassword = user.hashedpassword.trim();
-    console.log("our user: ", user);
-    if (!user) {
+    if (!results.rows[0]) {
       return res
         .status(401)
         .json({ message: "User is not registered.Please check credentials" });
     }
-
+    const user = results.rows[0];
+    user.hashedpassword = user.hashedpassword.trim();
+    console.log("our user: ", user);
     let isMatch;
-    console.log(user.hashedpassword, "hello");
+    // console.log(user.hashedpassword, "hello");
     try {
       isMatch = await bcrypt.compare(password, user.hashedpassword);
     } catch (err) {
