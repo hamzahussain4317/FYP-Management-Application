@@ -84,10 +84,12 @@ const getProfile = async (req, res) => {
 
   try {
     const query1 = `SELECT * FROM "fypstudent" f JOIN "students" s ON f."fypstudentid" = s."studentid" WHERE f."fypstudentid" = $1`;
-    const query2 = `SELECT f."groupid", p.*, pg.*, t."email", CONCAT(t."firstname", ' ', t."lastname") AS "fullName" FROM "fypstudent" f JOIN "projectgroup" pg ON f."groupid" = pg."groupid" JOIN "project" p ON pg."projectid" = p."projectid" JOIN "supervisor" s ON pg."supervisorid" = s."supervisorid" JOIN "teachers" t ON t."teacherid" = s."supervisorid" WHERE f."fypstudentid" = $1;`;
+    const query2 = `SELECT f."groupid", p.*, pg.*, t."email", CONCAT(t."firstname", ' ', t."lastname") AS "fullName" FROM "fypstudent" f JOIN "projectgroup" pg ON f."groupid" = pg."groupid" LEFT JOIN "project" p ON pg."projectid" = p."projectid" LEFT JOIN "supervisor" s ON pg."supervisorid" = s."supervisorid" LEFT JOIN "teachers" t ON t."teacherid" = s."supervisorid" WHERE f."fypstudentid" = $1;`;
 
     const studentResults = await dbPool.query(query1, [stdID]);
     const groupProjectResults = await dbPool.query(query2, [stdID]);
+    console.log(studentResults.rows[0]);
+    console.log(groupProjectResults.rows[0]);
     if (
       studentResults.rows.length === 0 &&
       groupProjectResults.rows.length === 0
@@ -113,6 +115,8 @@ const getProfile = async (req, res) => {
 
 const assignGroup = async (req, res) => {
   const { emails, p_groupname } = req.body;
+  console.log("emails:", emails);
+  console.log("p_groupname:", p_groupname);
 
   if (!emails || emails.length !== 3) {
     return res
