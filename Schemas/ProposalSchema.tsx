@@ -1,6 +1,6 @@
 import {z} from 'zod';
 export const createProposalSchema=z.object({
-    supervisorEmail:z.string().email(),
+    supervisorEmail:z.string().email().optional(),
     projectName:z.string().min(1,"ProjectName should be greater than one character"),
     projectDomain:z.string().min(1,"ProjectDomain should be greater than one character"),
     projectDescription:z.string().min(1,"give some short details of your project"),

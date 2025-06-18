@@ -3,9 +3,9 @@ import { useStudentContext } from "@/context/StudentContext";
 import { useAppWrapper } from "@/context/AppDataContext";
 import { useEffect, useState } from "react";
 import socket from "@/utils/socket";
+
 const defaultStudentDetails: ApiResponse = {
-  student:
-  {
+  student: {
     fypstudentid: 0,
     groupid: 0,
     midevaluation: null,
@@ -38,9 +38,8 @@ const defaultStudentDetails: ApiResponse = {
       updated_at: "",
       fullName: "",
       email: "",
-
-    }
-  ]
+    },
+  ],
 };
 
 export default function StudentDashboard() {
@@ -113,17 +112,14 @@ export default function StudentDashboard() {
           <h3>
             <span>Roll No:</span>
             {studentDetails.student.studentroll}
-            
           </h3>
           <h3>
             <span>Batch:</span>
             {`Fall ${studentDetails.student.studentroll.substring(0, 2)}`}
-           
           </h3>
           <h3>
             <span>Department:</span>
             {studentDetails.student.departmentname}
-           
           </h3>
           <h3>
             <span>Section:</span>
@@ -136,7 +132,6 @@ export default function StudentDashboard() {
           <h3>
             <span>Email:</span>
             {studentDetails.student.email}
-            
           </h3>
         </div>
       </div>
@@ -148,22 +143,30 @@ export default function StudentDashboard() {
               <h3>Project Details</h3>
             </div>
             <div className="info-body">
-              <h3>
-                <span>Project Name:</span>
-                {studentDetails.groupProjectInfo[0].projectname}
-              </h3>
-              <h3>
-                <span>Start Date:</span>
-                {studentDetails.groupProjectInfo[0].startdate}
-              </h3>
-              <h3>
-                <span>Status:</span>
-                {studentDetails.groupProjectInfo[0].status}
-              </h3>
-              <h3>
-                <span>Project Description:</span>
-                {studentDetails.groupProjectInfo[0].description}
-              </h3>
+              {studentDetails.groupProjectInfo[0].projectid !== null ? (
+                <>
+                  <h3>
+                    <span>Project Name:</span>
+                    {studentDetails.groupProjectInfo[0].projectname}
+                  </h3>
+                  <h3>
+                    <span>Start Date:</span>
+                    {studentDetails.groupProjectInfo[0].startdate}
+                  </h3>
+                  <h3>
+                    <span>Status:</span>
+                    {studentDetails.groupProjectInfo[0].status}
+                  </h3>
+                  <h3>
+                    <span>Project Description:</span>
+                    {studentDetails.groupProjectInfo[0].description}
+                  </h3>
+                </>
+              ) : (
+                <h3 className="text-center text-xl my-4 font-semibold text-red-600 flex justify-center items-center">
+                  No project Started Yet!
+                </h3>
+              )}
             </div>
           </div>
           <div className="info">
@@ -173,19 +176,37 @@ export default function StudentDashboard() {
             </div>
             <div className="info-body">
               <h3>
-                <span>Group ID:</span> {studentDetails.groupProjectInfo[0].groupid}
+                <span>Group ID:</span>{" "}
+                {studentDetails.groupProjectInfo[0].groupid}
               </h3>
               <h3>
                 <span>Group Name:</span>
                 {studentDetails.groupProjectInfo[0].groupname}
               </h3>
-              <h3>
+              {/* <h3>
                 <span>Supervisor Name:</span>
-                {studentDetails.groupProjectInfo[0].fullName}
+                { studentDetails.groupProjectInfo[0].fullName === " "?"Not decided Yet":studentDetails.groupProjectInfo[0].fullName}
+                
+              </h3> */}
+              <h3>
+                <span>Supervisor Name: </span>
+                {studentDetails.groupProjectInfo[0].fullName === " " ? (
+                  <span className="text-red-600 font-semibold">
+                    Not decided Yet
+                  </span>
+                ) : (
+                  studentDetails.groupProjectInfo[0].fullName
+                )}
               </h3>
               <h3>
-                <span>Supervisor Email:</span>
-                {studentDetails.groupProjectInfo[0].email}
+                <span>Supervisor Email: </span>
+                {studentDetails.groupProjectInfo[0].email === null ? (
+                  <span className="text-red-600 font-semibold">
+                    Not decided Yet
+                  </span>
+                ) : (
+                  studentDetails.groupProjectInfo[0].email
+                )}
               </h3>
             </div>
           </div>
@@ -209,14 +230,14 @@ export default function StudentDashboard() {
           <h3>
             <span>Mid Evaluation Marks:</span>{" "}
             {studentDetails.student.midevaluation === null
-              ? "-"
-              : studentDetails.student.midevaluation}
+              ? (<span className="text-red-600 font-semibold">-</span>)
+              : (studentDetails.student.midevaluation)}
           </h3>
           <h3>
             <span>Final Evaluation Marks:</span>{" "}
             {studentDetails.student.finalevaluation === null
-              ? "-"
-              : studentDetails.student.finalevaluation}
+              ? (<span className="text-red-600 font-semibold">-</span>)
+              : (studentDetails.student.finalevaluation)}
           </h3>
         </div>
       </div>{" "}

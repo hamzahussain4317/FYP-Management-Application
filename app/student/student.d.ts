@@ -56,7 +56,7 @@ interface groupStudents {
   isregister: boolean;
 }
 
-interface isLeaderAndSupervisor {
+interface isLeadrAndSupervisor {
   isleader: boolean;
   teacherid: number;
   firstname: string;
@@ -74,7 +74,7 @@ interface isLeaderAndSupervisor {
 interface groupDetails {
   // student: [group[], supervisor[]];
   groupStudents:groupStudents[];
-  isLeaderAndSupervisor:isLeaderAndSupervisor[];
+  isLeadrAndSupervisor:isLeadrAndSupervisor[];
 }
 
 interface Supervisor {

@@ -40,7 +40,7 @@ const CreateGroup = () => {
           },
           body: JSON.stringify({
             emails: [data.email1, data.email2, data.email3],
-            groupName: data.groupName,
+            p_groupname: data.groupName,
           }),
         }
       );

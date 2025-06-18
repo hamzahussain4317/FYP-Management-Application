@@ -43,6 +43,9 @@ const GroupDetails = ({ groupDetails }: GroupDetailsProps) => {
         ))}
         <div className="card relative">
           <h2 className="heading-blue">Supervisor</h2>
+          {groupDetails.isLeadrAndSupervisor[0].teacherid === null ? (
+            <h3 className="text-center text-xl my-4 font-semibold text-red-600">No Supervisor Assigned!</h3>
+          ):(
           <div className="card-grid">
             <p>
               <strong>Supervisor ID: </strong>
@@ -61,6 +64,7 @@ const GroupDetails = ({ groupDetails }: GroupDetailsProps) => {
               {(groupDetails.isLeadrAndSupervisor[0]?.departmentname===undefined)?"-":groupDetails.isLeadrAndSupervisor[0].departmentname}
             </p>
           </div>
+          )}
           <button className="absolute top-0 right-0 rounded-full border-2">
             <i
               className={`fa-solid fa-paper-plane fa-2x sm:fa-lg  hover:text-blue-700 duration-400`}
