@@ -97,11 +97,11 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
     console.log("myresult", studentResults.rows[0]);
-    if (studentResults.rows[0]?.profilepic) {
-      studentResults.rows[0].profilepic = `data:image/jpeg;base64,${Buffer.from(
-        studentResults.rows[0].profilepic
-      ).toString("base64")}`;
-    }
+    // if (studentResults.rows[0]?.profilepic) {
+    //   studentResults.rows[0].profilepic = `data:image/jpeg;base64,${Buffer.from(
+    //     studentResults.rows[0].profilepic
+    //   ).toString("base64")}`;
+    // }
 
     return res.status(200).json({
       student: studentResults.rows[0],
@@ -271,13 +271,13 @@ LEFT JOIN
       if (results.rows.length === 0) {
         res.status(404).json({ message: "No supervisor Registered Yet!" });
       }
-      results.rows.map((item, index) => {
-        if (item?.profilepic) {
-          item.profilepic = `data:image/jpeg;base64,${Buffer.from(
-            item.profilepic
-          ).toString("base64")}`;
-        }
-      });
+      // results.rows.map((item, index) => {
+      //   if (item?.profilepic) {
+      //     item.profilepic = `data:image/jpeg;base64,${Buffer.from(
+      //       item.profilepic
+      //     ).toString("base64")}`;
+      //   }
+      // });
       console.log("supervisorList", results.rows);
 
       res.status(200).json({ supervisorList: results.rows });
