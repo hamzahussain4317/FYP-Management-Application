@@ -10,7 +10,7 @@ interface proposalForm {
   projectDomain: string;
   projectDescription: string;
   groupName: string;
-  proposalFile: File;
+  proposalFile: FileList;
 }
 
 export default function Group() {
@@ -30,22 +30,21 @@ export default function Group() {
   });
 
   const handleSubmitProposal = async (data: proposalForm) => {
+    console.log("Submitting proposal with data:", data);
+    console.log("Supervisors:", supervisors);
     try {
+      const formData = new FormData();
+      formData.append("projectName", data.projectName);
+      formData.append("projectDomain", data.projectDomain);   
+      formData.append("projectDescription", data.projectDescription);
+      formData.append("groupName", data.groupName);   
+      formData.append("projectFile", data.proposalFile[0]);
+      supervisors.forEach((email) => formData.append("supervisorEmails", email));
       const response = await fetch(
         "http://localhost:3001/student/createProposal",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            projectName: data.projectName,
-            projectDomain: data.projectDomain,
-            projectDescription: data.projectDescription,
-            groupName: data.groupName,
-            projectFile: data.proposalFile,
-            supervisors: supervisors,
-          }),
+          body: formData,
         }
       );
 
@@ -82,8 +81,8 @@ export default function Group() {
   };
 
   const onSubmit = async (data: proposalForm) => {
-    console.log(data);
-    console.log(supervisors);
+    console.log("data: ",data);
+    console.log("supervisor Details: ",supervisors);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     reset();
     handleSubmitProposal(data);
@@ -92,6 +91,12 @@ export default function Group() {
     <section className="wrapper">
       <h1 className="proposal-heading">Create Your Proposal!</h1>
       {/* proposal form */}
+      {sessionStorage.getItem("proposalStatus")==="Pending"?(
+        <>
+        <h1 className="flex flex-col items-center justify-center h-[100vh] space-y-4">Proposal Has been sent to the respective Supervisors!</h1>
+        </>
+      ):
+      (
       <div className="proposal-div">
         <form className="form-container">
           {/* Project Details */}
@@ -240,6 +245,9 @@ export default function Group() {
           </button>
         </form>
       </div>
+)}
+
+
     </section>
   );
 }

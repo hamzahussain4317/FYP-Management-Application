@@ -27,6 +27,7 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
     notificationNumber,
     gender,
   } = profileDetails;
+  console.log("NavBar Rendered", profileDetails);
 
   return (
     <nav className="navbar bg-light-surface dark:bg-dark-surface shadow-soft">
@@ -37,11 +38,11 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
         <li className="profileName">
           {gender === "M" ? (
             <p className="text-lg">
-              Hello Mr, <span>{profileName}</span>
+              Hello Mr, <span>{userName}</span>
             </p>
           ) : (
             <p>
-              Hello Ms, <span>{profileName}</span>
+              Hello Ms, <span>{userName}</span>
             </p>
           )}
         </li>
@@ -62,16 +63,28 @@ export default function NavBar({ profileDetails, id }: navBarProps) {
             </div>
           </button>
         </li>
+
+        {/* {profilePhoto} */}
         <li className="profile">
-          <Image
-            className="profile-pic"
-            src={profilePhoto}
-            alt={""}
-            priority={false}
-            width={60}
-            height={60}
-            quality={100}
-          ></Image>
+          {profilePic ? (
+            <Image
+              className="profile-pic"
+              src={`http://localhost:3001/${profilePic.replace(/\\/g, "/")}`}
+              alt="Profile Picture"
+              priority={false}
+              width={60}
+              height={60}
+              quality={100}
+            />
+          ) : (
+            <Image
+              className="profile-pic"
+              src="/default-avatar.png" 
+              alt="Default Avatar"
+              width={60}
+              height={60}
+            />
+          )}
         </li>
       </ul>
     </nav>

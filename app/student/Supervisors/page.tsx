@@ -1,127 +1,16 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-const supervisors: Supervisor[] = [
-  {
-    id: 1,
-    name: "Dr. Alice Johnson",
-    image: "/Hamza.jpg",
-    projectsSupervised: 3,
-    rating: 4,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 2,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "mark.lee@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 3,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "Salah.junejo@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 4,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "irfan.pathan@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 5,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "ghulam.hamza@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 6,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 7,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 8,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 9,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 10,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 11,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-  {
-    id: 12,
-    name: "Prof. Mark Lee",
-    image: "/Hamza.jpg",
-    projectsSupervised: 5,
-    rating: 3,
-    email: "alice.johnson@nu.edu.pk",
-    cgpaCriteria: 3.4,
-  },
-];
 
-export const defaultSupervisor: Supervisor = {
-  email: "",
-  profilePic: "",
-  supervisorID: 0,
-  supervisorName: "",
-  departmentName: "",
-  specializedDomain: null,
-  groupsCount: null,
-  cgpaCriteria: 0,
-};
+// export const defaultSupervisor: Supervisor = {
+//   email: "",
+//   supervisorid: 0,
+//   supervisorname: "", 
+//   departmentame: "",
+//   specializeddomain: null,
+//   groupscount: null,
+//   cgpacriteria: 0,
+// };
 
 export const defaultSupervisorListResponse: SupervisorListResponse = {
   supervisorList: [],
@@ -129,14 +18,16 @@ export const defaultSupervisorListResponse: SupervisorListResponse = {
 
 export default function Group() {
   const [supervisorsList, setSupervisorsList] =
-    useState<SupervisorListResponse>(defaultSupervisorListResponse);
+    useState<SupervisorListResponse>({supervisorList:[]});
   const [checkedSupervisors, setCheckedSupervisors] = useState([0]);
   const maxProjects = 7;
 
   useEffect(() => {
     getSupervisorList();
-    console.log("supervisor lists: ", supervisorsList);
   }, []);
+  useEffect(() => {
+    console.log("supervisor lists: ", supervisorsList.supervisorList[0]);
+  }, [supervisorsList]);
 
   const getSupervisorList = async () => {
     try {
@@ -151,8 +42,9 @@ export default function Group() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData);
+        console.log("Response Data: ", responseData);
         setSupervisorsList(responseData);
+        // console.log("Supervisors List: ", supervisorsList.supervisorList);
       } else if (response.status === 404) {
         throw new Error("No supervisor in the list");
       } else if (response.status === 500) {
@@ -193,7 +85,7 @@ export default function Group() {
       element.checkVisibility() ? null : element.classList.toggle("hidden");
       Array.from(parent?.children || []).forEach((child) => {
         if (child !== element && child instanceof HTMLElement) {
-          child.style.opacity = "0.5"; 
+          child.style.opacity = "0.5";
         }
       });
     } else if (element && event.type === "mouseleave") {
@@ -209,9 +101,7 @@ export default function Group() {
     }
   };
 
-  
-    const randomRating = Math.floor(Math.random() * 5) + 1;
-
+  const randomRating = Math.floor(Math.random() * 5) + 1;
 
   return (
     <section className="wrapper">
@@ -228,7 +118,7 @@ export default function Group() {
           </div>
         </li>
         {supervisorsList.supervisorList.map(
-          (supervisors: Supervisor, index: number) => (
+          (supervisors: Supervisors, index: number) => (
             <li
               key={index}
               className={`supervisor-item ${
@@ -237,16 +127,17 @@ export default function Group() {
               onMouseEnter={(event) => handleHover(event, `${index}`)}
               onMouseLeave={(event) => handleHover(event, `${index}`)}
             >
+              {/* {`/Picture${index + 1}.png`} */}
               <div className="supervisor-column supervisor-info relative ">
                 <Image
-                  src={`/Picture${index+1}.png`}
+                  src={`http://localhost:3001/${supervisors.profilepic.replace(/\\/g, "/")}`}
                   alt={""}
                   className="supervisor-image"
                   width={45}
                   height={45}
                 />{" "}
                 <span className="supervisor-name">
-                  {supervisors.supervisorName}
+                  {supervisors.supervisorname}
                 </span>
                 <div
                   id={`${index}`}
@@ -265,17 +156,17 @@ export default function Group() {
                     Above CGPA:
                     <b>
                       {" "}
-                      {supervisors.cgpaCriteria === null
+                      {supervisors.cgpacriteria === null
                         ? "-"
-                        : supervisors.cgpaCriteria}
+                        : supervisors.cgpacriteria}
                     </b>
                   </p>
                 </div>
               </div>
               <div className="supervisor-column supervisor-projects">
-                {supervisors.groupsCount === null
+                {supervisors.groupscount === null
                   ? "0"
-                  : supervisors.groupsCount}
+                  : supervisors.groupscount}
                 /{maxProjects} Projects
               </div>
               <div className="supervisor-column supervisor-rating">
@@ -294,10 +185,10 @@ export default function Group() {
                     type="checkbox"
                     className="share-check"
                     onChange={() =>
-                      handleCheckboxChange(supervisors.supervisorID)
+                      handleCheckboxChange(supervisors.supervisorid)
                     }
                     checked={checkedSupervisors.includes(
-                      supervisors.supervisorID
+                      supervisors.supervisorid
                     )}
                   />
                   <i className="fa-regular fa-share-from-square share-icon"></i>
@@ -309,8 +200,8 @@ export default function Group() {
         <div className="button-container">
           <button
             className="proposal-button"
-            onClick={handleRequestButton} 
-          ></button>
+            onClick={handleRequestButton}
+          >REQUEST</button>
         </div>
       </ul>
     </section>

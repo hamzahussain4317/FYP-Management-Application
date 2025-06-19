@@ -33,6 +33,7 @@ interface ProjectGroup {
   updated_at: string;
   fullName: string;
   email: string;
+  proposalstatus: string;
  
 }
 
@@ -77,19 +78,20 @@ interface groupDetails {
   isLeadrAndSupervisor:isLeadrAndSupervisor[];
 }
 
-interface Supervisor {
+interface Supervisors {
+  profilepic:string;
   email: string;
-  profilePic: string;
-  supervisorID: number;
-  supervisorName: string;
-  departmentName: string;
-  specializedDomain: string | null;
-  groupsCount: number | null;
-  cgpaCriteria: number | null;
+  supervisorid: number;
+  supervisorname: string;
+  departmentname: string;
+  specializeddomain: string | null;
+  groupscount: number | null;
+  cgpacriteria: number | null;
+  ratings: number |null;
 }
 
 interface SupervisorListResponse {
-  supervisorList: Supervisor[];
+  supervisorList: Supervisors[];
 }
 
 interface Task {

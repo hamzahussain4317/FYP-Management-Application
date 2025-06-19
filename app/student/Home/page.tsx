@@ -38,6 +38,7 @@ const defaultStudentDetails: ApiResponse = {
       updated_at: "",
       fullName: "",
       email: "",
+      proposalstatus: "",
     },
   ],
 };
@@ -50,9 +51,11 @@ export default function StudentDashboard() {
   );
 
   useEffect(() => {
+    sessionStorage.removeItem("proposalStatus");
     sessionStorage.removeItem("groupID");
     sessionStorage.removeItem("isLeader");
     sessionStorage.removeItem("projectID");
+
     const storedUserId = sessionStorage.getItem("userId");
     if (storedUserId) {
       socket.emit("register", storedUserId);
@@ -77,19 +80,46 @@ export default function StudentDashboard() {
         setHomeDetails(responseData);
         setUserName(responseData.student.studentname);
         setProfilePic(responseData.student.profilepic);
+        const proposalStatus = responseData.groupProjectInfo[0]?.proposalstatus;
+        if (proposalStatus !== undefined && proposalStatus !== null) {
+          sessionStorage.setItem("proposalStatus", proposalStatus);
+        } else {
+          console.warn("❗proposalStatus not found in response");
+        }
 
-        sessionStorage.setItem(
-          "groupID",
-          responseData.student.groupid.toString()
-        );
-        sessionStorage.setItem(
-          "isLeader",
-          responseData.student.isleader.toString()
-        );
-        sessionStorage.setItem(
-          "projectID",
-          responseData.student?.projectid.toString()
-        );
+
+
+         const groupid = responseData.student?.groupid;
+        if (groupid !== undefined && groupid !== null) {
+          sessionStorage.setItem("groupID", groupid.toString());
+        } else {
+          console.warn("❗groupID not found in response");
+        }
+        
+        // sessionStorage.setItem(
+        //   "groupID",
+        //   responseData.student.groupid.toString()
+        // );
+
+         const isLeader = responseData.student?.isleader;
+        if (isLeader !== undefined && isLeader !== null) {
+          sessionStorage.setItem("isLeader", isLeader.toString());
+        } else {
+          console.warn("❗isLeader not found in response");
+        }
+
+
+        // sessionStorage.setItem(
+        //   "isLeader",
+        //   responseData.student.isleader.toString()
+        // );
+      
+        const projectid = responseData.groupProjectInfo[0]?.projectid;
+        if (projectid!== undefined && projectid !== null) {
+          sessionStorage.setItem("projectID", projectid.toString());
+        } else {
+          console.warn("❗projectID not found in response");
+        }
       } else if (response.status === 500) {
         throw new Error("User already exist");
       } else {
@@ -229,15 +259,19 @@ export default function StudentDashboard() {
         <div id="marks-body" className="marks-info info-body">
           <h3>
             <span>Mid Evaluation Marks:</span>{" "}
-            {studentDetails.student.midevaluation === null
-              ? (<span className="text-red-600 font-semibold">-</span>)
-              : (studentDetails.student.midevaluation)}
+            {studentDetails.student.midevaluation === null ? (
+              <span className="text-red-600 font-semibold">-</span>
+            ) : (
+              studentDetails.student.midevaluation
+            )}
           </h3>
           <h3>
             <span>Final Evaluation Marks:</span>{" "}
-            {studentDetails.student.finalevaluation === null
-              ? (<span className="text-red-600 font-semibold">-</span>)
-              : (studentDetails.student.finalevaluation)}
+            {studentDetails.student.finalevaluation === null ? (
+              <span className="text-red-600 font-semibold">-</span>
+            ) : (
+              studentDetails.student.finalevaluation
+            )}
           </h3>
         </div>
       </div>{" "}
