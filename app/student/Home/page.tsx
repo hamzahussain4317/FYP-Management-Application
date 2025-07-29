@@ -86,36 +86,20 @@ export default function StudentDashboard() {
         } else {
           console.warn("❗proposalStatus not found in response");
         }
-
-
-
-         const groupid = responseData.student?.groupid;
+        const groupid = responseData.student?.groupid;
         if (groupid !== undefined && groupid !== null) {
           sessionStorage.setItem("groupID", groupid.toString());
         } else {
           console.warn("❗groupID not found in response");
         }
-        
-        // sessionStorage.setItem(
-        //   "groupID",
-        //   responseData.student.groupid.toString()
-        // );
-
-         const isLeader = responseData.student?.isleader;
+        const isLeader = responseData.student?.isleader;
         if (isLeader !== undefined && isLeader !== null) {
           sessionStorage.setItem("isLeader", isLeader.toString());
         } else {
           console.warn("❗isLeader not found in response");
         }
-
-
-        // sessionStorage.setItem(
-        //   "isLeader",
-        //   responseData.student.isleader.toString()
-        // );
-      
         const projectid = responseData.groupProjectInfo[0]?.projectid;
-        if (projectid!== undefined && projectid !== null) {
+        if (projectid !== undefined && projectid !== null) {
           sessionStorage.setItem("projectID", projectid.toString());
         } else {
           console.warn("❗projectID not found in response");
