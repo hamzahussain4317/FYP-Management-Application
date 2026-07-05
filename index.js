@@ -1,0 +1,140 @@
+require("dotenv").config();
+const express = require("express");
+const morgan = require("morgan");
+const http = require("http");
+const cors = require("cors");
+// const { Server } = require("socket.io");
+
+const dbPool = require("./db/pool.js");
+const { isValidToken } = require("./middlewares/validations.js");
+
+const auth = require("./routes/auth");
+const student = require("./routes/student");
+const supervisor = require("./routes/supervisor");
+const messages = require("./routes/messages");
+const admin = require("./routes/admin.cjs");
+const { socketRouter } = require("./routes/socket.js");
+
+const app = express();
+//Creating Server
+const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
+
+//middlewares for http-requests using express app
+app.use('/uploads',express.static('uploads'));
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,POST,PATCH",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+
+// dynamic routes for http-requests using express app
+app.use("/auth", auth);
+app.use("/student", student);
+app.use("/supervisor", supervisor);
+app.use("/messages", messages);
+app.use("/admin", admin);
+
+// middleware for authentication for socket
+// io.use((socket, next) => {
+//   const token = socket.handshake.auth.token; //retrieve token from the client
+//   if (isValidToken(token)) {
+//     // attach user info to the socket for further use
+//     socket.user = decoded;
+//     next();
+//   } else {
+//     next(new Error("Authentication error"));
+//   }
+// });
+
+//socket route handler
+// socketRouter(io);
+
+const func = async () => {
+  const query = `
+
+    INSERT INTO students (
+
+      "studentroll", 
+
+      "studentname", 
+
+      "departmentname", 
+
+      "email", 
+
+      "dateofbirth", 
+
+      "section", 
+
+      "batch", 
+
+      "campus"
+
+    ) 
+
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+
+  `;
+
+  const values = [
+    "22K-4327",
+
+    "Hamza Hussain",
+
+    "CS",
+
+    "k224327@nu.edu.pk",
+
+    "2003-12-30", // Use ISO format for date
+
+    "BCS-5K",
+
+    "CS",
+
+    "KHI",
+  ];
+
+  // const result = await client.query(query, values);
+
+  // console.log("✅ Inserted row:", result.rows[0]);
+
+  dbPool.query(query, values, (err, res) => {
+    if (err) throw err;
+
+    console.log("Data inserted successfully.");
+  });
+};
+
+// db connection check and server start
+(async () => {
+  try {
+    const client = await dbPool.connect();
+    console.log("Database connected successfully!");
+    const PORT = 3001 | process.env.SOCKET_PORT;
+    server.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Database error:", err.message);   
+  }
+  // finally {
+  //   await dbPool.end();
+  // }
+})();
+
+// func();
+
+// module.exports = io;
+
+module.exports = server;
